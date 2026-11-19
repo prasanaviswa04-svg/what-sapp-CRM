@@ -5,6 +5,7 @@ import { Navbar } from './Navbar';
 import { NotificationDrawer } from './NotificationDrawer';
 import { GlobalSearchModal } from './GlobalSearchModal';
 import { WebhookSimulatorModal } from '../whatsapp/WebhookSimulatorModal';
+import { ErrorBoundary } from '../common/ErrorBoundary';
 
 export const AppLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -49,7 +50,9 @@ export const AppLayout = () => {
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
 

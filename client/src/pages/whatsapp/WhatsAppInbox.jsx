@@ -17,7 +17,8 @@ import {
   CalendarCheck,
   Share2,
   Check,
-  CheckCheck
+  CheckCheck,
+  Sparkles
 } from 'lucide-react';
 
 export const WhatsAppInbox = () => {
@@ -459,14 +460,14 @@ export const WhatsAppInbox = () => {
                           <div className="whitespace-pre-line">{m.content}</div>
 
                           {/* Grounded Property Preview if grounded */}
-                          {m.isGrounded && m.groundedPropertyId && (
+                          {m.isGrounded && m.groundedPropertyId && typeof m.groundedPropertyId === 'object' && (
                             <div className="mt-2.5 p-2.5 bg-black/40 rounded-lg border border-white/10 text-[11px]">
                               <span className="text-[10px] uppercase font-bold text-zinc-300 block">
                                 Grounded Property Listing
                               </span>
-                              <div className="font-bold text-white mt-0.5">{m.groundedPropertyId.title}</div>
+                              <div className="font-bold text-white mt-0.5">{m.groundedPropertyId.title || 'Property Listing'}</div>
                               <div className="text-zinc-200 font-extrabold mt-0.5">
-                                ₹{(m.groundedPropertyId.totalPrice / 10000000).toFixed(2)} Cr
+                                ₹{m.groundedPropertyId.totalPrice ? (m.groundedPropertyId.totalPrice / 10000000).toFixed(2) : '0'} Cr
                               </div>
                             </div>
                           )}
@@ -572,13 +573,13 @@ export const WhatsAppInbox = () => {
           <div className="hidden xl:flex w-80 border-l border-zinc-200 bg-white flex-col overflow-y-auto p-4 space-y-4">
             <div className="text-center pb-3 border-b border-zinc-100">
               <div className="w-16 h-16 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-900 font-bold flex items-center justify-center text-xl mx-auto shadow-xs">
-                {customer.fullName.charAt(0)}
+                {customer?.fullName?.charAt(0) || 'C'}
               </div>
-              <h3 className="font-bold text-zinc-950 text-sm mt-2">{customer.fullName}</h3>
-              <p className="text-xs text-zinc-500">{customer.phone}</p>
+              <h3 className="font-bold text-zinc-950 text-sm mt-2">{customer?.fullName || 'Client'}</h3>
+              <p className="text-xs text-zinc-500">{customer?.phone || ''}</p>
               <div className="flex justify-center gap-1.5 mt-2">
-                <Badge variant={customer.priority}>{customer.priority} Priority</Badge>
-                <Badge variant={customer.leadStatus}>{customer.leadStatus}</Badge>
+                {customer?.priority && <Badge variant={customer.priority}>{customer.priority} Priority</Badge>}
+                {customer?.leadStatus && <Badge variant={customer.leadStatus}>{customer.leadStatus}</Badge>}
               </div>
             </div>
 
@@ -591,18 +592,18 @@ export const WhatsAppInbox = () => {
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Max Budget:</span>
                   <span className="font-bold text-zinc-950">
-                    {customer.requirements?.maxBudget
+                    {customer?.requirements?.maxBudget
                       ? `₹${(customer.requirements.maxBudget / 10000000).toFixed(2)} Cr`
                       : 'Open'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Locality:</span>
-                  <span className="font-semibold text-zinc-800">{customer.preferredLocation || 'Gurugram'}</span>
+                  <span className="font-semibold text-zinc-800">{customer?.preferredLocation || 'Gurugram'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Target BHK:</span>
-                  <span className="font-semibold text-zinc-800">{customer.requirements?.bedrooms || 3} BHK</span>
+                  <span className="font-semibold text-zinc-800">{customer?.requirements?.bedrooms || 3} BHK</span>
                 </div>
               </div>
             </div>
@@ -615,7 +616,7 @@ export const WhatsAppInbox = () => {
                 </span>
               </div>
               <div className="space-y-2">
-                {matchedProperties.map(({ property, matchPercentage }) => (
+                {matchedProperties.filter(m => m?.property).map(({ property, matchPercentage }) => (
                   <div
                     key={property._id}
                     className="p-2.5 rounded-lg border border-zinc-200 hover:border-zinc-950 transition space-y-1 bg-white"
@@ -623,10 +624,10 @@ export const WhatsAppInbox = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-bold text-zinc-950">{matchPercentage} Match</span>
                       <span className="text-[10px] font-extrabold text-zinc-900">
-                        ₹{(property.totalPrice / 10000000).toFixed(2)} Cr
+                        ₹{property.totalPrice ? (property.totalPrice / 10000000).toFixed(2) : '0'} Cr
                       </span>
                     </div>
-                    <div className="font-semibold text-zinc-900 truncate text-[11px]">{property.title}</div>
+                    <div className="font-semibold text-zinc-900 truncate text-[11px]">{property.title || 'Property Listing'}</div>
                     <button
                       onClick={() => handleSharePropertyIntoChat(property)}
                       className="w-full mt-1 py-1 rounded bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-[10px] font-semibold flex items-center justify-center gap-1 transition"

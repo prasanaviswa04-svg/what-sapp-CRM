@@ -27,10 +27,10 @@ export const Login = () => {
     }
   };
 
-  const handleFillDemo = () => {
-    setEmail('admin@estateflow.io');
+  const handleFillRole = (roleEmail) => {
+    setEmail(roleEmail);
     setPassword('Admin@12345');
-    addToast('Demo credentials filled', 'info');
+    addToast(`Filled credentials for ${roleEmail}`, 'info');
   };
 
   return (
@@ -91,18 +91,36 @@ export const Login = () => {
             </Button>
           </form>
 
-          {/* Quick Demo Credentials Auto-Fill Button */}
+          {/* Quick Demo Role Auto-Fill Pills */}
           <div className="mt-6 pt-5 border-t border-zinc-100">
-            <button
-              type="button"
-              onClick={handleFillDemo}
-              className="w-full py-2 px-3 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-xs font-medium flex items-center justify-center gap-2 transition border border-zinc-200"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-zinc-700" />
-              <span>Fill Demo Credentials</span>
-            </button>
-            <p className="text-[11px] text-center text-zinc-500 mt-2 font-mono">
-              admin@estateflow.io / Admin@12345
+            <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mb-2 text-center">
+              Quick Role Test Logins
+            </span>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[
+                { label: 'Company Admin', email: 'admin@estateflow.io' },
+                { label: 'Super Admin', email: 'superadmin@estateflow.io' },
+                { label: 'Manager', email: 'manager@estateflow.io' },
+                { label: 'Broker', email: 'broker@estateflow.io' },
+                { label: 'Sales Agent', email: 'agent@estateflow.io' },
+                { label: 'Support Agent', email: 'support@estateflow.io' }
+              ].map((r) => (
+                <button
+                  key={r.email}
+                  type="button"
+                  onClick={() => handleFillRole(r.email)}
+                  className={`py-1.5 px-2 rounded-lg text-[11px] font-medium border text-center transition ${
+                    email === r.email
+                      ? 'bg-zinc-900 text-white border-zinc-900 shadow-xs'
+                      : 'bg-zinc-50 hover:bg-zinc-100 text-zinc-700 border-zinc-200'
+                  }`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-center text-zinc-400 mt-2 font-mono">
+              Universal Password: <span className="font-bold text-zinc-700">Admin@12345</span>
             </p>
           </div>
 

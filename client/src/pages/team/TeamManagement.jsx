@@ -115,7 +115,7 @@ export const TeamManagement = () => {
                   <tr key={member._id} className="hover:bg-zinc-50 transition">
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-xs">
+                        <div className="w-8 h-8 rounded-full bg-zinc-100 text-zinc-900 border border-zinc-200 font-bold flex items-center justify-center text-xs">
                           {member.firstName?.[0]}{member.lastName?.[0]}
                         </div>
                         <div>

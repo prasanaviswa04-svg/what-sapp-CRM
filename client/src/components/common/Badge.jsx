@@ -14,20 +14,20 @@ export const Badge = ({ children, variant = 'default', size = 'sm', className = 
       case 'paid':
       case 'high intent':
       case 'active':
-        return 'bg-zinc-950 text-white border border-zinc-950';
+        return 'bg-zinc-100 text-zinc-950 border border-zinc-300 font-semibold';
       case 'reserved':
       case 'under negotiation':
       case 'partially paid':
       case 'urgent':
       case 'hot':
-        return 'bg-zinc-800 text-zinc-100 border border-zinc-700';
+        return 'bg-zinc-100 text-zinc-900 border border-zinc-300 font-medium';
       case 'sold':
       case 'closed':
       case 'lost':
       case 'cancelled':
       case 'cold':
       case 'deactivated':
-        return 'bg-zinc-100 text-zinc-500 border border-zinc-200 line-through';
+        return 'bg-zinc-50 text-zinc-400 border border-zinc-200 line-through';
       case 'new':
       case 'new enquiry':
       case 'site visit scheduled':
@@ -36,7 +36,8 @@ export const Badge = ({ children, variant = 'default', size = 'sm', className = 
       case 'warm':
       case 'high':
       case 'medium':
-        return 'bg-zinc-100 text-zinc-800 border border-zinc-200';
+      case 'low':
+        return 'bg-zinc-50 text-zinc-700 border border-zinc-200';
       default:
         return 'bg-white text-zinc-700 border border-zinc-200';
     }

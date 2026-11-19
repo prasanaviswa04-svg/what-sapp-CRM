@@ -157,7 +157,7 @@ export const PropertyList = () => {
             onClick={() => { setCategoryFilter(cat); setPage(1); }}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               categoryFilter === cat
-                ? 'bg-zinc-950 text-white shadow-xs'
+                ? 'bg-zinc-900 text-white shadow-xs'
                 : 'bg-white text-zinc-600 hover:bg-zinc-100 border border-zinc-200'
             }`}
           >
@@ -232,10 +232,10 @@ export const PropertyList = () => {
                   <img
                     src={prop.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'}
                     alt={prop.title}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                   />
                   <div className="absolute top-3 left-3">
-                    <span className="text-[10px] font-bold px-2 py-1 rounded bg-zinc-950/90 text-white backdrop-blur-xs">
+                    <span className="text-[10px] font-bold px-2 py-1 rounded bg-white/95 text-zinc-900 border border-zinc-200 shadow-xs">
                       {prop.propertyCode}
                     </span>
                   </div>

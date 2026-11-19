@@ -225,7 +225,7 @@ export const WhatsAppInbox = () => {
                 <MessageSquare className="w-5 h-5 text-zinc-950" />
                 <h2 className="font-bold text-zinc-950 text-sm">WhatsApp Inbox</h2>
               </div>
-              <span className="text-[10px] bg-zinc-950 text-white font-bold px-2 py-0.5 rounded-full">
+              <span className="text-[10px] bg-zinc-100 text-zinc-800 border border-zinc-200 font-semibold px-2 py-0.5 rounded-full">
                 Meta Cloud API
               </span>
             </div>
@@ -255,7 +255,7 @@ export const WhatsAppInbox = () => {
                   onClick={() => setFilter(f.id)}
                   className={`text-[11px] font-semibold px-2.5 py-1 rounded-full transition whitespace-nowrap ${
                     filter === f.id
-                      ? 'bg-zinc-950 text-white'
+                      ? 'bg-zinc-900 text-white shadow-xs'
                       : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-100'
                   }`}
                 >
@@ -292,11 +292,11 @@ export const WhatsAppInbox = () => {
                     onClick={() => setActiveConversation(c)}
                     className={`p-3.5 transition cursor-pointer flex items-start gap-3 relative ${
                       isSelected
-                        ? 'bg-zinc-100 border-l-4 border-l-zinc-950'
+                        ? 'bg-zinc-100 border-l-4 border-l-zinc-900'
                         : 'hover:bg-zinc-100/70 bg-white'
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-900 font-bold flex items-center justify-center text-xs flex-shrink-0">
                       {c.customerId?.fullName?.charAt(0) || 'C'}
                     </div>
 
@@ -326,7 +326,7 @@ export const WhatsAppInbox = () => {
                           </Badge>
                         )}
                         {c.unreadCount > 0 && (
-                          <span className="ml-auto w-4 h-4 rounded-full bg-zinc-950 text-white font-bold text-[10px] flex items-center justify-center">
+                          <span className="ml-auto w-4 h-4 rounded-full bg-zinc-900 text-white font-bold text-[10px] flex items-center justify-center">
                             {c.unreadCount}
                           </span>
                         )}
@@ -346,7 +346,7 @@ export const WhatsAppInbox = () => {
               {/* Active Chat Header */}
               <div className="h-16 px-4 bg-white border-b border-zinc-200 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-xs">
+                  <div className="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-900 font-bold flex items-center justify-center text-xs">
                     {customer?.fullName?.charAt(0) || 'C'}
                   </div>
                   <div>
@@ -439,8 +439,8 @@ export const WhatsAppInbox = () => {
                             isCustomer
                               ? 'bg-white text-zinc-900 rounded-tl-none border border-zinc-200'
                               : isAi
-                              ? 'bg-zinc-900 text-white rounded-tr-none border border-zinc-800'
-                              : 'bg-zinc-950 text-white rounded-tr-none'
+                              ? 'bg-zinc-800 text-white rounded-tr-none border border-zinc-700'
+                              : 'bg-zinc-900 text-white rounded-tr-none'
                           }`}
                         >
                           {/* Sender Label */}
@@ -571,7 +571,7 @@ export const WhatsAppInbox = () => {
         {activeConversation && customer && (
           <div className="hidden xl:flex w-80 border-l border-zinc-200 bg-white flex-col overflow-y-auto p-4 space-y-4">
             <div className="text-center pb-3 border-b border-zinc-100">
-              <div className="w-16 h-16 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-xl mx-auto shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-900 font-bold flex items-center justify-center text-xl mx-auto shadow-xs">
                 {customer.fullName.charAt(0)}
               </div>
               <h3 className="font-bold text-zinc-950 text-sm mt-2">{customer.fullName}</h3>

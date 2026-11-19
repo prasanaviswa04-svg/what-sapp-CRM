@@ -88,13 +88,13 @@ export const PropertyDetail = () => {
 
       {/* Main Image Banner & Title */}
       <Card className="overflow-hidden border border-zinc-200">
-        <div className="relative h-72 sm:h-96 w-full bg-zinc-950">
+        <div className="relative h-72 sm:h-96 w-full bg-zinc-100">
           <img
             src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400'}
             alt={property.title}
-            className="w-full h-full object-cover opacity-80 grayscale"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
           <div className="absolute bottom-6 left-6 right-6 text-white flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -102,13 +102,13 @@ export const PropertyDetail = () => {
                   {property.propertyCode}
                 </span>
                 <Badge variant={property.status}>{property.status}</Badge>
-                <span className="text-xs text-zinc-300 font-medium">
+                <span className="text-xs text-zinc-200 font-medium">
                   {property.category} • For {property.purpose}
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">{property.title}</h1>
-              <p className="text-xs text-zinc-300 flex items-center gap-1.5 mt-1">
-                <MapPin className="w-3.5 h-3.5 text-zinc-300" />
+              <p className="text-xs text-zinc-200 flex items-center gap-1.5 mt-1">
+                <MapPin className="w-3.5 h-3.5 text-zinc-200" />
                 {property.address?.street ? `${property.address.street}, ` : ''}
                 {property.address?.locality}, {property.address?.city}, {property.address?.state}
               </p>
@@ -188,7 +188,7 @@ export const PropertyDetail = () => {
             <CardHeader title="Assigned Broker" />
             <CardContent className="text-xs space-y-2">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-sm">
+                <div className="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-900 font-bold flex items-center justify-center text-sm">
                   {property.assignedBrokerId?.firstName?.[0] || 'B'}
                 </div>
                 <div>

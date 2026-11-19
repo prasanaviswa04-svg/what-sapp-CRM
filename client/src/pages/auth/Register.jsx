@@ -38,23 +38,23 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-zinc-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 border-b border-zinc-200">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-zinc-950 shadow-sm">
-            <Building2 className="w-5 h-5 text-zinc-950 stroke-[2.2]" />
+          <div className="w-11 h-11 rounded-xl bg-zinc-900 flex items-center justify-center text-white shadow-sm border border-zinc-800">
+            <Building2 className="w-5 h-5 text-white stroke-[2.2]" />
           </div>
         </div>
-        <h2 className="mt-4 text-center text-xl font-bold tracking-tight text-white">
+        <h2 className="mt-4 text-center text-xl font-bold tracking-tight text-zinc-950">
           Create Realty Workspace
         </h2>
-        <p className="mt-1 text-center text-xs text-zinc-400 tracking-tight">
+        <p className="mt-1 text-center text-xs text-zinc-500 tracking-tight">
           Enterprise real estate CRM and automation
         </p>
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-2xl rounded-2xl sm:px-10 border border-zinc-200">
+        <div className="bg-white py-8 px-6 shadow-sm rounded-2xl sm:px-10 border border-zinc-200">
           <form className="space-y-3.5" onSubmit={handleSubmit}>
             <div>
               <label className="block text-xs font-semibold text-zinc-900 uppercase tracking-wider mb-1">

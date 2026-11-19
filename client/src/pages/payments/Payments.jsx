@@ -104,20 +104,20 @@ export const Payments = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="p-5 flex items-center justify-between bg-zinc-950 text-white border-zinc-900 shadow-sm">
+        <Card className="p-5 flex items-center justify-between bg-white text-zinc-900 border-zinc-200 shadow-xs">
           <div>
-            <span className="text-xs text-zinc-400 font-medium">Total Revenue Collected</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold mt-1 text-white">
+            <span className="text-xs text-zinc-500 font-medium">Total Revenue Collected</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold mt-1 text-zinc-950">
               ₹{(totalCollected / 10000000).toFixed(2)} Cr
             </h2>
-            <p className="text-[11px] text-zinc-400 mt-1">Directly deposited via verified banking</p>
+            <p className="text-[11px] text-zinc-500 mt-1">Directly deposited via verified banking</p>
           </div>
-          <div className="p-3.5 bg-zinc-900 rounded-2xl border border-zinc-800">
-            <CheckCircle2 className="w-8 h-8 text-white" />
+          <div className="p-3.5 bg-zinc-100 rounded-2xl border border-zinc-200">
+            <CheckCircle2 className="w-8 h-8 text-zinc-800" />
           </div>
         </Card>
 
-        <Card className="p-5 flex items-center justify-between bg-white text-zinc-900 border-zinc-200 shadow-sm">
+        <Card className="p-5 flex items-center justify-between bg-white text-zinc-900 border-zinc-200 shadow-xs">
           <div>
             <span className="text-xs text-zinc-500 font-medium">Total Pending Receivables</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold mt-1 text-zinc-950">

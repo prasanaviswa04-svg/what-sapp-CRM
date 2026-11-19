@@ -124,42 +124,42 @@ export const CustomerDetail = () => {
       </div>
 
       {/* Customer Hero Profile Card */}
-      <Card className="bg-zinc-950 text-white p-6 rounded-2xl shadow-sm border border-zinc-900">
+      <Card className="bg-white text-zinc-900 p-6 rounded-2xl shadow-xs border border-zinc-200">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-white font-bold text-2xl shadow-inner">
+            <div className="w-16 h-16 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-900 font-bold text-2xl">
               {customer.fullName.charAt(0)}
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-xl font-bold tracking-tight text-white">{customer.fullName}</h1>
+                <h1 className="text-xl font-bold tracking-tight text-zinc-950">{customer.fullName}</h1>
                 <Badge variant={customer.priority}>{customer.priority} Priority</Badge>
                 <Badge variant={customer.leadStatus}>{customer.leadStatus}</Badge>
               </div>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 mt-2">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 mt-2">
                 <span className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-zinc-300" /> {customer.phone}
+                  <Phone className="w-3.5 h-3.5 text-zinc-400" /> {customer.phone}
                 </span>
                 {customer.email && (
                   <span className="flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-zinc-300" /> {customer.email}
+                    <Mail className="w-3.5 h-3.5 text-zinc-400" /> {customer.email}
                   </span>
                 )}
                 <span className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-zinc-300" /> {customer.preferredLocation || 'Gurugram'}
+                  <MapPin className="w-3.5 h-3.5 text-zinc-400" /> {customer.preferredLocation || 'Gurugram'}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="text-right sm:border-l sm:border-zinc-800 sm:pl-6">
+          <div className="text-right sm:border-l sm:border-zinc-200 sm:pl-6">
             <div className="text-xs text-zinc-400 uppercase tracking-wider">Maximum Budget</div>
-            <div className="text-2xl font-bold text-white mt-0.5">
+            <div className="text-2xl font-bold text-zinc-950 mt-0.5">
               {customer.requirements?.maxBudget
                 ? `₹${(customer.requirements.maxBudget / 10000000).toFixed(2)} Cr`
                 : 'Flexible'}
             </div>
-            <div className="text-[11px] text-zinc-400 mt-1">
+            <div className="text-[11px] text-zinc-500 mt-1">
               {customer.requirements?.bedrooms || 3} BHK {customer.requirements?.propertyCategory || 'Apartment'}
             </div>
           </div>
@@ -273,13 +273,13 @@ export const CustomerDetail = () => {
                   <img
                     src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600'}
                     alt={property.title}
-                    className="w-full sm:w-48 h-40 object-cover grayscale hover:grayscale-0 transition-all duration-300"
+                    className="w-full sm:w-48 h-40 object-cover"
                   />
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase text-zinc-400">{property.propertyCode}</span>
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-zinc-950 text-white">
+                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-zinc-100 text-zinc-900 border border-zinc-200">
                           {matchPercentage} Match
                         </span>
                       </div>
@@ -362,7 +362,7 @@ export const CustomerDetail = () => {
             subtitle={customer.phone}
             action={
               conversation?.humanTakeover && (
-                <span className="text-[11px] bg-zinc-950 text-white px-2 py-0.5 rounded font-semibold">
+                <span className="text-[11px] bg-zinc-100 text-zinc-900 border border-zinc-300 px-2 py-0.5 rounded font-semibold">
                   Human Takeover Active
                 </span>
               )
@@ -377,10 +377,10 @@ export const CustomerDetail = () => {
                 return (
                   <div key={m._id} className={`flex ${isCustomer ? 'justify-start' : 'justify-end'}`}>
                     <div
-                      className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed shadow-sm relative ${
+                      className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs relative ${
                         isCustomer
                           ? 'bg-white text-zinc-900 border border-zinc-200 rounded-tl-none'
-                          : 'bg-zinc-950 text-white rounded-tr-none'
+                          : 'bg-zinc-800 text-white rounded-tr-none'
                       }`}
                     >
                       <div className="text-[10px] font-bold opacity-75 mb-1">

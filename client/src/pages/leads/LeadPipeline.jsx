@@ -149,7 +149,7 @@ export const LeadPipeline = () => {
                 <div className="p-3 border-b border-zinc-200 bg-white rounded-t-xl flex items-center justify-between sticky top-0 z-10">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-zinc-900 tracking-tight">{stage}</span>
-                    <span className="w-5 h-5 rounded-full bg-zinc-950 text-white text-[10px] font-bold flex items-center justify-center">
+                    <span className="w-5 h-5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-300 text-[10px] font-bold flex items-center justify-center">
                       {columnLeads.length}
                     </span>
                   </div>
@@ -163,7 +163,7 @@ export const LeadPipeline = () => {
                     columnLeads.map((lead) => (
                       <div
                         key={lead._id}
-                        className="bg-white p-3.5 rounded-xl border border-zinc-200 shadow-xs hover:border-zinc-900 transition-all space-y-2.5 cursor-pointer"
+                        className="bg-white p-3.5 rounded-xl border border-zinc-200 shadow-xs hover:border-zinc-300 transition-all space-y-2.5 cursor-pointer"
                         onClick={() => lead.customerId && navigate(`/customers/${lead.customerId._id}`)}
                       >
                         {/* Title & Priority */}

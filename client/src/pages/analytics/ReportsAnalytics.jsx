@@ -42,7 +42,7 @@ export const ReportsAnalytics = () => {
     fetchAnalytics();
   }, []);
 
-  const COLORS = ['#09090b', '#27272a', '#52525b', '#71717a', '#a1a1aa', '#d4d4d8'];
+  const COLORS = ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#d4d4d8'];
 
   if (loading || !data) {
     return (
@@ -128,8 +128,8 @@ export const ReportsAnalytics = () => {
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e4e4e7" />
                   <XAxis type="number" stroke="#71717a" fontSize={11} />
                   <YAxis type="category" dataKey="stage" stroke="#71717a" fontSize={10} width={120} />
-                  <Tooltip contentStyle={{ backgroundColor: '#09090b', borderRadius: '8px', color: '#fff', fontSize: '12px', border: '1px solid #27272a' }} />
-                  <Bar dataKey="count" fill="#09090b" radius={[0, 4, 4, 0]} name="Leads" />
+                  <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', color: '#09090b', fontSize: '12px', border: '1px solid #e4e4e7', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }} />
+                  <Bar dataKey="count" fill="#18181b" radius={[0, 4, 4, 0]} name="Leads" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -148,7 +148,7 @@ export const ReportsAnalytics = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#09090b', borderRadius: '8px', color: '#fff', fontSize: '12px', border: '1px solid #27272a' }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', color: '#09090b', fontSize: '12px', border: '1px solid #e4e4e7', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }} />
                   <Legend verticalAlign="bottom" height={36} iconSize={8} wrapperStyle={{ fontSize: '11px', color: '#71717a' }} />
                 </PieChart>
               </ResponsiveContainer>

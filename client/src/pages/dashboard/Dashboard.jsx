@@ -58,8 +58,8 @@ export const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Minimalist Monochrome Palette for Charts
-  const MONOCHROME_COLORS = ['#09090b', '#27272a', '#52525b', '#71717a', '#a1a1aa', '#d4d4d8'];
+  // Minimalist Monochrome Palette for Charts (Light / Soft Charcoal)
+  const MONOCHROME_COLORS = ['#3f3f46', '#52525b', '#71717a', '#a1a1aa', '#cbd5e1', '#e2e8f0'];
 
   if (loading || !data) {
     return (
@@ -82,16 +82,16 @@ export const Dashboard = () => {
   return (
     <div className="space-y-5">
       {/* Top Banner & Quick Actions */}
-      <div className="bg-zinc-950 p-5 sm:p-6 rounded-xl text-white border border-zinc-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-md font-mono">
+            <span className="text-[10px] bg-zinc-100 text-zinc-700 border border-zinc-200 px-2 py-0.5 rounded-md font-mono font-medium">
               REAL ESTATE CRM
             </span>
-            <span className="text-xs text-zinc-400">• Meta WhatsApp Cloud API Active</span>
+            <span className="text-xs text-zinc-500">• Meta WhatsApp Cloud API Active</span>
           </div>
-          <h1 className="text-xl font-bold mt-1 tracking-tight">Executive Dashboard</h1>
-          <p className="text-xs text-zinc-400 mt-0.5 tracking-tight">
+          <h1 className="text-xl font-bold mt-1 tracking-tight text-zinc-950">Executive Dashboard</h1>
+          <p className="text-xs text-zinc-500 mt-0.5 tracking-tight">
             Real-time pipeline analytics, customer communications, and property conversion metrics.
           </p>
         </div>
@@ -101,13 +101,12 @@ export const Dashboard = () => {
             variant="outline"
             onClick={fetchDashboardData}
             icon={RefreshCw}
-            className="bg-zinc-900 text-white border-zinc-800 hover:bg-zinc-800 hover:text-white"
           >
             Refresh
           </Button>
           <Button
             size="sm"
-            variant="white"
+            variant="primary"
             onClick={() => navigate('/customers?action=new')}
             icon={Plus}
           >
@@ -115,7 +114,7 @@ export const Dashboard = () => {
           </Button>
           <Button
             size="sm"
-            variant="white"
+            variant="outline"
             onClick={() => navigate('/properties?action=new')}
             icon={Building2}
           >
@@ -261,10 +260,10 @@ export const Dashboard = () => {
                   <XAxis dataKey="month" stroke="#71717a" fontSize={11} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={11} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#09090b', borderRadius: '6px', color: '#fff', fontSize: '11px', border: '1px solid #27272a' }}
+                    contentStyle={{ backgroundColor: '#ffffff', borderRadius: '6px', color: '#18181b', fontSize: '11px', border: '1px solid #e4e4e7', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}
                     cursor={{ fill: '#f4f4f5' }}
                   />
-                  <Bar dataKey="enquiries" fill="#09090b" radius={[4, 4, 0, 0]} name="Enquiries" />
+                  <Bar dataKey="enquiries" fill="#3f3f46" radius={[4, 4, 0, 0]} name="Enquiries" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -295,7 +294,7 @@ export const Dashboard = () => {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#09090b', borderRadius: '6px', color: '#fff', fontSize: '11px', border: '1px solid #27272a' }}
+                    contentStyle={{ backgroundColor: '#ffffff', borderRadius: '6px', color: '#18181b', fontSize: '11px', border: '1px solid #e4e4e7', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}
                   />
                   <Legend verticalAlign="bottom" height={36} iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
                 </PieChart>
@@ -417,7 +416,7 @@ export const Dashboard = () => {
                   <td className="py-2.5 px-4">
                     <div className="flex items-center gap-2">
                       <span className="w-5 text-center font-mono font-bold text-zinc-400">#{idx + 1}</span>
-                      <div className="w-6 h-6 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-[10px]">
+                      <div className="w-6 h-6 rounded-full bg-zinc-100 border border-zinc-300 text-zinc-900 font-bold flex items-center justify-center text-[10px]">
                         {broker.name.split(' ').map((n) => n[0]).join('')}
                       </div>
                       <span className="font-semibold text-zinc-900">{broker.name}</span>

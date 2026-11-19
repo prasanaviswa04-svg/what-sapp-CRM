@@ -170,10 +170,10 @@ export const PropertyMatching = () => {
                   <img
                     src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600'}
                     alt={property.title}
-                    className="w-full h-full object-cover grayscale"
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute top-3 left-3">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-950/90 text-white backdrop-blur-xs">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/95 text-zinc-900 border border-zinc-200 shadow-xs">
                       {property.propertyCode}
                     </span>
                   </div>
@@ -185,10 +185,10 @@ export const PropertyMatching = () => {
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`text-xs font-extrabold px-3 py-1 rounded-full border ${
+                          className={`text-xs font-semibold px-2.5 py-1 rounded-md border ${
                             matchScore >= 80
-                              ? 'bg-zinc-950 text-white border-zinc-900'
-                              : 'bg-zinc-100 text-zinc-800 border-zinc-300'
+                              ? 'bg-zinc-100 text-zinc-950 border-zinc-300 font-bold'
+                              : 'bg-zinc-50 text-zinc-700 border-zinc-200'
                           }`}
                         >
                           {matchPercentage} Match Score

@@ -136,24 +136,24 @@ export const AiAssistant = () => {
               </form>
 
               {testResponse && (
-                <div className="mt-4 p-4 rounded-xl bg-zinc-950 text-white text-xs space-y-3 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                    <span className="font-semibold text-white flex items-center gap-1.5">
-                      <Bot className="w-4 h-4 text-white" /> AI Grounded Output
+                <div className="mt-4 p-4 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-900 text-xs space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-zinc-200 pb-2">
+                    <span className="font-semibold text-zinc-950 flex items-center gap-1.5">
+                      <Bot className="w-4 h-4 text-zinc-700" /> AI Grounded Output
                     </span>
-                    <span className="text-[10px] text-zinc-400">
+                    <span className="text-[10px] text-zinc-500 font-medium">
                       Grounded in {testResponse.groundedProperties?.length || 0} MongoDB properties
                     </span>
                   </div>
 
-                  <p className="whitespace-pre-line leading-relaxed text-zinc-300">
+                  <p className="whitespace-pre-line leading-relaxed text-zinc-700">
                     {testResponse.replyText}
                   </p>
 
                   {testResponse.extractedRequirements && Object.keys(testResponse.extractedRequirements).length > 0 && (
-                    <div className="p-2.5 bg-zinc-900 rounded-lg text-[11px] border border-zinc-800 space-y-1">
-                      <span className="font-bold text-zinc-300 block">Extracted Requirements:</span>
-                      <pre className="text-[10px] text-zinc-400">
+                    <div className="p-2.5 bg-white rounded-lg text-[11px] border border-zinc-200 space-y-1">
+                      <span className="font-bold text-zinc-800 block">Extracted Requirements:</span>
+                      <pre className="text-[10px] text-zinc-600">
                         {JSON.stringify(testResponse.extractedRequirements, null, 2)}
                       </pre>
                     </div>

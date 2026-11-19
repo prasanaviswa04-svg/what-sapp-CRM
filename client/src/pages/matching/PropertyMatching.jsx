@@ -1,0 +1,276 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
+import { Card, CardHeader, CardContent } from '../../components/common/Card';
+import { Badge } from '../../components/common/Badge';
+import { Button } from '../../components/common/Button';
+import { Skeleton } from '../../components/common/Skeleton';
+import { useToast } from '../../context/ToastContext';
+import {
+  Sparkles,
+  Users,
+  Building2,
+  CheckCircle2,
+  AlertTriangle,
+  Share2,
+  Calendar,
+  MapPin,
+  Bed,
+  Bath,
+  ArrowRight
+} from 'lucide-react';
+
+export const PropertyMatching = () => {
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingCustomers, setLoadingCustomers] = useState(true);
+
+  const { addToast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCustomersList = async () => {
+      setLoadingCustomers(true);
+      try {
+        const res = await api.get('/customers?limit=50');
+        if (res.data.success) {
+          setCustomers(res.data.customers || []);
+          if (res.data.customers?.length > 0) {
+            setSelectedCustomerId(res.data.customers[0]._id);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingCustomers(false);
+      }
+    };
+    fetchCustomersList();
+  }, []);
+
+  const fetchMatches = async (customerId) => {
+    if (!customerId) return;
+    setLoading(true);
+    try {
+      const res = await api.get(`/matching/customer/${customerId}`);
+      if (res.data.success) {
+        setMatches(res.data.matches || []);
+      }
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Matching engine error', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCustomerId) {
+      fetchMatches(selectedCustomerId);
+    }
+  }, [selectedCustomerId]);
+
+  const selectedCustomer = customers.find((c) => c._id === selectedCustomerId);
+
+  const handleShareToWhatsApp = async (property) => {
+    try {
+      // Find customer conversation
+      const convRes = await api.get(`/whatsapp/conversations?search=${selectedCustomer.phone}`);
+      const conv = convRes.data.conversations?.[0];
+
+      if (!conv) {
+        addToast('No active WhatsApp conversation found for this customer.', 'warning');
+        return;
+      }
+
+      await api.post('/whatsapp/send', {
+        conversationId: conv._id,
+        propertyId: property._id
+      });
+
+      addToast(`Shared ${property.title} to ${selectedCustomer.fullName}'s WhatsApp!`, 'success');
+    } catch (err) {
+      addToast('Failed to share to WhatsApp', 'error');
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs bg-teal-500/20 text-teal-700 border border-teal-500/30 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-teal-600" /> AI-Powered Recommendation Engine
+            </span>
+          </div>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight mt-1">
+            Intelligent Property Matching
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Compares verified inventory against customer budget, locality, bedrooms, and amenities using multi-factor weighted scoring.
+          </p>
+        </div>
+      </div>
+
+      {/* Customer Selector Card */}
+      <Card>
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex-1">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                Select Customer Profile To Match Against
+              </label>
+              <select
+                value={selectedCustomerId}
+                onChange={(e) => setSelectedCustomerId(e.target.value)}
+                className="w-full text-xs font-medium border border-slate-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              >
+                {customers.map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.fullName} ({c.phone}) • Budget: ₹{((c.requirements?.maxBudget || 0) / 10000000).toFixed(2)} Cr • {c.preferredLocation || 'Gurugram'}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {selectedCustomer && (
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs sm:w-80">
+                <div className="font-bold text-slate-900">{selectedCustomer.fullName}</div>
+                <div className="text-slate-500 mt-0.5">
+                  Target: {selectedCustomer.requirements?.bedrooms || 3} BHK {selectedCustomer.requirements?.propertyCategory || 'Apartment'}
+                </div>
+                <div className="text-teal-700 font-bold mt-1">
+                  Budget: ₹{((selectedCustomer.requirements?.minBudget || 0) / 10000000).toFixed(2)} - ₹
+                  {((selectedCustomer.requirements?.maxBudget || 0) / 10000000).toFixed(2)} Cr
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Matches List */}
+      {loading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-44 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : matches.length === 0 ? (
+        <Card className="p-8 text-center text-xs text-slate-400">
+          No matching available properties found for this customer's criteria. Try adjusting budget or locality preferences.
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          <div className="text-xs font-semibold text-slate-500 flex items-center justify-between">
+            <span>Ranked Recommendations ({matches.length} listings)</span>
+            <span className="text-[11px] text-teal-700 font-medium">Sorted by Match Score Descending</span>
+          </div>
+
+          {matches.map(({ property, matchScore, matchPercentage, matchFactors, missingFactors, recommendedAction }) => (
+            <Card key={property._id} hover className="overflow-hidden">
+              <div className="flex flex-col md:flex-row">
+                {/* Image */}
+                <div className="relative w-full md:w-64 h-48 md:h-auto bg-slate-100 flex-shrink-0">
+                  <img
+                    src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600'}
+                    alt={property.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-navy-950/80 text-white backdrop-blur-xs">
+                      {property.propertyCode}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Details & Explanation */}
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-xs font-extrabold px-3 py-1 rounded-full border ${
+                            matchScore >= 80
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                              : matchScore >= 60
+                              ? 'bg-teal-50 text-teal-800 border-teal-300'
+                              : 'bg-amber-50 text-amber-800 border-amber-300'
+                          }`}
+                        >
+                          {matchPercentage} Match Score
+                        </span>
+                        <span className="text-xs text-slate-500 font-medium">{recommendedAction}</span>
+                      </div>
+                      <div className="text-lg font-extrabold text-teal-700">
+                        ₹{(property.totalPrice / 10000000).toFixed(2)} Cr
+                      </div>
+                    </div>
+
+                    <h3 className="text-base font-bold text-slate-900 mt-2">{property.title}</h3>
+
+                    <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                      {property.address?.locality}, {property.address?.city} • {property.bedrooms} BHK ({property.builtUpArea} sq.ft)
+                    </p>
+
+                    {/* Match Factors Breakdown */}
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block">
+                          Matching Criteria
+                        </span>
+                        {matchFactors.map((f, i) => (
+                          <div key={i} className="flex items-center gap-1.5 text-emerald-900 text-[11px]">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600 flex-shrink-0" />
+                            <span>{f}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {missingFactors.length > 0 && (
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 block">
+                            Deviations / Differences
+                          </span>
+                          {missingFactors.map((f, i) => (
+                            <div key={i} className="flex items-center gap-1.5 text-amber-900 text-[11px]">
+                              <AlertTriangle className="w-3 h-3 text-amber-500 flex-shrink-0" />
+                              <span>{f}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      icon={Share2}
+                      onClick={() => handleShareToWhatsApp(property)}
+                    >
+                      Share with Customer via WhatsApp
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => navigate(`/properties/${property._id}`)}
+                    >
+                      View Property Details <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

@@ -4,14 +4,7 @@ import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { useToast } from '../../context/ToastContext';
 import {
-  Settings as SettingsIcon,
-  Building2,
   Save,
-  Sparkles,
-  Database,
-  Globe,
-  Clock,
-  ShieldCheck,
   RefreshCw
 } from 'lucide-react';
 
@@ -95,9 +88,9 @@ export const Settings = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Company & Platform Settings</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
+      <div className="border-b border-zinc-200 pb-5">
+        <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Company & Platform Settings</h1>
+        <p className="text-xs text-zinc-500 mt-1">
           Manage your real estate brokerage branding, local currency, timezone, and interactive demo dataset.
         </p>
       </div>
@@ -110,35 +103,35 @@ export const Settings = () => {
             <CardContent>
               <form onSubmit={handleSaveCompany} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Company / Agency Name *</label>
+                  <label className="block text-xs font-semibold text-zinc-800 mb-1">Company / Agency Name *</label>
                   <input
                     type="text"
                     required
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                    className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                     placeholder="e.g. EstateFlow Luxury Realty"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Official Business Email</label>
+                    <label className="block text-xs font-semibold text-zinc-800 mb-1">Official Business Email</label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                       placeholder="contact@estateflow.io"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Official Business Phone</label>
+                    <label className="block text-xs font-semibold text-zinc-800 mb-1">Official Business Phone</label>
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                       placeholder="+91 98765 43210"
                     />
                   </div>
@@ -146,32 +139,32 @@ export const Settings = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Currency Symbol</label>
+                    <label className="block text-xs font-semibold text-zinc-800 mb-1">Currency Symbol</label>
                     <input
                       type="text"
                       value={currencySymbol}
                       onChange={(e) => setCurrencySymbol(e.target.value)}
-                      className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                       placeholder="₹"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Currency Code</label>
+                    <label className="block text-xs font-semibold text-zinc-800 mb-1">Currency Code</label>
                     <input
                       type="text"
                       value={currencyCode}
                       onChange={(e) => setCurrencyCode(e.target.value)}
-                      className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                       placeholder="INR"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Timezone</label>
+                    <label className="block text-xs font-semibold text-zinc-800 mb-1">Timezone</label>
                     <input
                       type="text"
                       value={timeZone}
                       onChange={(e) => setTimeZone(e.target.value)}
-                      className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                       placeholder="Asia/Kolkata"
                     />
                   </div>
@@ -189,18 +182,18 @@ export const Settings = () => {
 
         {/* Right Col: Demo Data Seeder */}
         <div className="space-y-6">
-          <Card className="border-teal-200 bg-teal-50/40">
+          <Card className="border border-zinc-200 bg-zinc-50">
             <CardHeader
               title="Interactive Demo Seeder"
               subtitle="One-click dataset reset and population"
             />
-            <CardContent className="space-y-3 text-xs leading-relaxed text-slate-700">
+            <CardContent className="space-y-3 text-xs leading-relaxed text-zinc-700">
               <p>
                 Click below to populate or reset the platform with rich real estate listings (The Camellias, Trump Towers, Eco Villas), active CRM pipeline leads, and WhatsApp chat history.
               </p>
 
               <Button
-                variant="secondary"
+                variant="outline"
                 size="sm"
                 className="w-full"
                 isLoading={seeding}

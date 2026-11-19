@@ -36,7 +36,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white text-xs">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white text-xs">
         Loading EstateFlow CRM...
       </div>
     );

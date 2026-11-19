@@ -74,21 +74,21 @@ export const WebhookSimulatorModal = ({ isOpen, onClose, onSimulated }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Meta WhatsApp Webhook Simulator" size="xl">
-      <div className="space-y-5">
-        <div className="bg-teal-50 border border-teal-200 p-4 rounded-xl text-xs text-teal-900 flex items-start gap-3">
-          <Sparkles className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+      <div className="space-y-4">
+        <div className="bg-zinc-100 p-3.5 rounded-xl text-xs text-zinc-900 border border-zinc-200 flex items-start gap-3">
+          <Sparkles className="w-4 h-4 text-zinc-950 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-sm">Official Meta Cloud API Test Environment</p>
-            <p className="mt-0.5 text-teal-800">
-              Test how EstateFlow AI handles incoming customer inquiries, extracts buyer requirements, searches MongoDB for grounded property inventory, and generates instant WhatsApp responses in real time.
+            <p className="font-semibold text-xs tracking-tight text-zinc-950">Official Meta Cloud API Test Environment</p>
+            <p className="mt-0.5 text-zinc-600 leading-relaxed text-[11px]">
+              Simulate customer WhatsApp messages, test conversational requirement extraction, MongoDB inventory grounding, and automated WhatsApp replies in real time.
             </p>
           </div>
         </div>
 
         {/* Quick Sample Presets */}
         <div>
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 block">
-            Select A Sample Customer Persona
+          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5 block">
+            Select Sample Customer Persona
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {sampleMessages.map((sample, idx) => (
@@ -96,68 +96,62 @@ export const WebhookSimulatorModal = ({ isOpen, onClose, onSimulated }) => {
                 key={idx}
                 type="button"
                 onClick={() => handleSelectSample(sample)}
-                className="text-left p-3 rounded-lg border border-slate-200 hover:border-teal-500 hover:bg-teal-50/50 transition-all text-xs group"
+                className="text-left p-2.5 rounded-lg border border-zinc-200 hover:border-zinc-900 hover:bg-zinc-50 transition-all text-xs group"
               >
-                <div className="font-semibold text-slate-800 group-hover:text-teal-700 flex items-center justify-between">
+                <div className="font-semibold text-zinc-900 flex items-center justify-between">
                   <span>{sample.label}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-teal-600 transition" />
+                  <ArrowRight className="w-3 h-3 text-zinc-400 group-hover:text-zinc-900 transition" />
                 </div>
-                <div className="text-slate-500 truncate mt-1">{sample.text}</div>
+                <div className="text-zinc-500 truncate mt-0.5 text-[11px]">{sample.text}</div>
               </button>
             ))}
           </div>
         </div>
 
         {/* Simulation Form */}
-        <form onSubmit={handleSimulate} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleSimulate} className="space-y-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">Customer Full Name</label>
-              <div className="relative">
-                <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                <input
-                  type="text"
-                  value={senderName}
-                  onChange={(e) => setSenderName(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                  placeholder="e.g. Rohan Malhotra"
-                  required
-                />
-              </div>
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">Customer Full Name</label>
+              <input
+                type="text"
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:outline-none"
+                placeholder="e.g. Rohan Malhotra"
+                required
+              />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">WhatsApp Phone Number</label>
-              <div className="relative">
-                <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                <input
-                  type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                  placeholder="+919876543210"
-                  required
-                />
-              </div>
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">WhatsApp Phone Number</label>
+              <input
+                type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:outline-none font-mono"
+                placeholder="+919876543210"
+                required
+              />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Incoming Message Body</label>
+            <label className="block text-xs font-semibold text-zinc-700 mb-1">Incoming Message Body</label>
             <textarea
               rows={3}
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
-              className="w-full p-3 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2.5 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:outline-none"
               placeholder="Type message as sent by the customer on WhatsApp..."
               required
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-100">
+            <Button type="button" variant="outline" size="sm" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" isLoading={isSubmitting} icon={Send}>
+            <Button type="submit" size="sm" isLoading={isSubmitting} icon={Send}>
               Simulate Incoming Webhook
             </Button>
           </div>
@@ -165,28 +159,22 @@ export const WebhookSimulatorModal = ({ isOpen, onClose, onSimulated }) => {
 
         {/* Result Preview */}
         {simulationResult && (
-          <div className="mt-5 p-4 rounded-xl bg-slate-900 text-white space-y-3 animate-in fade-in duration-200">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" /> Webhook Processed Successfully
+          <div className="p-4 rounded-xl bg-zinc-950 text-white space-y-3 animate-in fade-in duration-150 border border-zinc-800">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+              <span className="text-xs font-semibold text-white flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Webhook Processed Successfully
               </span>
-              <span className="text-[11px] text-slate-400">
-                Customer: {simulationResult.customer?.fullName} ({simulationResult.customer?.phone})
+              <span className="text-[11px] text-zinc-400 font-mono">
+                {simulationResult.customer?.fullName} ({simulationResult.customer?.phone})
               </span>
             </div>
 
             {simulationResult.aiMsg && (
               <div>
-                <p className="text-xs text-slate-400 mb-1">AI Assistant WhatsApp Response (Grounded in DB):</p>
-                <div className="p-3 bg-slate-800 rounded-lg text-xs leading-relaxed text-slate-200 whitespace-pre-line border border-slate-700">
+                <p className="text-[11px] text-zinc-400 mb-1">AI Assistant WhatsApp Response (Grounded in DB):</p>
+                <div className="p-3 bg-zinc-900 rounded-lg text-xs leading-relaxed text-zinc-200 whitespace-pre-line border border-zinc-800">
                   {simulationResult.aiMsg.content}
                 </div>
-              </div>
-            )}
-
-            {simulationResult.humanTakeover && (
-              <div className="p-3 bg-amber-950/60 border border-amber-800/80 rounded-lg text-xs text-amber-200">
-                ⚠️ Human Takeover Activated: AI auto-reply paused. Notification sent to broker console!
               </div>
             )}
           </div>

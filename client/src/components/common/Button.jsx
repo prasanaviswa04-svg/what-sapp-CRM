@@ -10,36 +10,36 @@ export const Button = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-1 focus:ring-zinc-950 disabled:opacity-40 disabled:cursor-not-allowed select-none tracking-tight';
 
   const sizeStyles = {
     sm: 'text-xs px-3 py-1.5 gap-1.5',
-    md: 'text-sm px-4 py-2 gap-2',
-    lg: 'text-base px-5 py-2.5 gap-2.5',
+    md: 'text-xs sm:text-sm px-3.5 py-2 gap-2',
+    lg: 'text-sm px-4.5 py-2.5 gap-2.5',
   };
 
   const variantStyles = {
-    primary: 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm focus:ring-teal-500 active:bg-teal-800',
-    secondary: 'bg-navy-900 hover:bg-navy-800 text-white shadow-sm focus:ring-navy-700 active:bg-navy-950',
-    outline: 'border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 focus:ring-teal-500',
-    ghost: 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:ring-slate-300',
-    danger: 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus:ring-rose-500',
-    emerald: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm focus:ring-emerald-500',
+    primary: 'bg-zinc-950 hover:bg-zinc-800 text-white shadow-2xs active:bg-black',
+    secondary: 'bg-zinc-800 hover:bg-zinc-700 text-white shadow-2xs',
+    outline: 'border border-zinc-200 hover:border-zinc-300 bg-white hover:bg-zinc-50 text-zinc-900 shadow-2xs',
+    ghost: 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100',
+    danger: 'bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800',
+    white: 'bg-white hover:bg-zinc-100 text-zinc-950 border border-zinc-200 shadow-2xs',
   };
 
   return (
     <button
-      className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
+      className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant] || variantStyles.primary} ${className}`}
       disabled={disabled || isLoading}
       {...props}
     >
       {isLoading ? (
-        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
+        <svg className="animate-spin -ml-1 mr-2 h-3.5 w-3.5 text-current" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
         </svg>
       ) : Icon ? (
-        <Icon className={size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4'} />
+        <Icon className={size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-4 h-4' : 'w-4 h-4'} />
       ) : null}
       {children}
     </button>

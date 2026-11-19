@@ -20,8 +20,7 @@ import {
   Settings,
   HelpCircle,
   ChevronLeft,
-  ChevronRight,
-  ShieldCheck
+  ChevronRight
 } from 'lucide-react';
 
 export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) => {
@@ -47,28 +46,28 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-navy-950 text-slate-300 border-r border-navy-800 select-none">
+    <div className="flex flex-col h-full bg-zinc-950 text-zinc-400 border-r border-zinc-900 select-none">
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-navy-900 bg-navy-950/80">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-teal-500/20 flex-shrink-0">
-            <Building2 className="w-5 h-5 text-navy-950 stroke-[2.5]" />
+      <div className="h-14 flex items-center justify-between px-4 border-b border-zinc-900 bg-zinc-950">
+        <div className="flex items-center gap-2.5 overflow-hidden">
+          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center text-zinc-950 flex-shrink-0">
+            <Building2 className="w-4 h-4 text-zinc-950 stroke-[2.2]" />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="font-bold text-white text-base tracking-tight leading-none flex items-center gap-1.5">
-                EstateFlow <span className="text-[10px] bg-teal-500/20 text-teal-400 border border-teal-500/30 px-1.5 py-0.2 rounded font-semibold">AI</span>
+              <span className="font-bold text-white text-sm tracking-tight leading-none flex items-center gap-1.5">
+                ESTATEFLOW <span className="text-[9px] bg-zinc-800 text-zinc-300 border border-zinc-700 px-1 py-0.2 rounded font-mono font-normal">CRM</span>
               </span>
-              <span className="text-[11px] text-slate-400 font-medium mt-1">Real Estate WhatsApp CRM</span>
+              <span className="text-[10px] text-zinc-500 font-medium tracking-tight mt-1">Minimalist Real Estate</span>
             </div>
           )}
         </div>
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-navy-900 transition"
+          className="hidden lg:flex p-1 rounded-md text-zinc-500 hover:text-white hover:bg-zinc-900 transition"
           title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
-          {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
         </button>
       </div>
 
@@ -82,23 +81,19 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
               to={item.path}
               onClick={() => setIsMobileOpen && setIsMobileOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all group relative ${
+                `flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all group relative tracking-tight ${
                   isActive
-                    ? 'bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-sm font-semibold'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-navy-900/80'
+                    ? 'bg-white text-zinc-950 font-semibold shadow-xs'
+                    : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900'
                 }`
               }
               title={isCollapsed ? item.name : undefined}
             >
-              <Icon className="w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-105" />
+              <Icon className="w-4 h-4 flex-shrink-0 transition-transform" />
               {!isCollapsed && <span className="truncate flex-1">{item.name}</span>}
               {!isCollapsed && item.badge && (
                 <span
-                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                    item.badge === 'Live'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse'
-                      : 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
-                  }`}
+                  className="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300 border border-zinc-700"
                 >
                   {item.badge}
                 </span>
@@ -110,10 +105,10 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
 
       {/* Footer / Status */}
       {!isCollapsed && (
-        <div className="p-3 border-t border-navy-900 bg-navy-950/60">
-          <div className="flex items-center gap-2 px-2 py-2 rounded-lg bg-navy-900/60 border border-navy-800 text-[11px] text-slate-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="truncate">Official Meta API: Connected</span>
+        <div className="p-3 border-t border-zinc-900 bg-zinc-950">
+          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-zinc-900/60 border border-zinc-800/80 text-[11px] text-zinc-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+            <span className="truncate tracking-tight font-medium">Meta WhatsApp API Active</span>
           </div>
         </div>
       )}
@@ -124,8 +119,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
     <>
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden lg:block fixed left-0 top-0 bottom-0 z-30 transition-all duration-300 ${
-          isCollapsed ? 'w-16' : 'w-64'
+        className={`hidden lg:block fixed left-0 top-0 bottom-0 z-30 transition-all duration-200 ${
+          isCollapsed ? 'w-16' : 'w-60'
         }`}
       >
         {sidebarContent}
@@ -135,10 +130,10 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
             onClick={() => setIsMobileOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 w-72 bg-navy-950 shadow-2xl z-50 animate-in slide-in-from-left duration-200">
+          <div className="fixed inset-y-0 left-0 w-64 bg-zinc-950 shadow-2xl z-50 animate-in slide-in-from-left duration-150">
             {sidebarContent}
           </div>
         </div>

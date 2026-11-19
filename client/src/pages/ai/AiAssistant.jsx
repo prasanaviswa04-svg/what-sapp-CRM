@@ -8,14 +8,8 @@ import { useToast } from '../../context/ToastContext';
 import {
   Bot,
   Sparkles,
-  BookOpen,
   Plus,
-  Send,
-  Trash2,
-  ShieldCheck,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle
+  Trash2
 } from 'lucide-react';
 
 export const AiAssistant = () => {
@@ -107,9 +101,9 @@ export const AiAssistant = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold text-slate-900 tracking-tight">AI Assistant & Knowledge Grounding</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
+      <div className="border-b border-zinc-200 pb-5">
+        <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">AI Assistant & Knowledge Grounding</h1>
+        <p className="text-xs text-zinc-500 mt-1">
           Configure conversational parameters, manage company FAQs & policies, and test database-grounded recommendations.
         </p>
       </div>
@@ -125,14 +119,14 @@ export const AiAssistant = () => {
             <CardContent className="space-y-4">
               <form onSubmit={handleTestChat} className="space-y-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-zinc-800 mb-1">
                     Simulate Customer WhatsApp Message
                   </label>
                   <textarea
                     rows={3}
                     value={testInput}
                     onChange={(e) => setTestInput(e.target.value)}
-                    className="w-full p-3 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                    className="w-full p-3 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                     placeholder="Ask about properties, pricing, policies, or site visits..."
                   />
                 </div>
@@ -142,24 +136,24 @@ export const AiAssistant = () => {
               </form>
 
               {testResponse && (
-                <div className="mt-4 p-4 rounded-xl bg-slate-900 text-slate-200 text-xs space-y-3 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                    <span className="font-semibold text-teal-400 flex items-center gap-1.5">
-                      <Bot className="w-4 h-4" /> AI Grounded Output
+                <div className="mt-4 p-4 rounded-xl bg-zinc-950 text-white text-xs space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <span className="font-semibold text-white flex items-center gap-1.5">
+                      <Bot className="w-4 h-4 text-white" /> AI Grounded Output
                     </span>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-zinc-400">
                       Grounded in {testResponse.groundedProperties?.length || 0} MongoDB properties
                     </span>
                   </div>
 
-                  <p className="whitespace-pre-line leading-relaxed text-slate-300">
+                  <p className="whitespace-pre-line leading-relaxed text-zinc-300">
                     {testResponse.replyText}
                   </p>
 
                   {testResponse.extractedRequirements && Object.keys(testResponse.extractedRequirements).length > 0 && (
-                    <div className="p-2.5 bg-slate-800 rounded-lg text-[11px] border border-slate-700 space-y-1">
-                      <span className="font-bold text-teal-300 block">Extracted Requirements:</span>
-                      <pre className="text-[10px] text-slate-400">
+                    <div className="p-2.5 bg-zinc-900 rounded-lg text-[11px] border border-zinc-800 space-y-1">
+                      <span className="font-bold text-zinc-300 block">Extracted Requirements:</span>
+                      <pre className="text-[10px] text-zinc-400">
                         {JSON.stringify(testResponse.extractedRequirements, null, 2)}
                       </pre>
                     </div>
@@ -189,30 +183,30 @@ export const AiAssistant = () => {
                 ))}
               </div>
             ) : kbArticles.length === 0 ? (
-              <div className="py-12 text-center text-xs text-slate-400">
+              <div className="py-12 text-center text-xs text-zinc-400">
                 No knowledge base entries yet. Add FAQs or booking policies!
               </div>
             ) : (
               kbArticles.map((art) => (
                 <div
                   key={art._id}
-                  className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition space-y-1.5 relative group"
+                  className="p-3.5 rounded-xl border border-zinc-200 bg-white hover:border-zinc-950 transition space-y-1.5 relative group"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900">{art.title}</span>
+                    <span className="text-xs font-bold text-zinc-950">{art.title}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-teal-100 text-teal-800">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-zinc-100 text-zinc-800 border border-zinc-200">
                         {art.category}
                       </span>
                       <button
                         onClick={() => handleDeleteArticle(art._id)}
-                        className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 transition"
+                        className="opacity-0 group-hover:opacity-100 p-1 text-zinc-400 hover:text-zinc-950 transition"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">{art.content}</p>
+                  <p className="text-xs text-zinc-600 leading-relaxed line-clamp-3">{art.content}</p>
                 </div>
               ))
             )}
@@ -224,23 +218,23 @@ export const AiAssistant = () => {
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Add Knowledge Base Article" size="md">
         <form onSubmit={handleCreateArticle} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Title *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Title *</label>
             <input
               type="text"
               required
               value={articleForm.title}
               onChange={(e) => setArticleForm({ ...articleForm, title: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="e.g. Booking Advance & Refund Policy"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Category</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Category</label>
             <select
               value={articleForm.category}
               onChange={(e) => setArticleForm({ ...articleForm, category: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+              className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white"
             >
               <option value="FAQ">FAQ</option>
               <option value="Policy">Policy</option>
@@ -252,13 +246,13 @@ export const AiAssistant = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Content / Policy Details *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Content / Policy Details *</label>
             <textarea
               rows={4}
               required
               value={articleForm.content}
               onChange={(e) => setArticleForm({ ...articleForm, content: e.target.value })}
-              className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2.5 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="Explain the verified policy in detail so the AI can ground its answers accurately..."
             />
           </div>

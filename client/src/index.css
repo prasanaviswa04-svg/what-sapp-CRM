@@ -4,54 +4,25 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-800 antialiased font-sans;
+    @apply bg-zinc-50 text-zinc-900 antialiased font-sans selection:bg-black selection:text-white;
   }
 }
 
-/* Custom scrollbars */
+/* Minimalist Monochrome Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #d4d4d8;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Glassmorphism helpers */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.chat-bubble-tail-left::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -8px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid #ffffff;
-  border-left: 10px solid transparent;
-}
-
-.chat-bubble-tail-right::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -8px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid #dcf8c6;
-  border-right: 10px solid transparent;
+  background: #71717a;
 }

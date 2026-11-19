@@ -15,11 +15,7 @@ import {
   CheckCircle2,
   Share2,
   CalendarCheck,
-  ArrowLeft,
-  Users,
-  ShieldCheck,
-  Compass,
-  FileCheck
+  ArrowLeft
 } from 'lucide-react';
 
 export const PropertyDetail = () => {
@@ -63,7 +59,7 @@ export const PropertyDetail = () => {
   return (
     <div className="space-y-6">
       {/* Back button & Action Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
         <Button variant="ghost" size="sm" onClick={() => navigate('/properties')} icon={ArrowLeft}>
           Back to Inventory
         </Button>
@@ -91,39 +87,39 @@ export const PropertyDetail = () => {
       </div>
 
       {/* Main Image Banner & Title */}
-      <Card className="overflow-hidden">
-        <div className="relative h-72 sm:h-96 w-full bg-slate-900">
+      <Card className="overflow-hidden border border-zinc-200">
+        <div className="relative h-72 sm:h-96 w-full bg-zinc-950">
           <img
             src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400'}
             alt={property.title}
-            className="w-full h-full object-cover opacity-90"
+            className="w-full h-full object-cover opacity-80 grayscale"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
           <div className="absolute bottom-6 left-6 right-6 text-white flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-teal-500 text-navy-950">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                <span className="text-xs font-bold px-2.5 py-1 rounded bg-white text-zinc-950">
                   {property.propertyCode}
                 </span>
                 <Badge variant={property.status}>{property.status}</Badge>
-                <span className="text-xs text-slate-300 font-medium">
+                <span className="text-xs text-zinc-300 font-medium">
                   {property.category} • For {property.purpose}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">{property.title}</h1>
-              <p className="text-xs text-slate-300 flex items-center gap-1.5 mt-1">
-                <MapPin className="w-3.5 h-3.5 text-teal-400" />
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">{property.title}</h1>
+              <p className="text-xs text-zinc-300 flex items-center gap-1.5 mt-1">
+                <MapPin className="w-3.5 h-3.5 text-zinc-300" />
                 {property.address?.street ? `${property.address.street}, ` : ''}
                 {property.address?.locality}, {property.address?.city}, {property.address?.state}
               </p>
             </div>
 
             <div className="text-left sm:text-right">
-              <div className="text-xs text-slate-300 font-medium">Total Price</div>
-              <div className="text-3xl font-extrabold text-teal-400">
+              <div className="text-xs text-zinc-300 font-medium">Total Price</div>
+              <div className="text-3xl font-extrabold text-white">
                 ₹{(property.totalPrice / 10000000).toFixed(2)} Cr
               </div>
-              <div className="text-xs text-slate-300">₹{property.pricePerUnit?.toLocaleString()}/sq.ft</div>
+              <div className="text-xs text-zinc-300">₹{property.pricePerUnit?.toLocaleString()}/sq.ft</div>
             </div>
           </div>
         </div>
@@ -132,26 +128,26 @@ export const PropertyDetail = () => {
       {/* Specs Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card className="p-4 text-center">
-          <Bed className="w-5 h-5 text-teal-600 mx-auto mb-1" />
-          <span className="text-xs text-slate-500 block">Bedrooms</span>
-          <span className="text-base font-bold text-slate-900">{property.bedrooms} BHK</span>
+          <Bed className="w-5 h-5 text-zinc-700 mx-auto mb-1" />
+          <span className="text-xs text-zinc-500 block">Bedrooms</span>
+          <span className="text-base font-bold text-zinc-950">{property.bedrooms} BHK</span>
         </Card>
         <Card className="p-4 text-center">
-          <Bath className="w-5 h-5 text-teal-600 mx-auto mb-1" />
-          <span className="text-xs text-slate-500 block">Bathrooms</span>
-          <span className="text-base font-bold text-slate-900">{property.bathrooms} Baths</span>
+          <Bath className="w-5 h-5 text-zinc-700 mx-auto mb-1" />
+          <span className="text-xs text-zinc-500 block">Bathrooms</span>
+          <span className="text-base font-bold text-zinc-950">{property.bathrooms} Baths</span>
         </Card>
         <Card className="p-4 text-center">
-          <Building2 className="w-5 h-5 text-teal-600 mx-auto mb-1" />
-          <span className="text-xs text-slate-500 block">Built-Up Area</span>
-          <span className="text-base font-bold text-slate-900">
+          <Building2 className="w-5 h-5 text-zinc-700 mx-auto mb-1" />
+          <span className="text-xs text-zinc-500 block">Built-Up Area</span>
+          <span className="text-base font-bold text-zinc-950">
             {property.builtUpArea?.toLocaleString()} {property.unit}
           </span>
         </Card>
         <Card className="p-4 text-center">
-          <Car className="w-5 h-5 text-teal-600 mx-auto mb-1" />
-          <span className="text-xs text-slate-500 block">Reserved Parking</span>
-          <span className="text-base font-bold text-slate-900">{property.parkingSpaces} Covered</span>
+          <Car className="w-5 h-5 text-zinc-700 mx-auto mb-1" />
+          <span className="text-xs text-zinc-500 block">Reserved Parking</span>
+          <span className="text-base font-bold text-zinc-950">{property.parkingSpaces} Covered</span>
         </Card>
       </div>
 
@@ -161,7 +157,7 @@ export const PropertyDetail = () => {
           <Card>
             <CardHeader title="Property Description & Overview" />
             <CardContent>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+              <p className="text-xs sm:text-sm text-zinc-700 leading-relaxed whitespace-pre-line">
                 {property.description || 'Exclusive luxury listing featuring premium specifications, verified freehold title, and unmatched connectivity.'}
               </p>
             </CardContent>
@@ -175,9 +171,9 @@ export const PropertyDetail = () => {
                 {property.amenities?.map((amenity, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 border border-teal-200 text-teal-900 text-xs font-medium"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 text-xs font-medium"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-zinc-800" />
                     {amenity}
                   </span>
                 ))}
@@ -192,14 +188,14 @@ export const PropertyDetail = () => {
             <CardHeader title="Assigned Broker" />
             <CardContent className="text-xs space-y-2">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-navy-900 text-teal-400 font-bold flex items-center justify-center text-sm">
+                <div className="w-10 h-10 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-sm">
                   {property.assignedBrokerId?.firstName?.[0] || 'B'}
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900">
+                  <h4 className="font-bold text-zinc-900">
                     {property.assignedBrokerId ? `${property.assignedBrokerId.firstName} ${property.assignedBrokerId.lastName}` : 'Direct Office'}
                   </h4>
-                  <p className="text-slate-500">{property.assignedBrokerId?.phone || '+91 98765 43210'}</p>
+                  <p className="text-zinc-500">{property.assignedBrokerId?.phone || '+91 98765 43210'}</p>
                 </div>
               </div>
             </CardContent>
@@ -210,19 +206,19 @@ export const PropertyDetail = () => {
               title={`Interested Leads (${interestedLeads.length})`}
               subtitle="Prospects inquiring about this property"
             />
-            <div className="divide-y divide-slate-100 text-xs">
+            <div className="divide-y divide-zinc-200 text-xs">
               {interestedLeads.length === 0 ? (
-                <div className="p-4 text-center text-slate-400">No active leads tagged yet.</div>
+                <div className="p-4 text-center text-zinc-400">No active leads tagged yet.</div>
               ) : (
                 interestedLeads.map((l) => (
                   <div
                     key={l._id}
                     onClick={() => l.customerId && navigate(`/customers/${l.customerId._id}`)}
-                    className="p-3 hover:bg-slate-50 cursor-pointer flex items-center justify-between transition"
+                    className="p-3 hover:bg-zinc-50 cursor-pointer flex items-center justify-between transition"
                   >
                     <div>
-                      <span className="font-semibold text-slate-800">{l.customerId?.fullName}</span>
-                      <p className="text-[11px] text-slate-400">{l.customerId?.phone}</p>
+                      <span className="font-semibold text-zinc-900">{l.customerId?.fullName}</span>
+                      <p className="text-[11px] text-zinc-400">{l.customerId?.phone}</p>
                     </div>
                     <Badge variant={l.stage}>{l.stage}</Badge>
                   </div>

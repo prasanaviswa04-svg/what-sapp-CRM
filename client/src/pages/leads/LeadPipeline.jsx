@@ -1,25 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
 import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
 import {
-  GitBranch,
-  Phone,
-  MessageSquare,
-  Flame,
-  Clock,
-  MoreVertical,
-  CheckCircle2,
-  XCircle,
   User,
-  MapPin,
-  Sparkles,
-  ArrowRight
+  Sparkles
 } from 'lucide-react';
 
 export const LeadPipeline = () => {
@@ -109,12 +98,12 @@ export const LeadPipeline = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header & Filter */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Leads & Sales Pipeline Kanban</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Leads & Sales Pipeline Kanban</h1>
+          <p className="text-xs text-zinc-500 mt-1">
             10-stage automated pipeline with real-time AI scoring and WhatsApp engagement tracking.
           </p>
         </div>
@@ -123,7 +112,7 @@ export const LeadPipeline = () => {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="text-xs border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="text-xs border border-zinc-300 rounded-lg px-3 py-2 bg-white text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
           >
             <option value="All">All Priorities</option>
             <option value="Urgent">Urgent Only</option>
@@ -140,7 +129,7 @@ export const LeadPipeline = () => {
       {loading ? (
         <div className="flex gap-4 overflow-x-auto pb-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="w-72 flex-shrink-0 bg-slate-100 rounded-xl p-3 space-y-3">
+            <div key={i} className="w-72 flex-shrink-0 bg-zinc-100 rounded-xl p-3 space-y-3">
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-32 w-full rounded-lg" />
               <Skeleton className="h-32 w-full rounded-lg" />
@@ -154,13 +143,13 @@ export const LeadPipeline = () => {
             return (
               <div
                 key={stage}
-                className="w-72 flex-shrink-0 flex flex-col bg-slate-100/80 rounded-xl border border-slate-200/70 max-h-[78vh]"
+                className="w-72 flex-shrink-0 flex flex-col bg-zinc-100/80 rounded-xl border border-zinc-200 max-h-[78vh]"
               >
                 {/* Column Header */}
-                <div className="p-3 border-b border-slate-200 bg-white/70 rounded-t-xl flex items-center justify-between sticky top-0 z-10">
+                <div className="p-3 border-b border-zinc-200 bg-white rounded-t-xl flex items-center justify-between sticky top-0 z-10">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-800 tracking-tight">{stage}</span>
-                    <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold flex items-center justify-center">
+                    <span className="text-xs font-bold text-zinc-900 tracking-tight">{stage}</span>
+                    <span className="w-5 h-5 rounded-full bg-zinc-950 text-white text-[10px] font-bold flex items-center justify-center">
                       {columnLeads.length}
                     </span>
                   </div>
@@ -169,17 +158,17 @@ export const LeadPipeline = () => {
                 {/* Cards List */}
                 <div className="p-2 space-y-2.5 overflow-y-auto flex-1">
                   {columnLeads.length === 0 ? (
-                    <div className="py-8 text-center text-[11px] text-slate-400">No leads in stage</div>
+                    <div className="py-8 text-center text-[11px] text-zinc-400">No leads in stage</div>
                   ) : (
                     columnLeads.map((lead) => (
                       <div
                         key={lead._id}
-                        className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all space-y-2.5 cursor-pointer"
+                        className="bg-white p-3.5 rounded-xl border border-zinc-200 shadow-xs hover:border-zinc-900 transition-all space-y-2.5 cursor-pointer"
                         onClick={() => lead.customerId && navigate(`/customers/${lead.customerId._id}`)}
                       >
                         {/* Title & Priority */}
                         <div className="flex items-start justify-between gap-1">
-                          <h4 className="text-xs font-bold text-slate-900 leading-snug line-clamp-2">
+                          <h4 className="text-xs font-bold text-zinc-950 leading-snug line-clamp-2">
                             {lead.title}
                           </h4>
                           <Badge variant={lead.priority} size="xs">
@@ -188,38 +177,38 @@ export const LeadPipeline = () => {
                         </div>
 
                         {/* Customer Info */}
-                        <div className="text-[11px] text-slate-600 flex items-center gap-1.5">
-                          <User className="w-3 h-3 text-slate-400" />
-                          <span className="font-semibold text-slate-800">
+                        <div className="text-[11px] text-zinc-600 flex items-center gap-1.5">
+                          <User className="w-3 h-3 text-zinc-400" />
+                          <span className="font-semibold text-zinc-900">
                             {lead.customerId?.fullName || 'Prospect'}
                           </span>
                         </div>
 
                         {/* Budget & Locality */}
-                        <div className="flex items-center justify-between text-[11px] bg-slate-50 p-2 rounded-lg border border-slate-100">
-                          <span className="font-bold text-teal-700">
+                        <div className="flex items-center justify-between text-[11px] bg-zinc-50 p-2 rounded-lg border border-zinc-200">
+                          <span className="font-bold text-zinc-950">
                             {lead.budget?.max
                               ? `₹${(lead.budget.max / 10000000).toFixed(2)} Cr`
                               : 'Budget Open'}
                           </span>
-                          <span className="text-slate-500 truncate max-w-[100px]">
+                          <span className="text-zinc-500 truncate max-w-[100px]">
                             {lead.preferredLocation || 'Gurugram'}
                           </span>
                         </div>
 
                         {/* AI Score & Stage Selector */}
-                        <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px]">
+                        <div className="flex items-center justify-between pt-1 border-t border-zinc-100 text-[11px]">
                           <div className="flex items-center gap-1">
-                            <Sparkles className="w-3 h-3 text-teal-600" />
-                            <span className="font-bold text-slate-800">{lead.score}%</span>
-                            <span className="text-[9px] text-slate-400">({lead.scoreClassification})</span>
+                            <Sparkles className="w-3 h-3 text-zinc-800" />
+                            <span className="font-bold text-zinc-950">{lead.score}%</span>
+                            <span className="text-[9px] text-zinc-500">({lead.scoreClassification})</span>
                           </div>
 
                           <div onClick={(e) => e.stopPropagation()}>
                             <select
                               value={lead.stage}
                               onChange={(e) => handleStageChange(lead._id, e.target.value)}
-                              className="text-[10px] font-medium border border-slate-200 rounded px-1.5 py-0.5 bg-slate-50 text-slate-700 focus:outline-none"
+                              className="text-[10px] font-medium border border-zinc-300 rounded px-1.5 py-0.5 bg-zinc-50 text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-950"
                             >
                               {stages.map((s) => (
                                 <option key={s} value={s}>
@@ -247,16 +236,16 @@ export const LeadPipeline = () => {
         size="md"
       >
         <form onSubmit={handleConfirmLost} className="space-y-4">
-          <p className="text-xs text-slate-600 leading-relaxed">
+          <p className="text-xs text-zinc-600 leading-relaxed">
             Please record why <strong>{selectedLeadForLost?.customerId?.fullName}</strong> did not proceed. This data powers your CRM lost-lead analytics report.
           </p>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Primary Lost Reason *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Primary Lost Reason *</label>
             <select
               value={lostReason}
               onChange={(e) => setLostReason(e.target.value)}
-              className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+              className="w-full p-2.5 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white"
             >
               <option value="Budget Mismatch">Budget Mismatch</option>
               <option value="Location Unsuitable">Location Unsuitable</option>
@@ -269,12 +258,12 @@ export const LeadPipeline = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Additional Notes</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Additional Notes</label>
             <textarea
               rows={3}
               value={lostDetails}
               onChange={(e) => setLostDetails(e.target.value)}
-              className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2.5 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="e.g. Buyer bought in Noida Sector 150 instead due to closer proximity to office..."
             />
           </div>

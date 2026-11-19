@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { useToast } from '../../context/ToastContext';
@@ -10,18 +9,13 @@ import {
   MessageSquare,
   Search,
   Send,
-  Phone,
   User,
-  MapPin,
-  Sparkles,
   Bot,
   UserCheck,
   CheckCircle2,
-  Clock,
   Building2,
   CalendarCheck,
   Share2,
-  Paperclip,
   Check,
   CheckCheck
 } from 'lucide-react';
@@ -170,7 +164,7 @@ export const WhatsAppInbox = () => {
       });
 
       if (res.data.success) {
-        // Message will be added via socket or fetch
+        // Handled via socket or fetch
       }
     } catch (err) {
       addToast('Failed to send message', 'error');
@@ -219,32 +213,32 @@ export const WhatsAppInbox = () => {
   const customer = activeConversation?.customerId;
 
   return (
-    <div className="h-[calc(100vh-7.5rem)] flex flex-col bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+    <div className="h-[calc(100vh-7.5rem)] flex flex-col bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
       {/* 3-Panel Main Layout */}
       <div className="flex-1 flex overflow-hidden">
         {/* Panel 1: Conversation List */}
-        <div className="w-80 sm:w-96 border-r border-slate-200 flex flex-col bg-slate-50/50 flex-shrink-0">
+        <div className="w-80 sm:w-96 border-r border-zinc-200 flex flex-col bg-zinc-50 flex-shrink-0">
           {/* Header & Filter */}
-          <div className="p-3.5 border-b border-slate-200/90 bg-white space-y-2.5">
+          <div className="p-3.5 border-b border-zinc-200 bg-white space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-teal-600" />
-                <h2 className="font-bold text-slate-900 text-sm">WhatsApp Inbox</h2>
+                <MessageSquare className="w-5 h-5 text-zinc-950" />
+                <h2 className="font-bold text-zinc-950 text-sm">WhatsApp Inbox</h2>
               </div>
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full border border-emerald-300">
-                Official Cloud API
+              <span className="text-[10px] bg-zinc-950 text-white font-bold px-2 py-0.5 rounded-full">
+                Meta Cloud API
               </span>
             </div>
 
             {/* Search */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2.5" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search conversations..."
-                className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-transparent rounded-lg focus:bg-white focus:border-slate-300 focus:outline-none"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-100 border border-transparent rounded-lg text-zinc-900 focus:bg-white focus:border-zinc-950 focus:outline-none"
               />
             </div>
 
@@ -261,8 +255,8 @@ export const WhatsAppInbox = () => {
                   onClick={() => setFilter(f.id)}
                   className={`text-[11px] font-semibold px-2.5 py-1 rounded-full transition whitespace-nowrap ${
                     filter === f.id
-                      ? 'bg-navy-900 text-white'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                      ? 'bg-zinc-950 text-white'
+                      : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-100'
                   }`}
                 >
                   {f.label}
@@ -272,21 +266,21 @@ export const WhatsAppInbox = () => {
           </div>
 
           {/* Conversation List Items */}
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
+          <div className="flex-1 overflow-y-auto divide-y divide-zinc-200">
             {loadingConv ? (
               <div className="p-4 space-y-3">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="flex gap-3">
-                    <div className="w-10 h-10 rounded-full bg-slate-200 animate-pulse" />
+                    <div className="w-10 h-10 rounded-full bg-zinc-200 animate-pulse" />
                     <div className="flex-1 space-y-1.5">
-                      <div className="h-3 bg-slate-200 rounded w-1/2 animate-pulse" />
-                      <div className="h-2.5 bg-slate-200 rounded w-3/4 animate-pulse" />
+                      <div className="h-3 bg-zinc-200 rounded w-1/2 animate-pulse" />
+                      <div className="h-2.5 bg-zinc-200 rounded w-3/4 animate-pulse" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : conversations.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-400">
+              <div className="p-8 text-center text-xs text-zinc-400">
                 No active conversations matching criteria.
               </div>
             ) : (
@@ -298,31 +292,31 @@ export const WhatsAppInbox = () => {
                     onClick={() => setActiveConversation(c)}
                     className={`p-3.5 transition cursor-pointer flex items-start gap-3 relative ${
                       isSelected
-                        ? 'bg-teal-50/70 border-l-4 border-l-teal-600'
-                        : 'hover:bg-slate-100/70 bg-white'
+                        ? 'bg-zinc-100 border-l-4 border-l-zinc-950'
+                        : 'hover:bg-zinc-100/70 bg-white'
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-full bg-navy-900 text-teal-400 font-bold flex items-center justify-center text-xs flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
                       {c.customerId?.fullName?.charAt(0) || 'C'}
                     </div>
 
                     <div className="flex-1 min-w-0 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-900 truncate">
+                        <span className="font-bold text-zinc-950 truncate">
                           {c.customerId?.fullName || c.whatsappPhoneNumber}
                         </span>
-                        <span className="text-[10px] text-slate-400 flex-shrink-0">
+                        <span className="text-[10px] text-zinc-400 flex-shrink-0">
                           {new Date(c.lastMessageAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
 
-                      <p className="text-slate-500 truncate text-[11px] mt-0.5 leading-snug">
+                      <p className="text-zinc-500 truncate text-[11px] mt-0.5 leading-snug">
                         {c.lastMessagePreview || 'Active WhatsApp chat'}
                       </p>
 
                       <div className="flex items-center gap-1.5 mt-1.5">
                         {c.humanTakeover && (
-                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300">
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-zinc-200 text-zinc-900 border border-zinc-300">
                             Takeover
                           </span>
                         )}
@@ -332,7 +326,7 @@ export const WhatsAppInbox = () => {
                           </Badge>
                         )}
                         {c.unreadCount > 0 && (
-                          <span className="ml-auto w-4 h-4 rounded-full bg-teal-600 text-white font-bold text-[10px] flex items-center justify-center">
+                          <span className="ml-auto w-4 h-4 rounded-full bg-zinc-950 text-white font-bold text-[10px] flex items-center justify-center">
                             {c.unreadCount}
                           </span>
                         )}
@@ -346,24 +340,24 @@ export const WhatsAppInbox = () => {
         </div>
 
         {/* Panel 2: Active Chat Window */}
-        <div className="flex-1 flex flex-col bg-slate-100/60 min-w-0">
+        <div className="flex-1 flex flex-col bg-zinc-50 min-w-0">
           {activeConversation ? (
             <>
               {/* Active Chat Header */}
-              <div className="h-16 px-4 bg-white border-b border-slate-200 flex items-center justify-between flex-shrink-0">
+              <div className="h-16 px-4 bg-white border-b border-zinc-200 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-navy-900 text-teal-400 font-bold flex items-center justify-center text-xs">
+                  <div className="w-9 h-9 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-xs">
                     {customer?.fullName?.charAt(0) || 'C'}
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 text-xs sm:text-sm">
+                    <h3 className="font-bold text-zinc-950 text-xs sm:text-sm">
                       {customer?.fullName || activeConversation.whatsappPhoneNumber}
                     </h3>
-                    <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                    <div className="text-[11px] text-zinc-500 flex items-center gap-1.5">
                       <span>{activeConversation.whatsappPhoneNumber}</span>
-                      <span className="text-slate-300">•</span>
-                      <span className="text-emerald-600 font-medium flex items-center gap-0.5">
-                        <CheckCircle2 className="w-3 h-3" /> WhatsApp Business Connected
+                      <span className="text-zinc-300">•</span>
+                      <span className="text-zinc-700 font-medium flex items-center gap-0.5">
+                        <CheckCircle2 className="w-3 h-3 text-zinc-950" /> Official Cloud API Connected
                       </span>
                     </div>
                   </div>
@@ -375,8 +369,8 @@ export const WhatsAppInbox = () => {
                     onClick={handleToggleTakeover}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
                       activeConversation.humanTakeover
-                        ? 'bg-amber-500 text-white border-amber-600 shadow-sm'
-                        : 'bg-teal-50 text-teal-700 border-teal-300 hover:bg-teal-100'
+                        ? 'bg-zinc-950 text-white border-zinc-950 shadow-xs'
+                        : 'bg-zinc-100 text-zinc-900 border-zinc-200 hover:bg-zinc-200'
                     }`}
                     title={
                       activeConversation.humanTakeover
@@ -391,7 +385,7 @@ export const WhatsAppInbox = () => {
                       </>
                     ) : (
                       <>
-                        <Bot className="w-3.5 h-3.5 text-teal-600" />
+                        <Bot className="w-3.5 h-3.5 text-zinc-900" />
                         <span>AI Assistant Active</span>
                       </>
                     )}
@@ -415,19 +409,19 @@ export const WhatsAppInbox = () => {
 
               {/* Chat Messages Scrollable Area */}
               <div
-                className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px]"
+                className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-zinc-50"
               >
                 {/* 24-hr Service Window Notice */}
                 <div className="text-center my-2">
-                  <span className="inline-block bg-white/90 border border-slate-200/80 px-3 py-1 rounded-full text-[10px] text-slate-500 font-medium shadow-2xs">
+                  <span className="inline-block bg-white border border-zinc-200 px-3 py-1 rounded-full text-[10px] text-zinc-600 font-medium shadow-xs">
                     🔒 Official WhatsApp 24-Hour Customer Care Window Active
                   </span>
                 </div>
 
                 {loadingMessages ? (
-                  <div className="text-center text-xs text-slate-400 py-12">Loading conversation...</div>
+                  <div className="text-center text-xs text-zinc-400 py-12">Loading conversation...</div>
                 ) : messages.length === 0 ? (
-                  <div className="text-center text-xs text-slate-400 py-12">
+                  <div className="text-center text-xs text-zinc-400 py-12">
                     No messages in this conversation. Send a message to start!
                   </div>
                 ) : (
@@ -443,23 +437,21 @@ export const WhatsAppInbox = () => {
                         <div
                           className={`max-w-md sm:max-w-lg p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs relative ${
                             isCustomer
-                              ? 'bg-white text-slate-800 rounded-tl-xs border border-slate-200/90'
+                              ? 'bg-white text-zinc-900 rounded-tl-none border border-zinc-200'
                               : isAi
-                              ? 'bg-teal-900 text-teal-50 rounded-tr-xs border border-teal-800'
-                              : 'bg-emerald-600 text-white rounded-tr-xs'
+                              ? 'bg-zinc-900 text-white rounded-tr-none border border-zinc-800'
+                              : 'bg-zinc-950 text-white rounded-tr-none'
                           }`}
                         >
                           {/* Sender Label */}
                           <div
                             className={`text-[10px] font-bold mb-1 flex items-center gap-1 ${
                               isCustomer
-                                ? 'text-teal-700'
-                                : isAi
-                                ? 'text-teal-300'
-                                : 'text-emerald-100'
+                                ? 'text-zinc-600'
+                                : 'text-zinc-300'
                             }`}
                           >
-                            {isAi && <Bot className="w-3 h-3 text-teal-300" />}
+                            {isAi && <Bot className="w-3 h-3 text-zinc-300" />}
                             <span>{isCustomer ? customer?.fullName || 'Customer' : isAi ? 'EstateFlow AI Assistant' : m.senderName || 'Broker'}</span>
                           </div>
 
@@ -468,12 +460,12 @@ export const WhatsAppInbox = () => {
 
                           {/* Grounded Property Preview if grounded */}
                           {m.isGrounded && m.groundedPropertyId && (
-                            <div className="mt-2.5 p-2.5 bg-black/20 rounded-lg border border-white/10 text-[11px]">
-                              <span className="text-[10px] uppercase font-bold text-teal-300 block">
-                                Grounded MongoDB Property
+                            <div className="mt-2.5 p-2.5 bg-black/40 rounded-lg border border-white/10 text-[11px]">
+                              <span className="text-[10px] uppercase font-bold text-zinc-300 block">
+                                Grounded Property Listing
                               </span>
                               <div className="font-bold text-white mt-0.5">{m.groundedPropertyId.title}</div>
-                              <div className="text-teal-200 font-extrabold mt-0.5">
+                              <div className="text-zinc-200 font-extrabold mt-0.5">
                                 ₹{(m.groundedPropertyId.totalPrice / 10000000).toFixed(2)} Cr
                               </div>
                             </div>
@@ -482,7 +474,7 @@ export const WhatsAppInbox = () => {
                           {/* Time & Delivery Checkmark */}
                           <div
                             className={`text-[9px] text-right mt-1.5 flex items-center justify-end gap-1 ${
-                              isCustomer ? 'text-slate-400' : 'text-white/70'
+                              isCustomer ? 'text-zinc-400' : 'text-zinc-400'
                             }`}
                           >
                             <span>
@@ -493,11 +485,11 @@ export const WhatsAppInbox = () => {
                             </span>
                             {!isCustomer && (
                               m.status === 'read' ? (
-                                <CheckCheck className="w-3 h-3 text-cyan-300 inline" />
+                                <CheckCheck className="w-3 h-3 text-zinc-300 inline" />
                               ) : m.status === 'delivered' ? (
-                                <CheckCheck className="w-3 h-3 text-white/80 inline" />
+                                <CheckCheck className="w-3 h-3 text-zinc-400 inline" />
                               ) : (
-                                <Check className="w-3 h-3 text-white/60 inline" />
+                                <Check className="w-3 h-3 text-zinc-500 inline" />
                               )
                             )}
                           </div>
@@ -510,15 +502,15 @@ export const WhatsAppInbox = () => {
               </div>
 
               {/* Message Input Footer */}
-              <div className="p-3 bg-white border-t border-slate-200">
+              <div className="p-3 bg-white border-t border-zinc-200">
                 {/* Property Recommendation Inserter Dropdown */}
                 {showPropertyPicker && (
-                  <div className="mb-2 p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 animate-in slide-in-from-bottom-2 duration-150">
-                    <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+                  <div className="mb-2 p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2 animate-in slide-in-from-bottom-2 duration-150">
+                    <div className="flex items-center justify-between text-xs font-semibold text-zinc-800">
                       <span>Pick a property to share with client:</span>
                       <button
                         onClick={() => setShowPropertyPicker(false)}
-                        className="text-slate-400 hover:text-slate-600"
+                        className="text-zinc-400 hover:text-zinc-700"
                       >
                         ✕
                       </button>
@@ -528,10 +520,10 @@ export const WhatsAppInbox = () => {
                         <div
                           key={p._id}
                           onClick={() => handleSharePropertyIntoChat(p)}
-                          className="p-2 bg-white rounded-lg border border-slate-200 hover:border-teal-500 cursor-pointer text-xs transition"
+                          className="p-2 bg-white rounded-lg border border-zinc-200 hover:border-zinc-950 cursor-pointer text-xs transition"
                         >
-                          <div className="font-semibold text-slate-800 truncate">{p.title}</div>
-                          <div className="text-teal-700 font-bold">₹{(p.totalPrice / 10000000).toFixed(2)} Cr</div>
+                          <div className="font-semibold text-zinc-900 truncate">{p.title}</div>
+                          <div className="text-zinc-950 font-bold">₹{(p.totalPrice / 10000000).toFixed(2)} Cr</div>
                         </div>
                       ))}
                     </div>
@@ -555,7 +547,7 @@ export const WhatsAppInbox = () => {
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     placeholder="Type message directly to client's official WhatsApp..."
-                    className="flex-1 text-xs border border-slate-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="flex-1 text-xs border border-zinc-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
                   />
 
                   <Button type="submit" size="sm" icon={Send}>
@@ -565,10 +557,10 @@ export const WhatsAppInbox = () => {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400">
-              <MessageSquare className="w-12 h-12 text-slate-300 mb-2" />
-              <h3 className="text-sm font-semibold text-slate-600">No Conversation Selected</h3>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-zinc-400">
+              <MessageSquare className="w-12 h-12 text-zinc-300 mb-2" />
+              <h3 className="text-sm font-semibold text-zinc-700">No Conversation Selected</h3>
+              <p className="text-xs text-zinc-400 mt-1 max-w-sm">
                 Choose a customer from the left sidebar or simulate an incoming WhatsApp webhook.
               </p>
             </div>
@@ -577,13 +569,13 @@ export const WhatsAppInbox = () => {
 
         {/* Panel 3: Customer Context & AI Matched Properties */}
         {activeConversation && customer && (
-          <div className="hidden xl:flex w-80 border-l border-slate-200 bg-white flex-col overflow-y-auto p-4 space-y-4">
-            <div className="text-center pb-3 border-b border-slate-100">
-              <div className="w-16 h-16 rounded-full bg-navy-900 text-teal-400 font-bold flex items-center justify-center text-xl mx-auto shadow-sm">
+          <div className="hidden xl:flex w-80 border-l border-zinc-200 bg-white flex-col overflow-y-auto p-4 space-y-4">
+            <div className="text-center pb-3 border-b border-zinc-100">
+              <div className="w-16 h-16 rounded-full bg-zinc-950 text-white font-bold flex items-center justify-center text-xl mx-auto shadow-sm">
                 {customer.fullName.charAt(0)}
               </div>
-              <h3 className="font-bold text-slate-900 text-sm mt-2">{customer.fullName}</h3>
-              <p className="text-xs text-slate-500">{customer.phone}</p>
+              <h3 className="font-bold text-zinc-950 text-sm mt-2">{customer.fullName}</h3>
+              <p className="text-xs text-zinc-500">{customer.phone}</p>
               <div className="flex justify-center gap-1.5 mt-2">
                 <Badge variant={customer.priority}>{customer.priority} Priority</Badge>
                 <Badge variant={customer.leadStatus}>{customer.leadStatus}</Badge>
@@ -592,25 +584,25 @@ export const WhatsAppInbox = () => {
 
             {/* Quick Specs */}
             <div className="space-y-2 text-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                 Buyer Requirements
               </span>
-              <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-100 space-y-1">
+              <div className="p-2.5 bg-zinc-50 rounded-lg border border-zinc-200 space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Max Budget:</span>
-                  <span className="font-bold text-teal-700">
+                  <span className="text-zinc-500">Max Budget:</span>
+                  <span className="font-bold text-zinc-950">
                     {customer.requirements?.maxBudget
                       ? `₹${(customer.requirements.maxBudget / 10000000).toFixed(2)} Cr`
                       : 'Open'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Locality:</span>
-                  <span className="font-semibold text-slate-800">{customer.preferredLocation || 'Gurugram'}</span>
+                  <span className="text-zinc-500">Locality:</span>
+                  <span className="font-semibold text-zinc-800">{customer.preferredLocation || 'Gurugram'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Target BHK:</span>
-                  <span className="font-semibold text-slate-800">{customer.requirements?.bedrooms || 3} BHK</span>
+                  <span className="text-zinc-500">Target BHK:</span>
+                  <span className="font-semibold text-zinc-800">{customer.requirements?.bedrooms || 3} BHK</span>
                 </div>
               </div>
             </div>
@@ -618,26 +610,26 @@ export const WhatsAppInbox = () => {
             {/* AI Matched Recommendations for this client */}
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-teal-600" /> Top Matches ({matchedProperties.length})
+                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-zinc-950" /> Top Matches ({matchedProperties.length})
                 </span>
               </div>
               <div className="space-y-2">
                 {matchedProperties.map(({ property, matchPercentage }) => (
                   <div
                     key={property._id}
-                    className="p-2.5 rounded-lg border border-slate-200 hover:border-teal-500 transition space-y-1 bg-white"
+                    className="p-2.5 rounded-lg border border-zinc-200 hover:border-zinc-950 transition space-y-1 bg-white"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-teal-700">{matchPercentage} Match</span>
-                      <span className="text-[10px] font-extrabold text-slate-800">
+                      <span className="text-[10px] font-bold text-zinc-950">{matchPercentage} Match</span>
+                      <span className="text-[10px] font-extrabold text-zinc-900">
                         ₹{(property.totalPrice / 10000000).toFixed(2)} Cr
                       </span>
                     </div>
-                    <div className="font-semibold text-slate-800 truncate text-[11px]">{property.title}</div>
+                    <div className="font-semibold text-zinc-900 truncate text-[11px]">{property.title}</div>
                     <button
                       onClick={() => handleSharePropertyIntoChat(property)}
-                      className="w-full mt-1 py-1 rounded bg-teal-50 hover:bg-teal-100 text-teal-800 text-[10px] font-semibold flex items-center justify-center gap-1 transition"
+                      className="w-full mt-1 py-1 rounded bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-[10px] font-semibold flex items-center justify-center gap-1 transition"
                     >
                       <Share2 className="w-2.5 h-2.5" /> Share to Chat
                     </button>
@@ -647,7 +639,7 @@ export const WhatsAppInbox = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="pt-2 border-t border-slate-100 space-y-2">
+            <div className="pt-2 border-t border-zinc-100 space-y-2">
               <Button
                 size="sm"
                 variant="outline"

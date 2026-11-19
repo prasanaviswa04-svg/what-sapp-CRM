@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { Card, CardHeader, CardContent } from '../../components/common/Card';
+import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
@@ -9,13 +9,10 @@ import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
 import {
   CheckSquare,
-  Clock,
-  User,
   Plus,
   Trash2,
   CheckCircle2,
-  Calendar,
-  AlertCircle
+  Calendar
 } from 'lucide-react';
 
 export const Tasks = () => {
@@ -93,10 +90,10 @@ export const Tasks = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Tasks & Operational Reminders</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Tasks & Operational Reminders</h1>
+          <p className="text-xs text-zinc-500 mt-1">
             Track broker deliverables, client document collection, bank approvals, and walkthrough coordination.
           </p>
         </div>
@@ -115,8 +112,8 @@ export const Tasks = () => {
             onClick={() => setStatusFilter(st)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
               statusFilter === st
-                ? 'bg-teal-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                ? 'bg-zinc-950 text-white shadow-xs'
+                : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-100'
             }`}
           >
             {st} Tasks
@@ -141,21 +138,21 @@ export const Tasks = () => {
             onAction={() => setIsModalOpen(true)}
           />
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-200">
             {tasks.map((task) => {
               const isCompleted = task.status === 'Completed';
               return (
                 <div
                   key={task._id}
-                  className="p-4 sm:p-5 flex items-start sm:items-center justify-between gap-3 hover:bg-slate-50 transition"
+                  className="p-4 sm:p-5 flex items-start sm:items-center justify-between gap-3 hover:bg-zinc-50 transition"
                 >
                   <div className="flex items-start gap-3 flex-1">
                     <button
                       onClick={() => handleToggleComplete(task)}
                       className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition ${
                         isCompleted
-                          ? 'bg-emerald-600 border-emerald-600 text-white'
-                          : 'border-slate-300 hover:border-teal-500 text-transparent'
+                          ? 'bg-zinc-950 border-zinc-950 text-white'
+                          : 'border-zinc-300 hover:border-zinc-950 text-transparent'
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5 fill-current" />
@@ -164,17 +161,17 @@ export const Tasks = () => {
                     <div>
                       <h4
                         className={`text-xs sm:text-sm font-bold ${
-                          isCompleted ? 'text-slate-400 line-through' : 'text-slate-900'
+                          isCompleted ? 'text-zinc-400 line-through' : 'text-zinc-950'
                         }`}
                       >
                         {task.title}
                       </h4>
                       {task.description && (
-                        <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{task.description}</p>
+                        <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{task.description}</p>
                       )}
-                      <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1">
+                      <div className="flex items-center gap-3 text-[11px] text-zinc-500 mt-1">
                         <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3 text-slate-400" /> Due:{' '}
+                          <Calendar className="w-3 h-3 text-zinc-400" /> Due:{' '}
                           {new Date(task.dueDate).toLocaleDateString()}
                         </span>
                         <span>•</span>
@@ -187,7 +184,7 @@ export const Tasks = () => {
                     <Badge variant={task.priority}>{task.priority}</Badge>
                     <button
                       onClick={() => handleDeleteTask(task._id)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 transition"
+                      className="p-1.5 text-zinc-400 hover:text-zinc-950 transition"
                       title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -204,35 +201,35 @@ export const Tasks = () => {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Create New Task / Reminder" size="md">
         <form onSubmit={handleCreateTask} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Task Title *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Task Title *</label>
             <input
               type="text"
               required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="e.g. Collect stamp duty agreement from buyer"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Description / Details</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Description / Details</label>
             <textarea
               rows={3}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="Add key notes, contact names, or documents needed..."
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Priority</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Priority</label>
               <select
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white text-zinc-900"
               >
                 <option value="Urgent">Urgent</option>
                 <option value="High">High</option>
@@ -242,18 +239,18 @@ export const Tasks = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Due Date *</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Due Date *</label>
               <input
                 type="date"
                 required
                 value={formData.dueDate}
                 onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-200">
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

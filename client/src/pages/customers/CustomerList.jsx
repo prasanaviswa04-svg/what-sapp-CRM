@@ -11,18 +11,14 @@ import { useToast } from '../../context/ToastContext';
 import {
   Users,
   Search,
-  Filter,
   Plus,
   Download,
   Trash2,
   Eye,
   Phone,
-  Mail,
   MapPin,
   ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  ArrowUpDown
+  ChevronRight
 } from 'lucide-react';
 
 export const CustomerList = () => {
@@ -35,7 +31,6 @@ export const CustomerList = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(null);
 
   // New Customer Form State
   const [formData, setFormData] = useState({
@@ -150,12 +145,12 @@ export const CustomerList = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Customer Relationship Management</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Customer Relationship Management</h1>
+          <p className="text-xs text-zinc-500 mt-1">
             Manage your verified buyer profiles, investment preferences, and communication records ({total} total).
           </p>
         </div>
@@ -174,13 +169,13 @@ export const CustomerList = () => {
         <CardContent className="p-3.5">
           <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row items-center gap-3">
             <div className="relative flex-1 w-full">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by full name, phone number, email, or locality..."
-                className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full pl-9 pr-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               />
             </div>
 
@@ -188,7 +183,7 @@ export const CustomerList = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="text-xs border border-zinc-300 rounded-lg px-2.5 py-2 bg-white text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
               >
                 <option value="All">All Statuses</option>
                 <option value="New">New</option>
@@ -203,7 +198,7 @@ export const CustomerList = () => {
               <select
                 value={priorityFilter}
                 onChange={(e) => { setPriorityFilter(e.target.value); setPage(1); }}
-                className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="text-xs border border-zinc-300 rounded-lg px-2.5 py-2 bg-white text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
               >
                 <option value="All">All Priorities</option>
                 <option value="Urgent">Urgent</option>
@@ -212,7 +207,7 @@ export const CustomerList = () => {
                 <option value="Low">Low</option>
               </select>
 
-              <Button type="submit" size="sm" variant="secondary">
+              <Button type="submit" size="sm" variant="outline">
                 Filter
               </Button>
             </div>
@@ -239,7 +234,7 @@ export const CustomerList = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
+              <thead className="bg-zinc-50 text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
                 <tr>
                   <th className="py-3.5 px-4">Customer Name & Phone</th>
                   <th className="py-3.5 px-4">Category & Requirements</th>
@@ -250,41 +245,41 @@ export const CustomerList = () => {
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-zinc-200">
                 {customers.map((c) => (
                   <tr
                     key={c._id}
-                    className="hover:bg-slate-50/80 transition cursor-pointer"
+                    className="hover:bg-zinc-50 transition cursor-pointer"
                     onClick={() => navigate(`/customers/${c._id}`)}
                   >
                     <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-900 text-sm">{c.fullName}</div>
-                      <div className="text-slate-500 text-[11px] flex items-center gap-1 mt-0.5">
-                        <Phone className="w-3 h-3 text-teal-600" /> {c.phone}
+                      <div className="font-semibold text-zinc-950 text-sm">{c.fullName}</div>
+                      <div className="text-zinc-500 text-[11px] flex items-center gap-1 mt-0.5">
+                        <Phone className="w-3 h-3 text-zinc-700" /> {c.phone}
                         {c.email && (
-                          <span className="text-slate-400 ml-1 truncate max-w-[150px]">
+                          <span className="text-zinc-400 ml-1 truncate max-w-[150px]">
                             • {c.email}
                           </span>
                         )}
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <div className="font-medium text-slate-700">
+                      <div className="font-medium text-zinc-800">
                         {c.requirements?.bedrooms ? `${c.requirements.bedrooms} BHK ` : ''}
                         {c.requirements?.propertyCategory || 'Apartment'}
                       </div>
-                      <div className="text-[11px] text-slate-400">
+                      <div className="text-[11px] text-zinc-500">
                         {c.customerType} • {c.requirements?.purchaseTimeline}
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-slate-800">
+                    <td className="py-3.5 px-4 font-bold text-zinc-950">
                       {c.requirements?.maxBudget
                         ? `₹${(c.requirements.maxBudget / 10000000).toFixed(2)} Cr`
                         : 'Not specified'}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-600">
+                    <td className="py-3.5 px-4 text-zinc-600">
                       <span className="inline-flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-slate-400" />
+                        <MapPin className="w-3 h-3 text-zinc-400" />
                         {c.preferredLocation || 'Gurugram'}
                       </span>
                     </td>
@@ -298,14 +293,14 @@ export const CustomerList = () => {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => navigate(`/customers/${c._id}`)}
-                          className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded transition"
+                          className="p-1.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded transition"
                           title="View Profile"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteCustomer(c._id)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition"
+                          className="p-1.5 text-zinc-400 hover:text-zinc-950 hover:bg-zinc-100 rounded transition"
                           title="Delete Customer"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -321,7 +316,7 @@ export const CustomerList = () => {
 
         {/* Pagination */}
         {pages > 1 && (
-          <div className="p-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+          <div className="p-3.5 border-t border-zinc-200 flex items-center justify-between text-xs text-zinc-500">
             <span>
               Page {page} of {pages} ({total} records)
             </span>
@@ -357,25 +352,25 @@ export const CustomerList = () => {
         <form onSubmit={handleCreateCustomer} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Customer Full Name *</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Customer Full Name *</label>
               <input
                 type="text"
                 required
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                 placeholder="e.g. Yashvardhan Singhania"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">WhatsApp Phone Number *</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">WhatsApp Phone Number *</label>
               <input
                 type="tel"
                 required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                 placeholder="+91 98765 43210"
               />
             </div>
@@ -383,22 +378,22 @@ export const CustomerList = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Email Address</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                 placeholder="yash@techcorp.in"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Customer Category</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Customer Category</label>
               <select
                 value={formData.customerType}
                 onChange={(e) => setFormData({ ...formData, customerType: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white"
               >
                 <option value="Buyer">Buyer</option>
                 <option value="Investor">Investor</option>
@@ -410,11 +405,11 @@ export const CustomerList = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Property Category</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Property Category</label>
               <select
                 value={formData.propertyCategory}
                 onChange={(e) => setFormData({ ...formData, propertyCategory: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white"
               >
                 <option value="Apartment">Apartment</option>
                 <option value="Villa">Villa</option>
@@ -425,24 +420,24 @@ export const CustomerList = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Bedrooms (BHK)</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Bedrooms (BHK)</label>
               <input
                 type="number"
                 min="0"
                 max="10"
                 value={formData.bedrooms}
                 onChange={(e) => setFormData({ ...formData, bedrooms: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Target Locality</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Target Locality</label>
               <input
                 type="text"
                 value={formData.preferredLocation}
                 onChange={(e) => setFormData({ ...formData, preferredLocation: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                 placeholder="e.g. Golf Course Road"
               />
             </div>
@@ -450,26 +445,26 @@ export const CustomerList = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Maximum Budget (INR)</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Maximum Budget (INR)</label>
               <input
                 type="number"
                 step="500000"
                 value={formData.maxBudget}
                 onChange={(e) => setFormData({ ...formData, maxBudget: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
                 placeholder="25000000"
               />
-              <span className="text-[10px] text-teal-600 font-medium">
+              <span className="text-[10px] text-zinc-500 font-medium">
                 ≈ ₹{(Number(formData.maxBudget) / 10000000).toFixed(2)} Cr
               </span>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Lead Priority</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Lead Priority</label>
               <select
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                className="w-full px-3 py-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white"
               >
                 <option value="Urgent">Urgent (Immediate Site Visit)</option>
                 <option value="High">High</option>
@@ -480,17 +475,17 @@ export const CustomerList = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Internal Broker Notes</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Internal Broker Notes</label>
             <textarea
               rows={2}
               value={formData.internalNotes}
               onChange={(e) => setFormData({ ...formData, internalNotes: e.target.value })}
-              className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2.5 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="Client prefers higher floor facing sunrise and corner plot..."
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200">
             <Button type="button" variant="outline" onClick={() => setIsNewModalOpen(false)}>
               Cancel
             </Button>

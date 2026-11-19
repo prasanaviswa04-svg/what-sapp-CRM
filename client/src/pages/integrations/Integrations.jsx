@@ -5,18 +5,8 @@ import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { useToast } from '../../context/ToastContext';
 import {
-  Layers,
-  MessageSquare,
-  Sparkles,
-  Database,
-  Cloud,
-  CheckCircle2,
-  AlertTriangle,
-  Lock,
   Copy,
-  ExternalLink,
-  Save,
-  Key
+  Save
 } from 'lucide-react';
 
 export const Integrations = () => {
@@ -98,9 +88,9 @@ export const Integrations = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold text-slate-900 tracking-tight">API & Integration Center</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
+      <div className="border-b border-zinc-200 pb-5">
+        <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">API & Integration Center</h1>
+        <p className="text-xs text-zinc-500 mt-1">
           Connect the official Meta WhatsApp Business Cloud API, OpenAI GPT engine, and database services.
         </p>
       </div>
@@ -118,17 +108,17 @@ export const Integrations = () => {
             }
           />
           <CardContent className="space-y-4">
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/90 text-xs space-y-2">
-              <span className="font-bold text-slate-800 block">
+            <div className="bg-zinc-50 p-3.5 rounded-xl border border-zinc-200 text-xs space-y-2">
+              <span className="font-bold text-zinc-900 block">
                 Meta Developer App Webhook Configuration
               </span>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-zinc-600 leading-relaxed">
                 In your Meta App Dashboard under <strong>WhatsApp &gt; Configuration</strong>, set the Callback URL and Verify Token below:
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
+                  <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
                     Callback URL (Webhook Endpoint)
                   </label>
                   <div className="flex items-center gap-1">
@@ -136,20 +126,20 @@ export const Integrations = () => {
                       type="text"
                       readOnly
                       value={webhookUrl}
-                      className="w-full text-xs font-mono p-1.5 bg-white border border-slate-300 rounded focus:outline-none"
+                      className="w-full text-xs font-mono p-1.5 bg-white border border-zinc-300 rounded text-zinc-900 focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => copyToClipboard(webhookUrl, 'Webhook URL')}
-                      className="p-1.5 bg-white border border-slate-300 rounded hover:bg-slate-100"
+                      className="p-1.5 bg-white border border-zinc-300 rounded hover:bg-zinc-100"
                     >
-                      <Copy className="w-3.5 h-3.5 text-slate-500" />
+                      <Copy className="w-3.5 h-3.5 text-zinc-600" />
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
+                  <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
                     Webhook Verification Token
                   </label>
                   <div className="flex items-center gap-1">
@@ -157,14 +147,14 @@ export const Integrations = () => {
                       type="text"
                       readOnly
                       value={whatsappForm.webhookVerifyToken}
-                      className="w-full text-xs font-mono p-1.5 bg-white border border-slate-300 rounded focus:outline-none"
+                      className="w-full text-xs font-mono p-1.5 bg-white border border-zinc-300 rounded text-zinc-900 focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => copyToClipboard(whatsappForm.webhookVerifyToken, 'Verify Token')}
-                      className="p-1.5 bg-white border border-slate-300 rounded hover:bg-slate-100"
+                      className="p-1.5 bg-white border border-zinc-300 rounded hover:bg-zinc-100"
                     >
-                      <Copy className="w-3.5 h-3.5 text-slate-500" />
+                      <Copy className="w-3.5 h-3.5 text-zinc-600" />
                     </button>
                   </div>
                 </div>
@@ -173,39 +163,39 @@ export const Integrations = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number ID</label>
+                <label className="block text-xs font-semibold text-zinc-800 mb-1">Phone Number ID</label>
                 <input
                   type="text"
                   value={whatsappForm.phoneNumberId || ''}
                   onChange={(e) => setWhatsappForm({ ...whatsappForm, phoneNumberId: e.target.value })}
                   placeholder="e.g. 104598234857612"
-                  className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none font-mono"
+                  className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">WhatsApp Business Account ID (WABA)</label>
+                <label className="block text-xs font-semibold text-zinc-800 mb-1">WhatsApp Business Account ID (WABA)</label>
                 <input
                   type="text"
                   value={whatsappForm.wabaId || ''}
                   onChange={(e) => setWhatsappForm({ ...whatsappForm, wabaId: e.target.value })}
                   placeholder="e.g. 109283746501928"
-                  className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none font-mono"
+                  className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none font-mono"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Permanent System User Access Token</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Permanent System User Access Token</label>
               <input
                 type="text"
                 value={whatsappForm.accessToken || ''}
                 onChange={(e) => setWhatsappForm({ ...whatsappForm, accessToken: e.target.value })}
                 placeholder="EAA..."
-                className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none font-mono"
+                className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none font-mono"
               />
-              <p className="text-[10px] text-slate-400 mt-1">
-                Generated from Meta Business Manager with permissions <code className="text-teal-600">whatsapp_business_messaging</code> and <code className="text-teal-600">whatsapp_business_management</code>.
+              <p className="text-[10px] text-zinc-500 mt-1">
+                Generated from Meta Business Manager with permissions <code className="text-zinc-900 font-mono">whatsapp_business_messaging</code> and <code className="text-zinc-900 font-mono">whatsapp_business_management</code>.
               </p>
             </div>
           </CardContent>
@@ -225,25 +215,25 @@ export const Integrations = () => {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">OpenAI API Key</label>
+                <label className="block text-xs font-semibold text-zinc-800 mb-1">OpenAI API Key</label>
                 <input
                   type="password"
                   value={aiForm.apiKey || ''}
                   onChange={(e) => setAiForm({ ...aiForm, apiKey: e.target.value })}
                   placeholder="sk-proj-..."
-                  className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none font-mono"
+                  className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none font-mono"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">
+                <span className="text-[10px] text-zinc-500 mt-1 block">
                   Leave blank to use EstateFlow's built-in real estate conversational grounder.
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Model Selection</label>
+                <label className="block text-xs font-semibold text-zinc-800 mb-1">Model Selection</label>
                 <select
                   value={aiForm.model || 'gpt-4o-mini'}
                   onChange={(e) => setAiForm({ ...aiForm, model: e.target.value })}
-                  className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                  className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white text-zinc-900"
                 >
                   <option value="gpt-4o-mini">gpt-4o-mini (Fast & Recommended for WhatsApp)</option>
                   <option value="gpt-4o">gpt-4o (Most Intelligent Reasoning)</option>
@@ -257,9 +247,9 @@ export const Integrations = () => {
                 id="autoReply"
                 checked={aiForm.autoReplyEnabled}
                 onChange={(e) => setAiForm({ ...aiForm, autoReplyEnabled: e.target.checked })}
-                className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500"
+                className="w-4 h-4 rounded text-zinc-950 focus:ring-zinc-950 accent-zinc-950"
               />
-              <label htmlFor="autoReply" className="text-xs font-semibold text-slate-800">
+              <label htmlFor="autoReply" className="text-xs font-semibold text-zinc-800">
                 Enable AI Auto-Reply for Incoming WhatsApp Customer Inquiries
               </label>
             </div>

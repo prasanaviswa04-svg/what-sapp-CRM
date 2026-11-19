@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { Card, CardHeader, CardContent } from '../../components/common/Card';
+import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
@@ -9,13 +9,7 @@ import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
 import {
   CheckCircle2,
-  Building2,
-  User,
-  Plus,
-  ShieldCheck,
-  CreditCard,
-  XCircle,
-  FileText
+  Plus
 } from 'lucide-react';
 
 export const Bookings = () => {
@@ -122,12 +116,12 @@ export const Bookings = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Property Bookings & Reservations</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Property Bookings & Reservations</h1>
+          <p className="text-xs text-zinc-500 mt-1">
             Transaction-safe booking management with automatic property lock and advance receipt tracking.
           </p>
         </div>
@@ -157,7 +151,7 @@ export const Bookings = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
+              <thead className="bg-zinc-50 text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
                 <tr>
                   <th className="py-3.5 px-4">Booking Code</th>
                   <th className="py-3.5 px-4">Customer</th>
@@ -168,24 +162,24 @@ export const Bookings = () => {
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-zinc-200">
                 {bookings.map((b) => (
-                  <tr key={b._id} className="hover:bg-slate-50/80 transition">
-                    <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
+                  <tr key={b._id} className="hover:bg-zinc-50 transition">
+                    <td className="py-3.5 px-4 font-mono font-bold text-zinc-950">
                       {b.bookingCode}
                     </td>
                     <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-800">{b.customerId?.fullName}</div>
-                      <div className="text-[11px] text-slate-400">{b.customerId?.phone}</div>
+                      <div className="font-semibold text-zinc-900">{b.customerId?.fullName}</div>
+                      <div className="text-[11px] text-zinc-400">{b.customerId?.phone}</div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <div className="font-medium text-slate-800 line-clamp-1">{b.propertyId?.title}</div>
-                      <div className="text-[11px] text-slate-400">{b.propertyId?.propertyCode}</div>
+                      <div className="font-medium text-zinc-900 line-clamp-1">{b.propertyId?.title}</div>
+                      <div className="text-[11px] text-zinc-400">{b.propertyId?.propertyCode}</div>
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-slate-900">
+                    <td className="py-3.5 px-4 font-bold text-zinc-950">
                       ₹{(b.agreedPrice / 10000000).toFixed(2)} Cr
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-emerald-700">
+                    <td className="py-3.5 px-4 font-bold text-zinc-900">
                       ₹{(b.advanceAmount / 10000000).toFixed(2)} Cr
                     </td>
                     <td className="py-3.5 px-4">
@@ -195,7 +189,7 @@ export const Bookings = () => {
                       {b.bookingStatus === 'Confirmed' && (
                         <button
                           onClick={() => handleCancelBooking(b._id)}
-                          className="text-[11px] font-semibold text-rose-600 hover:text-rose-800 hover:underline"
+                          className="text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 hover:underline"
                         >
                           Cancel Booking
                         </button>
@@ -213,12 +207,12 @@ export const Bookings = () => {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Initiate New Property Booking" size="md">
         <form onSubmit={handleCreateBooking} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Select Customer *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Select Customer *</label>
             <select
               required
               value={formData.customerId}
               onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+              className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white text-zinc-900"
             >
               {customers.map((c) => (
                 <option key={c._id} value={c._id}>
@@ -229,12 +223,12 @@ export const Bookings = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Select Available Property *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Select Available Property *</label>
             <select
               required
               value={formData.propertyId}
               onChange={(e) => handlePropertyChange(e.target.value)}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+              className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white text-zinc-900"
             >
               {properties.map((p) => (
                 <option key={p._id} value={p._id}>
@@ -246,40 +240,40 @@ export const Bookings = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Agreed Price (INR) *</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Agreed Price (INR) *</label>
               <input
                 type="number"
                 required
                 value={formData.agreedPrice}
                 onChange={(e) => setFormData({ ...formData, agreedPrice: Number(e.target.value) })}
-                className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               />
-              <span className="text-[10px] text-slate-500 font-medium">
+              <span className="text-[10px] text-zinc-500 font-medium">
                 ₹{(Number(formData.agreedPrice) / 10000000).toFixed(2)} Cr
               </span>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Advance Token (INR) *</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Advance Token (INR) *</label>
               <input
                 type="number"
                 required
                 value={formData.advanceAmount}
                 onChange={(e) => setFormData({ ...formData, advanceAmount: Number(e.target.value) })}
-                className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               />
-              <span className="text-[10px] text-emerald-600 font-bold">
+              <span className="text-[10px] text-zinc-600 font-bold">
                 ₹{(Number(formData.advanceAmount) / 10000000).toFixed(2)} Cr
               </span>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Payment Method</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Payment Method</label>
             <select
               value={formData.paymentMethod}
               onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+              className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white text-zinc-900"
             >
               <option value="Bank Transfer">Bank Transfer (NEFT/RTGS)</option>
               <option value="UPI">UPI Payment</option>
@@ -288,7 +282,7 @@ export const Bookings = () => {
             </select>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-200">
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

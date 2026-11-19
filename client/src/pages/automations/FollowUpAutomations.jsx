@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { Card, CardHeader, CardContent } from '../../components/common/Card';
+import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
@@ -11,13 +11,7 @@ import {
   Zap,
   Play,
   Clock,
-  MessageSquare,
-  CheckCircle2,
-  Plus,
-  Trash2,
-  Users,
-  Settings,
-  ShieldAlert
+  Plus
 } from 'lucide-react';
 
 export const FollowUpAutomations = () => {
@@ -118,10 +112,10 @@ export const FollowUpAutomations = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Follow-Up Automation Engine</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Follow-Up Automation Engine</h1>
+          <p className="text-xs text-zinc-500 mt-1">
             Automated WhatsApp cadence workflows triggered by new inquiries, site visits, and booking events.
           </p>
         </div>
@@ -134,16 +128,16 @@ export const FollowUpAutomations = () => {
 
       {/* Test Target Selector */}
       {customers.length > 0 && (
-        <Card className="p-4 bg-teal-50/60 border-teal-200">
+        <Card className="p-4 bg-zinc-100 border-zinc-200">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-teal-900 font-semibold">
-              <Zap className="w-4 h-4 text-teal-600" />
+            <div className="flex items-center gap-2 text-zinc-900 font-semibold">
+              <Zap className="w-4 h-4 text-zinc-950" />
               <span>Target Customer for "Test Run Trigger" Buttons:</span>
             </div>
             <select
               value={testCustomerId}
               onChange={(e) => setTestCustomerId(e.target.value)}
-              className="p-1.5 border border-teal-300 rounded-lg text-xs bg-white text-slate-800 focus:outline-none"
+              className="p-1.5 border border-zinc-300 rounded-lg text-xs bg-white text-zinc-800 focus:outline-none"
             >
               {customers.map((c) => (
                 <option key={c._id} value={c._id}>
@@ -175,30 +169,30 @@ export const FollowUpAutomations = () => {
           workflows.map((wf) => (
             <Card key={wf._id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-2 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-slate-900 text-sm">{wf.name}</h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-bold text-zinc-950 text-sm">{wf.name}</h3>
                   <Badge variant={wf.isActive ? 'Available' : 'Sold'}>
                     {wf.isActive ? 'Active' : 'Paused'}
                   </Badge>
-                  <span className="text-[11px] font-mono text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                  <span className="text-[11px] font-mono text-zinc-900 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">
                     Trigger: {wf.triggerEvent}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-600 leading-relaxed">{wf.description}</p>
+                <p className="text-xs text-zinc-600 leading-relaxed">{wf.description}</p>
 
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 font-mono">
+                <div className="p-3 bg-zinc-50 rounded-lg border border-zinc-200 text-xs text-zinc-800 font-mono">
                   {wf.messageBody}
                 </div>
 
-                <div className="flex items-center gap-4 text-[11px] text-slate-400">
+                <div className="flex items-center gap-4 text-[11px] text-zinc-500">
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-slate-400" /> Delay: {wf.delayMinutes} mins
+                    <Clock className="w-3 h-3 text-zinc-400" /> Delay: {wf.delayMinutes} mins
                   </span>
                   <span>•</span>
                   <span>Target: {wf.targetSegment}</span>
                   <span>•</span>
-                  <span className="text-emerald-600 font-semibold">
+                  <span className="text-zinc-900 font-semibold">
                     Executed {wf.executionCount || 0} times
                   </span>
                 </div>
@@ -217,7 +211,7 @@ export const FollowUpAutomations = () => {
                 </Button>
                 <Button
                   size="sm"
-                  variant={wf.isActive ? 'ghost' : 'secondary'}
+                  variant={wf.isActive ? 'ghost' : 'primary'}
                   onClick={() => handleToggleActive(wf._id, wf.isActive)}
                   className="text-xs"
                 >
@@ -233,23 +227,23 @@ export const FollowUpAutomations = () => {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Create Automated Follow-Up Workflow" size="md">
         <form onSubmit={handleCreateWorkflow} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Workflow Name *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Workflow Name *</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="e.g. VIP 48h Site Visit Feedback Follow-Up"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Trigger Event *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">Trigger Event *</label>
             <select
               value={formData.triggerEvent}
               onChange={(e) => setFormData({ ...formData, triggerEvent: e.target.value })}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+              className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white text-zinc-900"
             >
               <option value="new_enquiry">When New Enquiry Arrives</option>
               <option value="visit_scheduled">When Site Visit is Scheduled</option>
@@ -262,11 +256,11 @@ export const FollowUpAutomations = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Target Segment</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Target Segment</label>
               <select
                 value={formData.targetSegment}
                 onChange={(e) => setFormData({ ...formData, targetSegment: e.target.value })}
-                className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none bg-white text-zinc-900"
               >
                 <option value="All Customers">All Customers</option>
                 <option value="Hot Leads Only">Hot Leads Only</option>
@@ -276,33 +270,33 @@ export const FollowUpAutomations = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Delay (Minutes)</label>
+              <label className="block text-xs font-semibold text-zinc-800 mb-1">Delay (Minutes)</label>
               <input
                 type="number"
                 min="0"
                 value={formData.delayMinutes}
                 onChange={(e) => setFormData({ ...formData, delayMinutes: Number(e.target.value) })}
-                className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                className="w-full p-2 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">WhatsApp Message Body *</label>
+            <label className="block text-xs font-semibold text-zinc-800 mb-1">WhatsApp Message Body *</label>
             <textarea
               rows={3}
               required
               value={formData.messageBody}
               onChange={(e) => setFormData({ ...formData, messageBody: e.target.value })}
-              className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full p-2.5 text-xs border border-zinc-300 rounded-lg focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 focus:outline-none"
               placeholder="Use {{customer_name}}, {{property_title}} for personalization..."
             />
-            <p className="text-[10px] text-slate-400 mt-1">
-              Supported dynamic variables: <code className="text-teal-600">{"{{customer_name}}"}</code>, <code className="text-teal-600">{"{{property_title}}"}</code>, <code className="text-teal-600">{"{{visit_time}}"}</code>
+            <p className="text-[10px] text-zinc-500 mt-1">
+              Supported dynamic variables: <code className="text-zinc-900 font-mono">{"{{customer_name}}"}</code>, <code className="text-zinc-900 font-mono">{"{{property_title}}"}</code>, <code className="text-zinc-900 font-mono">{"{{visit_time}}"}</code>
             </p>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-200">
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

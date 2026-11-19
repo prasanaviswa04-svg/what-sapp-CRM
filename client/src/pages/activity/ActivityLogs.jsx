@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { Card, CardHeader, CardContent } from '../../components/common/Card';
-import { Badge } from '../../components/common/Badge';
-import { Button } from '../../components/common/Button';
+import { Card, CardHeader } from '../../components/common/Card';
 import { Skeleton } from '../../components/common/Skeleton';
-import {
-  FileText,
-  User,
-  Clock,
-  Filter,
-  CheckCircle2,
-  Building2,
-  CalendarCheck
-} from 'lucide-react';
 
 export const ActivityLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -42,10 +31,10 @@ export const ActivityLogs = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">System Activity & Audit Logs</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">System Activity & Audit Logs</h1>
+          <p className="text-xs text-zinc-500 mt-1">
             Immutable audit record of user logins, WhatsApp communications, booking approvals, and CRM changes.
           </p>
         </div>
@@ -54,7 +43,7 @@ export const ActivityLogs = () => {
           <select
             value={entityFilter}
             onChange={(e) => setEntityFilter(e.target.value)}
-            className="text-xs border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="text-xs border border-zinc-300 rounded-lg px-3 py-2 bg-white text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
           >
             <option value="All">All Entities</option>
             <option value="Customer">Customer</option>
@@ -77,11 +66,11 @@ export const ActivityLogs = () => {
             ))}
           </div>
         ) : logs.length === 0 ? (
-          <div className="p-8 text-center text-xs text-slate-400">No activity logged for this filter.</div>
+          <div className="p-8 text-center text-xs text-zinc-400">No activity logged for this filter.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
+              <thead className="bg-zinc-50 text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
                 <tr>
                   <th className="py-3 px-4">Timestamp</th>
                   <th className="py-3 px-4">Actor</th>
@@ -90,24 +79,24 @@ export const ActivityLogs = () => {
                   <th className="py-3 px-4">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-mono">
+              <tbody className="divide-y divide-zinc-200 font-mono">
                 {logs.map((log) => (
-                  <tr key={log._id} className="hover:bg-slate-50/80 transition">
-                    <td className="py-3 px-4 text-slate-400 text-[11px]">
+                  <tr key={log._id} className="hover:bg-zinc-50 transition">
+                    <td className="py-3 px-4 text-zinc-400 text-[11px]">
                       {new Date(log.createdAt).toLocaleString()}
                     </td>
-                    <td className="py-3 px-4 font-semibold text-slate-800">
+                    <td className="py-3 px-4 font-semibold text-zinc-900">
                       {log.userName || 'System Bot'}
                     </td>
-                    <td className="py-3 px-4 font-bold text-teal-700">
+                    <td className="py-3 px-4 font-bold text-zinc-950">
                       {log.action}
                     </td>
                     <td className="py-3 px-4">
-                      <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-sans font-medium">
+                      <span className="text-[10px] bg-zinc-100 text-zinc-800 border border-zinc-200 px-2 py-0.5 rounded font-sans font-medium">
                         {log.entityType}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-slate-500 font-sans text-[11px] truncate max-w-xs">
+                    <td className="py-3 px-4 text-zinc-500 font-sans text-[11px] truncate max-w-xs">
                       {JSON.stringify(log.details)}
                     </td>
                   </tr>

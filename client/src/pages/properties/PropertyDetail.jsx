@@ -6,6 +6,7 @@ import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
+import { handleImageError, getPropertyFallbackImage } from '../../utils/propertyImages';
 import {
   Building2,
   MapPin,
@@ -90,8 +91,9 @@ export const PropertyDetail = () => {
       <Card className="overflow-hidden border border-zinc-200">
         <div className="relative h-72 sm:h-96 w-full bg-zinc-100">
           <img
-            src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400'}
+            src={property.images?.[0] || getPropertyFallbackImage(property.category, property.title)}
             alt={property.title}
+            onError={(e) => handleImageError(e, property.category, property.title)}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />

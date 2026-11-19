@@ -8,6 +8,7 @@ import { Modal } from '../../components/common/Modal';
 import { EmptyState } from '../../components/common/EmptyState';
 import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
+import { handleImageError, getPropertyFallbackImage } from '../../utils/propertyImages';
 import {
   Building2,
   Search,
@@ -230,8 +231,9 @@ export const PropertyList = () => {
                 {/* Image & Status Badge */}
                 <div className="relative h-48 w-full overflow-hidden bg-zinc-100">
                   <img
-                    src={prop.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'}
+                    src={prop.images?.[0] || getPropertyFallbackImage(prop.category, prop.title)}
                     alt={prop.title}
+                    onError={(e) => handleImageError(e, prop.category, prop.title)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                   />
                   <div className="absolute top-3 left-3">

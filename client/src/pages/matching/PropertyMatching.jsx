@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
+import { handleImageError, getPropertyFallbackImage } from '../../utils/propertyImages';
 import {
   Sparkles,
   CheckCircle2,
@@ -168,8 +169,9 @@ export const PropertyMatching = () => {
                 {/* Image */}
                 <div className="relative w-full md:w-64 h-48 md:h-auto bg-zinc-100 flex-shrink-0">
                   <img
-                    src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600'}
+                    src={property.images?.[0] || getPropertyFallbackImage(property.category, property.title)}
                     alt={property.title}
+                    onError={(e) => handleImageError(e, property.category, property.title)}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-3 left-3">

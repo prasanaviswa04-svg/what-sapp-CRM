@@ -6,6 +6,7 @@ import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
+import { handleImageError, getPropertyFallbackImage } from '../../utils/propertyImages';
 import {
   Phone,
   Mail,
@@ -271,8 +272,9 @@ export const CustomerDetail = () => {
               <Card key={property._id} className="overflow-hidden">
                 <div className="flex flex-col sm:flex-row">
                   <img
-                    src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600'}
+                    src={property.images?.[0] || getPropertyFallbackImage(property.category, property.title)}
                     alt={property.title}
+                    onError={(e) => handleImageError(e, property.category, property.title)}
                     className="w-full sm:w-48 h-40 object-cover"
                   />
                   <div className="p-4 flex-1 flex flex-col justify-between">

@@ -36,7 +36,22 @@ const server = http.createServer(app);
 initSocket(server);
 
 // Middleware
-app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'blob:', 'https:', '*'],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
+        fontSrc: ["'self'", 'https:', 'data:'],
+        connectSrc: ["'self'", 'https:', 'http:', 'ws:', 'wss:', '*']
+      }
+    },
+    crossOriginResourcePolicy: false,
+    crossOriginEmbedderPolicy: false
+  })
+);
 app.use(cors({ origin: true, credentials: true }));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '25mb' }));

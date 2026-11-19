@@ -240,6 +240,7 @@ async function processIncomingCustomerMessage(companyId, phone, name, content, w
 
   // Emit Socket.IO Event for Customer Message
   emitConversationEvent(conversation._id.toString(), 'new_message', customerMsg);
+  emitCompanyEvent(companyId.toString(), 'new_message', customerMsg);
   emitCompanyEvent(companyId.toString(), 'new_whatsapp_message', {
     conversationId: conversation._id,
     customerName: customer.fullName,
@@ -342,6 +343,7 @@ async function processIncomingCustomerMessage(companyId, phone, name, content, w
 
   // Emit Socket.IO Event for AI Reply
   emitConversationEvent(conversation._id.toString(), 'new_message', aiMsg);
+  emitCompanyEvent(companyId.toString(), 'new_message', aiMsg);
   emitCompanyEvent(companyId.toString(), 'conversation_updated', conversation);
 
   return {
@@ -487,6 +489,7 @@ const sendMessage = async (req, res, next) => {
 
     // Emit Socket
     emitConversationEvent(conversation._id.toString(), 'new_message', msg);
+    emitCompanyEvent(req.companyId.toString(), 'new_message', msg);
     emitCompanyEvent(req.companyId.toString(), 'conversation_updated', conversation);
 
     res.status(200).json({

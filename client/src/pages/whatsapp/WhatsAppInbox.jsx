@@ -5,6 +5,7 @@ import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { useToast } from '../../context/ToastContext';
 import { useSocket } from '../../context/SocketContext';
+import { useAuth } from '../../context/AuthContext';
 import {
   MessageSquare,
   Search,
@@ -36,6 +37,7 @@ export const WhatsAppInbox = () => {
 
   const messagesEndRef = useRef(null);
   const socket = useSocket();
+  const { user } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -48,6 +50,12 @@ export const WhatsAppInbox = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Join socket room for active conversation
+  useEffect(() => {
+    if (!socket || !activeConversation?._id) return;
+    socket.emit('join_conversation', activeConversation._id);
+  }, [socket, activeConversation?._id]);
 
   // Fetch all conversations
   const fetchConversations = async () => {
@@ -89,9 +97,12 @@ export const WhatsAppInbox = () => {
 
         // Fetch matched properties for this customer
         if (res.data.conversation?.customerId) {
-          const matchRes = await api.get(`/matching/customer/${res.data.conversation.customerId._id}`);
-          if (matchRes.data.success) {
-            setMatchedProperties(matchRes.data.matches?.slice(0, 3) || []);
+          const custId = res.data.conversation.customerId._id || res.data.conversation.customerId;
+          if (custId) {
+            const matchRes = await api.get(`/matching/customer/${custId}`);
+            if (matchRes.data.success) {
+              setMatchedProperties(matchRes.data.matches?.slice(0, 3) || []);
+            }
           }
         }
       }
@@ -114,9 +125,30 @@ export const WhatsAppInbox = () => {
 
     const handleNewMessage = (newMsg) => {
       if (activeConversation && newMsg.conversationId === activeConversation._id) {
-        setMessages((prev) => [...prev, newMsg]);
+        setMessages((prev) => {
+          // Replace matching optimistic message or add if new
+          const existingIndex = prev.findIndex(
+            (m) =>
+              m._id === newMsg._id ||
+              (String(m._id).startsWith('temp_') && m.content === newMsg.content && m.senderType === newMsg.senderType)
+          );
+          if (existingIndex !== -1) {
+            const updated = [...prev];
+            updated[existingIndex] = newMsg;
+            return updated;
+          }
+          return [...prev, newMsg];
+        });
       }
-      fetchConversations();
+
+      // Live update sidebar preview & order
+      setConversations((prev) =>
+        prev.map((c) =>
+          c._id === newMsg.conversationId
+            ? { ...c, lastMessagePreview: newMsg.content, lastMessageAt: newMsg.createdAt }
+            : c
+        )
+      );
     };
 
     const handleConversationUpdated = (updatedConv) => {
@@ -150,25 +182,61 @@ export const WhatsAppInbox = () => {
     loadProps();
   }, []);
 
-  // Send message
+  // Send message with instantaneous 0ms optimistic UI update
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputText.trim() || !activeConversation) return;
 
-    const text = inputText;
+    const text = inputText.trim();
+    const tempId = `temp_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const now = new Date().toISOString();
+    const agentName = `${user?.firstName || 'Broker'} ${user?.lastName || ''}`.trim() || 'Broker';
+
+    // 1. Instantaneous Optimistic Message added to state with 0ms delay
+    const optimisticMsg = {
+      _id: tempId,
+      conversationId: activeConversation._id,
+      senderType: 'agent',
+      senderName: agentName,
+      content: text,
+      messageType: 'text',
+      createdAt: now,
+      status: 'sending'
+    };
+
+    setMessages((prev) => [...prev, optimisticMsg]);
     setInputText('');
 
+    // 2. Instantaneous conversation sidebar update
+    setConversations((prev) =>
+      prev.map((c) =>
+        c._id === activeConversation._id
+          ? { ...c, lastMessagePreview: text, lastMessageAt: now }
+          : c
+      )
+    );
+
+    // 3. Instant auto-scroll
+    setTimeout(scrollToBottom, 30);
+
+    // 4. Send to server in background
     try {
       const res = await api.post('/whatsapp/send', {
         conversationId: activeConversation._id,
         content: text
       });
 
-      if (res.data.success) {
-        // Handled via socket or fetch
+      if (res.data.success && res.data.message) {
+        // Upgrade temporary message with confirmed database record
+        setMessages((prev) =>
+          prev.map((m) => (m._id === tempId ? res.data.message : m))
+        );
       }
     } catch (err) {
-      addToast('Failed to send message', 'error');
+      setMessages((prev) =>
+        prev.map((m) => (m._id === tempId ? { ...m, status: 'failed' } : m))
+      );
+      addToast('Failed to deliver message to WhatsApp', 'error');
     }
   };
 
@@ -196,17 +264,56 @@ export const WhatsAppInbox = () => {
     }
   };
 
-  // Quick share property into chat
+  // Quick share property into chat with instantaneous 0ms optimistic UI update
   const handleSharePropertyIntoChat = async (prop) => {
     if (!activeConversation) return;
+
+    const tempId = `temp_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const now = new Date().toISOString();
+    const agentName = `${user?.firstName || 'Broker'} ${user?.lastName || ''}`.trim() || 'Broker';
+    const propContent = `🏡 *${prop.title}* (${prop.propertyCode})\n📍 Locality: ${prop.address?.locality || ''}, ${prop.address?.city || ''}\n💰 Price: ₹${(prop.totalPrice / 10000000).toFixed(2)} Cr\n🛏️ ${prop.bedrooms} BHK | ${prop.builtUpArea} sq.ft\n🏊 ${prop.amenities?.slice(0, 3).join(', ') || ''}`;
+
+    const optimisticMsg = {
+      _id: tempId,
+      conversationId: activeConversation._id,
+      senderType: 'agent',
+      senderName: agentName,
+      content: propContent,
+      messageType: 'text',
+      createdAt: now,
+      status: 'sending',
+      isGrounded: true,
+      groundedPropertyId: prop
+    };
+
+    setMessages((prev) => [...prev, optimisticMsg]);
+    setShowPropertyPicker(false);
+
+    setConversations((prev) =>
+      prev.map((c) =>
+        c._id === activeConversation._id
+          ? { ...c, lastMessagePreview: propContent, lastMessageAt: now }
+          : c
+      )
+    );
+
+    setTimeout(scrollToBottom, 30);
+
     try {
-      await api.post('/whatsapp/send', {
+      const res = await api.post('/whatsapp/send', {
         conversationId: activeConversation._id,
         propertyId: prop._id
       });
-      setShowPropertyPicker(false);
+      if (res.data.success && res.data.message) {
+        setMessages((prev) =>
+          prev.map((m) => (m._id === tempId ? res.data.message : m))
+        );
+      }
       addToast(`Shared ${prop.title} to WhatsApp chat!`, 'success');
     } catch (err) {
+      setMessages((prev) =>
+        prev.map((m) => (m._id === tempId ? { ...m, status: 'failed' } : m))
+      );
       addToast('Failed to share property', 'error');
     }
   };
@@ -486,9 +593,15 @@ export const WhatsAppInbox = () => {
                             </span>
                             {!isCustomer && (
                               m.status === 'read' ? (
-                                <CheckCheck className="w-3 h-3 text-zinc-300 inline" />
+                                <CheckCheck className="w-3 h-3 text-zinc-300 inline" title="Read by customer" />
                               ) : m.status === 'delivered' ? (
-                                <CheckCheck className="w-3 h-3 text-zinc-400 inline" />
+                                <CheckCheck className="w-3 h-3 text-zinc-400 inline" title="Delivered to WhatsApp" />
+                              ) : m.status === 'sent' ? (
+                                <Check className="w-3 h-3 text-zinc-400 inline" title="Sent" />
+                              ) : m.status === 'sending' ? (
+                                <span className="text-[8px] text-zinc-400 italic">sending...</span>
+                              ) : m.status === 'failed' ? (
+                                <span className="text-[8px] text-red-500 font-bold">failed</span>
                               ) : (
                                 <Check className="w-3 h-3 text-zinc-500 inline" />
                               )

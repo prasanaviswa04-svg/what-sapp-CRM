@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { Button } from '../../components/common/Button';
-import { Building2, Lock, Mail, ArrowRight } from 'lucide-react';
+import { Building2, Lock, Mail, ArrowRight, Settings, Wifi, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
+import { setCustomApiHost } from '../../services/api';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +15,68 @@ export const Login = () => {
   const { login } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+
+  // Server configuration state for mobile network flexibility
+  const [serverUrl, setServerUrl] = useState(() => {
+    return localStorage.getItem('estateflow_api_host') || 'http://10.1.40.60:5000';
+  });
+  const [showServerConfig, setShowServerConfig] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState({ tested: false, success: false, message: '' });
+
+  const handleTestConnection = async () => {
+    let clean = (serverUrl || '').trim().replace(/\/api\/?$/, '').replace(/\/$/, '');
+    if (!clean.startsWith('http://') && !clean.startsWith('https://')) {
+      clean = 'http://' + clean;
+    }
+    setIsTesting(true);
+    setConnectionStatus({ tested: false, success: false, message: '' });
+    try {
+      const res = await axios.get(`${clean}/api/health`, { timeout: 5000 });
+      if (res.data?.status === 'healthy') {
+        setConnectionStatus({
+          tested: true,
+          success: true,
+          message: `Connected successfully! (${res.data.service || 'EstateFlow CRM Backend'})`,
+        });
+        addToast('Server connection test successful!', 'success');
+      } else {
+        setConnectionStatus({
+          tested: true,
+          success: true,
+          message: 'Server responded, but unexpected response payload.',
+        });
+      }
+    } catch (err) {
+      console.error('Connection test failed:', err);
+      setConnectionStatus({
+        tested: true,
+        success: false,
+        message: `Failed to reach ${clean}. Make sure your PC is running the backend server and phone is on the same Wi-Fi.`,
+      });
+      addToast('Cannot reach server at this address', 'error');
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+  const handleSaveServer = () => {
+    let clean = (serverUrl || '').trim().replace(/\/api\/?$/, '').replace(/\/$/, '');
+    if (!clean.startsWith('http://') && !clean.startsWith('https://')) {
+      clean = 'http://' + clean;
+    }
+    setServerUrl(clean);
+    setCustomApiHost(clean);
+    addToast(`Server URL updated to: ${clean}`, 'success');
+  };
+
+  const handleResetServer = () => {
+    const defaultUrl = 'http://10.1.40.60:5000';
+    setServerUrl(defaultUrl);
+    setCustomApiHost(defaultUrl);
+    setConnectionStatus({ tested: false, success: false, message: '' });
+    addToast('Server URL reset to: ' + defaultUrl, 'info');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,9 +92,13 @@ export const Login = () => {
       navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
+      const isNetworkError = err.code === 'ERR_NETWORK' || err.message === 'Network Error';
+      if (isNetworkError) {
+        setShowServerConfig(true);
+      }
       const errorMsg =
         err.response?.data?.message ||
-        (err.code === 'ERR_NETWORK' || err.message === 'Network Error'
+        (isNetworkError
           ? 'Cannot connect to server. Please verify your phone is on the same Wi-Fi network as the PC!'
           : err.message) ||
         'Login failed. Please check credentials.';
@@ -144,9 +212,13 @@ export const Login = () => {
                     navigate('/dashboard');
                   } catch (err) {
                     console.error('Demo login error:', err);
+                    const isNetworkError = err.code === 'ERR_NETWORK' || err.message === 'Network Error';
+                    if (isNetworkError) {
+                      setShowServerConfig(true);
+                    }
                     const errorMsg =
                       err.response?.data?.message ||
-                      (err.code === 'ERR_NETWORK' || err.message === 'Network Error'
+                      (isNetworkError
                         ? 'Cannot connect to server. Please ensure phone is connected to the same Wi-Fi network as the PC!'
                         : err.message) ||
                       'Login failed';
@@ -162,7 +234,99 @@ export const Login = () => {
             </div>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-zinc-100 text-center">
+          {/* Server Connection Settings Configuration */}
+          <div className="mt-4 pt-3 border-t border-zinc-200">
+            <button
+              type="button"
+              onClick={() => setShowServerConfig(!showServerConfig)}
+              className="w-full flex items-center justify-between text-[11px] text-zinc-500 hover:text-zinc-800 transition py-1"
+            >
+              <span className="flex items-center gap-1.5 font-medium">
+                <Settings className="w-3.5 h-3.5 text-zinc-600" />
+                Server: <code className="text-zinc-700 bg-zinc-100 px-1 py-0.5 rounded font-mono text-[10px]">{serverUrl}</code>
+              </span>
+              <span className="text-zinc-400 font-semibold">{showServerConfig ? '▲ Hide' : '▼ Configure'}</span>
+            </button>
+
+            {showServerConfig && (
+              <div className="mt-2.5 p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2.5 text-xs">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-600 mb-1">
+                    Backend Server URL / IP
+                  </label>
+                  <input
+                    type="text"
+                    value={serverUrl}
+                    onChange={(e) => {
+                      setServerUrl(e.target.value);
+                      setConnectionStatus({ tested: false, success: false, message: '' });
+                    }}
+                    placeholder="http://10.1.40.60:5000"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white border border-zinc-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-zinc-900 font-mono"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleTestConnection}
+                    disabled={isTesting}
+                    className="flex-1 py-1.5 px-2 bg-white hover:bg-zinc-100 text-zinc-800 border border-zinc-300 rounded-lg text-[11px] font-medium transition flex items-center justify-center gap-1 disabled:opacity-50"
+                  >
+                    {isTesting ? (
+                      <>
+                        <RefreshCw className="w-3 h-3 animate-spin" /> Testing...
+                      </>
+                    ) : (
+                      <>
+                        <Wifi className="w-3 h-3 text-emerald-600" /> Test Connection
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveServer}
+                    className="py-1.5 px-3 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-[11px] font-medium transition"
+                  >
+                    Save
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleResetServer}
+                    title="Reset to default (http://10.1.40.60:5000)"
+                    className="py-1.5 px-2 bg-zinc-200 hover:bg-zinc-300 text-zinc-700 rounded-lg text-[11px] font-medium transition"
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                {connectionStatus.tested && (
+                  <div
+                    className={`p-2 rounded-lg text-[11px] flex items-start gap-1.5 leading-snug ${
+                      connectionStatus.success
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                        : 'bg-rose-50 text-rose-800 border border-rose-200'
+                    }`}
+                  >
+                    {connectionStatus.success ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-600 flex-shrink-0 mt-0.5" />
+                    )}
+                    <span>{connectionStatus.message}</span>
+                  </div>
+                )}
+
+                <p className="text-[10px] text-zinc-400 leading-tight">
+                  💡 If your PC Wi-Fi IP changes, type the new IP here and tap Save. PC and phone must be on the same Wi-Fi.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-zinc-100 text-center">
             <span className="text-xs text-zinc-500">Don't have an account? </span>
             <Link to="/register" className="text-xs font-semibold text-zinc-950 hover:underline">
               Register Company

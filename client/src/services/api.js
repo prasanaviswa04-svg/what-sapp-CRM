@@ -22,7 +22,7 @@ export const getApiBaseUrl = () => {
       const customUrl = localStorage.getItem('estateflow_api_host');
       if (customUrl) return customUrl.replace(/\/$/, '') + '/api';
     } catch (e) {}
-    return 'http://10.1.40.73:5000/api';
+    return 'http://10.1.40.60:5000/api';
   }
 
   if (typeof window !== 'undefined') {
@@ -33,12 +33,28 @@ export const getApiBaseUrl = () => {
 
     // When deployed on Netlify or external web hosting
     if (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vercel.app')) {
-      const backendUrl = import.meta.env.VITE_API_URL || 'http://10.1.40.73:5000';
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://10.1.40.60:5000';
       return backendUrl.replace(/\/$/, '') + '/api';
     }
   }
 
   return import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') + '/api' : '/api';
+};
+
+export const setCustomApiHost = (hostUrl) => {
+  if (!hostUrl) {
+    localStorage.removeItem('estateflow_api_host');
+    localStorage.removeItem('estateflow_server_host');
+    api.defaults.baseURL = getApiBaseUrl();
+    return;
+  }
+  let cleanUrl = hostUrl.trim().replace(/\/api\/?$/, '').replace(/\/$/, '');
+  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+    cleanUrl = 'http://' + cleanUrl;
+  }
+  localStorage.setItem('estateflow_api_host', cleanUrl);
+  localStorage.setItem('estateflow_server_host', cleanUrl);
+  api.defaults.baseURL = cleanUrl + '/api';
 };
 
 const api = axios.create({

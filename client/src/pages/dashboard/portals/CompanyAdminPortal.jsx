@@ -43,13 +43,7 @@ export const CompanyAdminPortal = ({ data, onRefresh }) => {
       {/* Top Banner & Quick Actions */}
       <div className="bg-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] bg-zinc-100 text-zinc-700 border border-zinc-200 px-2 py-0.5 rounded-md font-mono font-medium">
-              COMPANY ADMIN • AGENCY LEADERSHIP
-            </span>
-            <span className="text-xs text-zinc-500">• Meta WhatsApp Cloud API Active</span>
-          </div>
-          <h1 className="text-xl font-bold mt-1 tracking-tight text-zinc-950">
+          <h1 className="text-xl font-bold tracking-tight text-zinc-950">
             Agency Executive Dashboard
           </h1>
           <p className="text-xs text-zinc-500 mt-0.5 tracking-tight">

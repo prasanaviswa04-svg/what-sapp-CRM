@@ -6,5 +6,13 @@
     "androidScheme": "http",
     "cleartext": true,
     "allowNavigation": ["*"]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#ffffff",
+      "showSpinner": false
+    }
   }
 }

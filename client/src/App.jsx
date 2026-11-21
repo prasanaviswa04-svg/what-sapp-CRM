@@ -49,11 +49,11 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060609] flex flex-col items-center justify-center text-white text-xs select-none">
-        <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-3">
-          <div className="w-3.5 h-3.5 rounded bg-emerald-400 animate-ping" />
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center text-zinc-900 text-xs select-none">
+        <div className="w-10 h-10 rounded-xl bg-zinc-950 flex items-center justify-center mb-3 shadow-sm">
+          <div className="w-3.5 h-3.5 rounded bg-zinc-400 animate-ping" />
         </div>
-        <span className="text-[11px] font-mono tracking-widest text-zinc-400 uppercase">
+        <span className="text-[11px] font-mono tracking-widest text-zinc-500 uppercase">
           Loading EstateFlow...
         </span>
       </div>

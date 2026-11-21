@@ -13,6 +13,7 @@ public class MainActivity extends BridgeActivity {
             if (this.bridge != null) {
                 WebView webView = this.bridge.getWebView();
                 if (webView != null) {
+                    webView.setBackgroundColor(android.graphics.Color.WHITE);
                     WebSettings settings = webView.getSettings();
                     settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
                     settings.setDomStorageEnabled(true);

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, Search, Bell, Sparkles, Building, Shield, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../common/Button';
@@ -20,19 +21,34 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
 
   return (
     <header className="h-14 bg-white border-b border-zinc-200 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between">
-      {/* Left: Mobile Toggle & Global Search */}
-      <div className="flex items-center gap-3">
+      {/* Left: Mobile Toggle, App Name & Global Search */}
+      <div className="flex items-center gap-2.5 sm:gap-3.5">
         <button
           onClick={onOpenMobile}
           className="lg:hidden p-1.5 rounded-md text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition"
+          aria-label="Open Navigation Menu"
         >
           <Menu className="w-5 h-5" />
         </button>
 
+        {/* App Name in Top Navigation */}
+        <Link
+          to="/dashboard"
+          className="flex items-center gap-1.5 group select-none"
+          title="EstateFlow CRM Home"
+        >
+          <span className="font-extrabold text-base sm:text-lg text-zinc-950 tracking-tight font-sans">
+            EstateFlow
+          </span>
+          <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-200 uppercase group-hover:bg-zinc-200 transition">
+            CRM
+          </span>
+        </Link>
+
         {/* Global Search trigger */}
         <button
           onClick={onOpenSearch}
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-zinc-500 text-xs transition w-60 group"
+          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-zinc-500 text-xs transition w-52 lg:w-60 group ml-1"
         >
           <Search className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-700 transition" />
           <span className="flex-1 text-left tracking-tight">Search CRM...</span>

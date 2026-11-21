@@ -26,3 +26,75 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #71717a;
 }
+
+/* Cinematic Splash Screen Keyframe Animations */
+@keyframes splashGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes flareSweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes towerGrow {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes titleReveal {
+  0% {
+    opacity: 0;
+    letter-spacing: 0.1em;
+    transform: scale(0.92);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    letter-spacing: 0.32em;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-splash-glow {
+  animation: splashGlow 3s ease-in-out infinite;
+}
+
+.animate-flare {
+  animation: flareSweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-title-reveal {
+  animation: titleReveal 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

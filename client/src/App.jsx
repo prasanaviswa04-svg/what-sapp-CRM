@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { ToastProvider } from './context/ToastContext';
 import { AppLayout } from './components/layout/AppLayout';
+import { SplashScreen } from './components/common/SplashScreen';
 
 // Pages
 import { Login } from './pages/auth/Login';
@@ -48,8 +49,13 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white text-xs">
-        Loading EstateFlow CRM...
+      <div className="min-h-screen bg-[#060609] flex flex-col items-center justify-center text-white text-xs select-none">
+        <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-3">
+          <div className="w-3.5 h-3.5 rounded bg-emerald-400 animate-ping" />
+        </div>
+        <span className="text-[11px] font-mono tracking-widest text-zinc-400 uppercase">
+          Loading EstateFlow...
+        </span>
       </div>
     );
   }
@@ -58,11 +64,15 @@ const ProtectedRoute = ({ children }) => {
 };
 
 export function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <SocketProvider>
-          <ToastProvider>
+    <>
+      {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
+      <BrowserRouter>
+        <AuthProvider>
+          <SocketProvider>
+            <ToastProvider>
             <Routes>
               {/* Public Auth Routes */}
               <Route path="/login" element={<Login />} />
@@ -119,6 +129,7 @@ export function App() {
         </SocketProvider>
       </AuthProvider>
     </BrowserRouter>
+    </>
   );
 }
 

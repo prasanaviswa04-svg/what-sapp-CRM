@@ -12,7 +12,7 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, loginOffline } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -94,14 +94,12 @@ export const Login = () => {
       console.error('Login error:', err);
       const isNetworkError = err.code === 'ERR_NETWORK' || err.message === 'Network Error';
       if (isNetworkError) {
-        setShowServerConfig(true);
+        loginOffline();
+        addToast('PC is off — Signed into Standalone Mode', 'success');
+        navigate('/dashboard');
+        return;
       }
-      const errorMsg =
-        err.response?.data?.message ||
-        (isNetworkError
-          ? 'Cannot connect to server. Please verify your phone is on the same Wi-Fi network as the PC!'
-          : err.message) ||
-        'Login failed. Please check credentials.';
+      const errorMsg = err.response?.data?.message || err.message || 'Login failed. Please check credentials.';
       addToast(errorMsg, 'error');
     } finally {
       setIsLoading(false);
@@ -212,17 +210,9 @@ export const Login = () => {
                     navigate('/dashboard');
                   } catch (err) {
                     console.error('Demo login error:', err);
-                    const isNetworkError = err.code === 'ERR_NETWORK' || err.message === 'Network Error';
-                    if (isNetworkError) {
-                      setShowServerConfig(true);
-                    }
-                    const errorMsg =
-                      err.response?.data?.message ||
-                      (isNetworkError
-                        ? 'Cannot connect to server. Please ensure phone is connected to the same Wi-Fi network as the PC!'
-                        : err.message) ||
-                      'Login failed';
-                    addToast(errorMsg, 'error');
+                    loginOffline();
+                    addToast('PC is off — Signed into Standalone Mode', 'success');
+                    navigate('/dashboard');
                   } finally {
                     setIsLoading(false);
                   }
@@ -230,6 +220,18 @@ export const Login = () => {
                 className="w-full py-2 px-3 text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-900 rounded-lg transition border border-zinc-300 flex items-center justify-center gap-1.5"
               >
                 ⚡ 1-Tap Admin Demo Sign-in
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  loginOffline();
+                  addToast('Signed in (Standalone Mode - Works with PC Off)', 'success');
+                  navigate('/dashboard');
+                }}
+                className="w-full mt-2 py-2 px-3 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 rounded-lg transition border border-emerald-200 flex items-center justify-center gap-1.5"
+              >
+                📴 Work Standalone / Offline (PC Off)
               </button>
             </div>
           </form>

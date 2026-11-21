@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleOfflineRequest, OFFLINE_ADMIN_USER } from './offlineStorage';
 
 export const isMobileNative = () => {
   if (typeof window === 'undefined') return false;
@@ -57,8 +58,17 @@ export const setCustomApiHost = (hostUrl) => {
   api.defaults.baseURL = cleanUrl + '/api';
 };
 
+export const enableOfflineMode = () => {
+  try {
+    localStorage.setItem('estateflow_offline_active', 'true');
+    localStorage.setItem('estateflow_token', 'offline_token_session_2026');
+    localStorage.setItem('estateflow_user', JSON.stringify(OFFLINE_ADMIN_USER));
+  } catch (e) {}
+};
+
 const api = axios.create({
   baseURL: getApiBaseUrl(),
+  timeout: 6000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -79,10 +89,36 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to catch unauthorized errors
+// Response interceptor to catch network errors (e.g. PC is off) & handle via Standalone Offline Engine
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If live server responds, clear offline active indicator
+    try {
+      if (!response.data?.isOfflineMode) {
+        localStorage.removeItem('estateflow_offline_active');
+      }
+    } catch (e) {}
+    return response;
+  },
   (error) => {
+    const isNetworkError =
+      error.code === 'ERR_NETWORK' ||
+      error.code === 'ECONNABORTED' ||
+      error.message === 'Network Error' ||
+      error.message?.includes('timeout') ||
+      !error.response;
+
+    if (isNetworkError) {
+      const offlineRes = handleOfflineRequest(error.config);
+      if (offlineRes) {
+        console.warn('📴 PC is off / offline - Request handled via Standalone Offline Engine:', error.config?.url);
+        try {
+          localStorage.setItem('estateflow_offline_active', 'true');
+        } catch (e) {}
+        return Promise.resolve(offlineRes);
+      }
+    }
+
     if (error.response && error.response.status === 401) {
       // If unauthorized and not on login page or public marketplace pages, clear token and redirect
       if (

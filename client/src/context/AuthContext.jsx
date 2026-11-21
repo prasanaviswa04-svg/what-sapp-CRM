@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../services/api';
+import api, { enableOfflineMode } from '../services/api';
+import { OFFLINE_ADMIN_USER } from '../services/offlineStorage';
 
 const AuthContext = createContext(null);
 
@@ -33,8 +34,16 @@ export const AuthProvider = ({ children }) => {
             } catch (e) {}
           }
         } catch (err) {
-          console.error('Session expired or error fetching profile:', err.message);
-          logout();
+          console.warn('Profile check notice:', err.message);
+          if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+            logout();
+          } else {
+            // If PC is off / network error, retain cached user session
+            try {
+              const cached = localStorage.getItem('estateflow_user');
+              if (cached) setUser(JSON.parse(cached));
+            } catch (e) {}
+          }
         }
       }
       setLoading(false);
@@ -42,6 +51,12 @@ export const AuthProvider = ({ children }) => {
 
     fetchMe();
   }, [token]);
+
+  const loginOffline = () => {
+    enableOfflineMode();
+    setToken('offline_token_session_2026');
+    setUser(OFFLINE_ADMIN_USER);
+  };
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
@@ -89,7 +104,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateUser, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ user, token, loading, login, loginOffline, register, logout, updateUser, isAuthenticated: !!token }}>
       {children}
     </AuthContext.Provider>
   );

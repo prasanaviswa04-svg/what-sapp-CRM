@@ -49,6 +49,25 @@ export const AppLayout = () => {
           onOpenSimulator={() => setIsSimulatorOpen(true)}
         />
 
+        {typeof window !== 'undefined' && localStorage.getItem('estateflow_offline_active') === 'true' && (
+          <div className="bg-emerald-50 border-b border-emerald-200 px-4 py-1.5 text-xs text-emerald-900 flex items-center justify-between">
+            <span className="flex items-center gap-1.5 font-medium">
+              <span>⚡</span>
+              <span><strong>Standalone Mode (PC Off):</strong> All features, properties, customer matching &amp; WhatsApp operate directly on your phone.</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                localStorage.removeItem('estateflow_offline_active');
+                window.location.reload();
+              }}
+              className="text-[11px] underline font-semibold text-emerald-800 hover:text-emerald-950 ml-2 whitespace-nowrap"
+            >
+              Check Live Server
+            </button>
+          </div>
+        )}
+
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           <ErrorBoundary>
             <Outlet />

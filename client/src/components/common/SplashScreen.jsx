@@ -1,17 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { useLottie } from 'lottie-react';
+import lottieLoaderData from '../../assets/lottie-loader-bw.json';
 
 /**
- * Pure Minimalist 5-Second White Splash Screen
+ * Professional Black & White Splash Screen
+ * Featuring Lottie Animation (0d4bbda3-e800-4367-aea8-0526c3bf2fd0)
  * 
- * Upgraded Typewriter Format:
- * - Dual-Tone TitleCase Brand Formatting:
- *   "EstateFlow" (Bold Obsidian Sans) + "CRM" (Refined Slate Monospace)
- * - Two-Stage Organic Keystroke Cadence with Natural Word Pause
- * - Crisp Monospace Blinking Cursor
- * - Minimalist Fade-in Tagline: "Real Estate Intelligence"
- * - Tabular Number Percentage Count (00% -> 100%)
- * - 1.5px Ultra-Thin Hairline Progress Track
- * - Zero Clutter, Pure White Canvas
+ * Features:
+ * - Pure White Minimalist Canvas (Zero clutter)
+ * - Exact Lottie Geometric Orbiting Loader converted to Black & White
+ * - Dual-Tone Typewriter Effect: "EstateFlow" (Bold Obsidian) + "CRM" (Muted Monospace)
+ * - Razor-thin Blinking Cursor
+ * - Smooth 5-Second Percentage Count (00% -> 100%)
+ * - 1.5px Hairline Progress Bar
+ * - Seamless Dissolve Transition into the App
  */
 export const SplashScreen = ({ onFinish }) => {
   const [typedBrand, setTypedBrand] = useState('');
@@ -24,17 +26,28 @@ export const SplashScreen = ({ onFinish }) => {
   const categoryWord = 'CRM';
   const animationFrameRef = useRef(null);
 
+  const lottieOptions = useMemo(() => ({
+    animationData: lottieLoaderData,
+    loop: true,
+    autoplay: true,
+  }), []);
+
+  const { View: LottieView } = useLottie(lottieOptions, {
+    width: '100%',
+    height: '100%',
+  });
+
   // 1. Two-Stage Typewriter Animation: "EstateFlow" -> pause -> "CRM"
   useEffect(() => {
     let isCancelled = false;
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const runTypewriter = async () => {
-      // Gentle initial pause before typing starts
-      await wait(300);
+      // Small pause before typing starts
+      await wait(350);
       if (isCancelled) return;
 
-      // Stage 1: Type "EstateFlow" letter by letter
+      // Stage 1: Type "EstateFlow"
       for (let i = 1; i <= brandWord.length; i++) {
         if (isCancelled) return;
         setTypedBrand(brandWord.slice(0, i));
@@ -42,8 +55,8 @@ export const SplashScreen = ({ onFinish }) => {
       }
 
       if (isCancelled) return;
-      // Natural breather before typing the category acronym
-      await wait(220);
+      // Brief pause between brand and category
+      await wait(200);
       if (isCancelled) return;
 
       // Stage 2: Type "CRM"
@@ -54,7 +67,6 @@ export const SplashScreen = ({ onFinish }) => {
       }
 
       if (isCancelled) return;
-      // Reveal subtle tagline
       await wait(250);
       if (isCancelled) return;
       setShowTagline(true);
@@ -69,7 +81,7 @@ export const SplashScreen = ({ onFinish }) => {
 
   // 2. Synchronized 5-Second Percentage Count (00% -> 100%)
   useEffect(() => {
-    const totalDuration = 4400; // Counter climbs steadily over 4.4 seconds
+    const totalDuration = 4400; // Counter reaches 100% at 4.4 seconds
     let startTime = null;
 
     const step = (timestamp) => {
@@ -87,7 +99,7 @@ export const SplashScreen = ({ onFinish }) => {
       } else {
         setCount(100);
 
-        // At 4.7s (300ms hold at 100%), begin clean dissolve fade out
+        // Hold at 100% briefly, then start smooth dissolve
         const fadeTimer = setTimeout(() => {
           setIsFadingOut(true);
         }, 300);
@@ -123,11 +135,11 @@ export const SplashScreen = ({ onFinish }) => {
   return (
     <div
       onClick={handleSkip}
-      className={`fixed inset-0 z-[9999] bg-white text-zinc-950 flex flex-col items-center justify-between py-12 px-6 select-none cursor-pointer transition-opacity duration-300 ease-out ${
+      className={`fixed inset-0 z-[9999] bg-white text-zinc-950 flex flex-col items-center justify-between py-10 px-6 select-none cursor-pointer transition-opacity duration-300 ease-out ${
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Top Bar: Discreet Skip Action */}
+      {/* Top Bar: Discreet Minimalist Skip Button */}
       <div className="w-full flex justify-end">
         <button
           type="button"
@@ -141,22 +153,23 @@ export const SplashScreen = ({ onFinish }) => {
         </button>
       </div>
 
-      {/* Dead Center: Upgraded Dual-Tone Typewriter Brand Display */}
+      {/* Center: Lottie Geometric Loader & Brand Typewriter */}
       <div className="my-auto flex flex-col items-center justify-center text-center">
-        <div className="min-h-[48px] flex items-center justify-center whitespace-nowrap">
-          {/* Main Brand Word: "EstateFlow" */}
+        {/* Black & White Lottie Geometric Orbiting Loader */}
+        <div className="w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center mb-2">
+          {LottieView}
+        </div>
+
+        {/* Dual-Tone Brand Typewriter */}
+        <div className="min-h-[44px] flex items-center justify-center whitespace-nowrap">
           <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 font-sans">
             {typedBrand}
           </span>
-
-          {/* Category Acronym: "CRM" */}
           {typedCategory && (
             <span className="text-2xl sm:text-3xl font-medium tracking-wide text-zinc-400 font-mono ml-2">
               {typedCategory}
             </span>
           )}
-
-          {/* Crisp Monospace Blinking Cursor */}
           <span className="inline-block w-[2.5px] h-[1.15em] bg-zinc-950 ml-1.5 align-middle animate-cursor" />
         </div>
 

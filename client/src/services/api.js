@@ -25,7 +25,20 @@ export const getApiBaseUrl = () => {
     return 'http://10.1.40.73:5000/api';
   }
 
-  return '/api';
+  if (typeof window !== 'undefined') {
+    try {
+      const customUrl = localStorage.getItem('estateflow_api_host');
+      if (customUrl) return customUrl.replace(/\/$/, '') + '/api';
+    } catch (e) {}
+
+    // When deployed on Netlify or external web hosting
+    if (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vercel.app')) {
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://10.1.40.73:5000';
+      return backendUrl.replace(/\/$/, '') + '/api';
+    }
+  }
+
+  return import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') + '/api' : '/api';
 };
 
 const api = axios.create({

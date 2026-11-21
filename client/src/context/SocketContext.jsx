@@ -18,8 +18,9 @@ export const SocketProvider = ({ children }) => {
       return;
     }
 
-    const socketUrl = isMobileNative()
-      ? (localStorage.getItem('estateflow_server_host') || 'http://10.1.40.73:5000')
+    const isExternalWeb = typeof window !== 'undefined' && (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vercel.app'));
+    const socketUrl = isMobileNative() || isExternalWeb
+      ? (localStorage.getItem('estateflow_server_host') || import.meta.env.VITE_SERVER_URL || 'http://10.1.40.73:5000')
       : window.location.origin;
 
     // Connect to server (using origin or fallback localhost:5000)

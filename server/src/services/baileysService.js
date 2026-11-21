@@ -78,7 +78,16 @@ async function initWhatsApp(companyId, forceFresh = false) {
           // Clean credentials
           reconnectAttempts = 0;
           try {
-            fs.rmSync(sessionDir, { recursive: true, force: true });
+            if (fs.existsSync(sessionDir)) {
+              const files = fs.readdirSync(sessionDir);
+              for (const file of files) {
+                try {
+                  fs.rmSync(path.join(sessionDir, file), { recursive: true, force: true });
+                } catch (fe) {}
+              }
+            } else {
+              fs.mkdirSync(sessionDir, { recursive: true });
+            }
           } catch (e) {
             console.error('Error clearing session dir:', e.message);
           }
@@ -133,7 +142,18 @@ async function initWhatsApp(companyId, forceFresh = false) {
       }
     });
 
-    waSocket.ev.on('creds.update', saveCreds);
+    const safeSaveCreds = async () => {
+      try {
+        if (!fs.existsSync(sessionDir)) {
+          fs.mkdirSync(sessionDir, { recursive: true });
+        }
+        await saveCreds();
+      } catch (saveErr) {
+        console.warn('⚠️ Non-fatal creds.update error:', saveErr.message);
+      }
+    };
+
+    waSocket.ev.on('creds.update', safeSaveCreds);
 
     // Handle inbound real WhatsApp messages
     waSocket.ev.on('messages.upsert', async ({ messages: newMsgs, type }) => {
@@ -297,21 +317,36 @@ async function disconnectWhatsApp(companyId) {
     } catch (e) {
       // ignore
     }
-    waSocket.end(undefined);
+    try {
+      waSocket.end(undefined);
+    } catch (e) {}
     waSocket = null;
   }
 
   try {
-    fs.rmSync(sessionDir, { recursive: true, force: true });
+    if (fs.existsSync(sessionDir)) {
+      const files = fs.readdirSync(sessionDir);
+      for (const file of files) {
+        try {
+          fs.rmSync(path.join(sessionDir, file), { recursive: true, force: true });
+        } catch (fe) {}
+      }
+    } else {
+      fs.mkdirSync(sessionDir, { recursive: true });
+    }
   } catch (e) {
     // ignore
   }
 
   if (companyId) {
-    await Company.findByIdAndUpdate(companyId, {
-      'whatsappConfig.status': 'disconnected'
-    });
-    emitCompanyEvent(companyId.toString(), 'whatsapp_disconnected', {});
+    try {
+      await Company.findByIdAndUpdate(companyId, {
+        'whatsappConfig.status': 'disconnected'
+      });
+      emitCompanyEvent(companyId.toString(), 'whatsapp_disconnected', {});
+    } catch (dbErr) {
+      console.warn('⚠️ Disconnect DB update error:', dbErr.message);
+    }
   }
 
   // Re-initialize fresh socket to immediately provide new QR code

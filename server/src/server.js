@@ -8,6 +8,15 @@ const { connectDB } = require('./config/db');
 const { initSocket } = require('./services/socketService');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
+// Process-wide safeguards to prevent crashes from unhandled async socket or filesystem errors
+process.on('uncaughtException', (err) => {
+  console.error('⚠️ [Server Safeguard] Uncaught Exception caught and absorbed:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.warn('⚠️ [Server Safeguard] Unhandled Promise Rejection absorbed:', reason);
+});
+
 // Route Imports
 const authRoutes = require('./routes/authRoutes');
 const customerRoutes = require('./routes/customerRoutes');

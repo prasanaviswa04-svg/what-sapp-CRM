@@ -132,7 +132,7 @@ const customerSchema = new mongoose.Schema({
   },
   leadStatus: {
     type: String,
-    enum: ['New', 'Contacted', 'Qualified', 'Interested', 'Site Visit Scheduled', 'Negotiating', 'Booked', 'Closed', 'Lost'],
+    enum: ['New', 'New Lead', 'Contacted', 'Qualified', 'Interested', 'Site Visit Scheduled', 'Negotiating', 'Booked', 'Closed', 'Lost'],
     default: 'New'
   },
   priority: {

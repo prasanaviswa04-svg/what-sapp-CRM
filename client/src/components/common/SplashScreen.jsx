@@ -3,17 +3,82 @@ import { useLottie } from 'lottie-react';
 import lottieLoaderData from '../../assets/lottie-loader-bw.json';
 
 /**
+ * Bulletproof Lottie Error Boundary
+ * Ensures that if Lottie encounters any issue (e.g. WebView eval policy, null ref),
+ * it seamlessly falls back to a pristine geometric SVG orbit loader without crashing the app.
+ */
+class LottieErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.warn('Lottie render issue, falling back to SVG orbit loader:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || null;
+    }
+    return this.props.children;
+  }
+}
+
+/**
+ * Safe Lottie Subcomponent
+ */
+const LottiePlayer = ({ animationData }) => {
+  const options = useMemo(() => ({
+    animationData,
+    loop: true,
+    autoplay: true,
+  }), [animationData]);
+
+  const { View } = useLottie(options, {
+    width: '100%',
+    height: '100%',
+  });
+
+  return View;
+};
+
+/**
+ * Clean Geometric Orbit SVG Fallback Loader
+ */
+const FallbackOrbitLoader = () => (
+  <div className="w-36 h-36 flex items-center justify-center">
+    <svg className="w-28 h-28 animate-spin" viewBox="0 0 100 100" style={{ animationDuration: '3s' }}>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#e4e4e7" strokeWidth="2.5" />
+      <circle
+        cx="50"
+        cy="50"
+        r="38"
+        fill="none"
+        stroke="#09090b"
+        strokeWidth="3"
+        strokeDasharray="60 180"
+        strokeLinecap="round"
+      />
+      <circle cx="50" cy="12" r="4.5" fill="#09090b" />
+    </svg>
+  </div>
+);
+
+/**
  * Professional Black & White Splash Screen
- * Featuring Lottie Animation (0d4bbda3-e800-4367-aea8-0526c3bf2fd0)
- * 
  * Features:
  * - Pure White Minimalist Canvas (Zero clutter)
- * - Exact Lottie Geometric Orbiting Loader converted to Black & White
+ * - Exact Lottie Geometric Orbiting Loader with Error Boundary & SVG fallback
  * - Dual-Tone Typewriter Effect: "EstateFlow" (Bold Obsidian) + "CRM" (Muted Monospace)
  * - Razor-thin Blinking Cursor
  * - Smooth 5-Second Percentage Count (00% -> 100%)
  * - 1.5px Hairline Progress Bar
- * - Seamless Dissolve Transition into the App
+ * - Hard Safety Timer (Guaranteed transition even if WebView sleeps or lags)
  */
 export const SplashScreen = ({ onFinish }) => {
   const [typedBrand, setTypedBrand] = useState('');
@@ -25,26 +90,33 @@ export const SplashScreen = ({ onFinish }) => {
   const brandWord = 'EstateFlow';
   const categoryWord = 'CRM';
   const animationFrameRef = useRef(null);
+  const finishedRef = useRef(false);
 
-  const lottieOptions = useMemo(() => ({
-    animationData: lottieLoaderData,
-    loop: true,
-    autoplay: true,
-  }), []);
+  const safeFinish = () => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    setIsFadingOut(true);
+    setTimeout(() => {
+      if (onFinish) onFinish();
+    }, 250);
+  };
 
-  const { View: LottieView } = useLottie(lottieOptions, {
-    width: '100%',
-    height: '100%',
-  });
+  // 1. Hard Safety Timeout: Guaranteed dismissal after 5.2s max under ALL conditions
+  useEffect(() => {
+    const hardTimer = setTimeout(() => {
+      safeFinish();
+    }, 5200);
 
-  // 1. Two-Stage Typewriter Animation: "EstateFlow" -> pause -> "CRM"
+    return () => clearTimeout(hardTimer);
+  }, []);
+
+  // 2. Two-Stage Typewriter Animation: "EstateFlow" -> pause -> "CRM"
   useEffect(() => {
     let isCancelled = false;
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const runTypewriter = async () => {
-      // Small pause before typing starts
-      await wait(350);
+      await wait(300);
       if (isCancelled) return;
 
       // Stage 1: Type "EstateFlow"
@@ -55,7 +127,6 @@ export const SplashScreen = ({ onFinish }) => {
       }
 
       if (isCancelled) return;
-      // Brief pause between brand and category
       await wait(200);
       if (isCancelled) return;
 
@@ -67,7 +138,7 @@ export const SplashScreen = ({ onFinish }) => {
       }
 
       if (isCancelled) return;
-      await wait(250);
+      await wait(220);
       if (isCancelled) return;
       setShowTagline(true);
     };
@@ -79,9 +150,9 @@ export const SplashScreen = ({ onFinish }) => {
     };
   }, []);
 
-  // 2. Synchronized 5-Second Percentage Count (00% -> 100%)
+  // 3. Synchronized 5-Second Percentage Count (00% -> 100%)
   useEffect(() => {
-    const totalDuration = 4400; // Counter reaches 100% at 4.4 seconds
+    const totalDuration = 4400;
     let startTime = null;
 
     const step = (timestamp) => {
@@ -89,7 +160,6 @@ export const SplashScreen = ({ onFinish }) => {
       const elapsed = timestamp - startTime;
       const progress = Math.min(elapsed / totalDuration, 1);
 
-      // Smooth custom ease-out curve
       const ease = 1 - Math.pow(1 - progress, 2.7);
       const currentCount = Math.min(Math.floor(ease * 100), 100);
       setCount(currentCount);
@@ -99,20 +169,11 @@ export const SplashScreen = ({ onFinish }) => {
       } else {
         setCount(100);
 
-        // Hold at 100% briefly, then start smooth dissolve
         const fadeTimer = setTimeout(() => {
-          setIsFadingOut(true);
+          safeFinish();
         }, 300);
 
-        // At 5.0s, transition seamlessly into the application
-        const finishTimer = setTimeout(() => {
-          if (onFinish) onFinish();
-        }, 600);
-
-        return () => {
-          clearTimeout(fadeTimer);
-          clearTimeout(finishTimer);
-        };
+        return () => clearTimeout(fadeTimer);
       }
     };
 
@@ -123,13 +184,10 @@ export const SplashScreen = ({ onFinish }) => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [onFinish]);
+  }, []);
 
   const handleSkip = () => {
-    setIsFadingOut(true);
-    setTimeout(() => {
-      if (onFinish) onFinish();
-    }, 200);
+    safeFinish();
   };
 
   return (
@@ -153,14 +211,16 @@ export const SplashScreen = ({ onFinish }) => {
         </button>
       </div>
 
-      {/* Center: Lottie Geometric Loader & Brand Typewriter */}
+      {/* Center: Safe Lottie Geometric Loader & Brand Typewriter */}
       <div className="my-auto flex flex-col items-center justify-center text-center">
-        {/* Black & White Lottie Geometric Orbiting Loader */}
+        {/* Black & White Lottie Geometric Orbiting Loader with Safe Error Boundary */}
         <div className="w-40 h-40 sm:w-52 sm:h-52 flex items-center justify-center mb-3">
-          {LottieView}
+          <LottieErrorBoundary fallback={<FallbackOrbitLoader />}>
+            <LottiePlayer animationData={lottieLoaderData} />
+          </LottieErrorBoundary>
         </div>
 
-        {/* Dual-Tone Brand Typewriter with Increased Font Size */}
+        {/* Dual-Tone Brand Typewriter with High-Contrast Typography */}
         <div className="min-h-[52px] sm:min-h-[64px] flex items-center justify-center whitespace-nowrap">
           <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-zinc-950 font-sans">
             {typedBrand}

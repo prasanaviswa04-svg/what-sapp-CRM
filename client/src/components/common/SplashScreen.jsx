@@ -3,40 +3,71 @@ import React, { useEffect, useState, useRef } from 'react';
 /**
  * Pure Minimalist 5-Second White Splash Screen
  * 
- * Design Philosophy:
- * - Pure flat white background (zero noise, zero patterns, zero clutter)
- * - Single-focus, steady typewriter animation for "ESTATEFLOW CRM"
- * - Crisp razor-thin blinking cursor
- * - Monospaced minimalist number count (00% -> 100%)
- * - Ultra-thin 1.5px hairline progress indicator
+ * Upgraded Typewriter Format:
+ * - Dual-Tone TitleCase Brand Formatting:
+ *   "EstateFlow" (Bold Obsidian Sans) + "CRM" (Refined Slate Monospace)
+ * - Two-Stage Organic Keystroke Cadence with Natural Word Pause
+ * - Crisp Monospace Blinking Cursor
+ * - Minimalist Fade-in Tagline: "Real Estate Intelligence"
+ * - Tabular Number Percentage Count (00% -> 100%)
+ * - 1.5px Ultra-Thin Hairline Progress Track
+ * - Zero Clutter, Pure White Canvas
  */
 export const SplashScreen = ({ onFinish }) => {
-  const [typedText, setTypedText] = useState('');
+  const [typedBrand, setTypedBrand] = useState('');
+  const [typedCategory, setTypedCategory] = useState('');
+  const [showTagline, setShowTagline] = useState(false);
   const [count, setCount] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
-  const fullText = 'ESTATEFLOW CRM';
+  const brandWord = 'EstateFlow';
+  const categoryWord = 'CRM';
   const animationFrameRef = useRef(null);
 
-  // 1. Clean, Steady Typewriter Animation
+  // 1. Two-Stage Typewriter Animation: "EstateFlow" -> pause -> "CRM"
   useEffect(() => {
-    let index = 0;
-    const startTimeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        index++;
-        setTypedText(fullText.slice(0, index));
-        if (index >= fullText.length) {
-          clearInterval(interval);
-        }
-      }, 100);
+    let isCancelled = false;
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-      return () => clearInterval(interval);
-    }, 250);
+    const runTypewriter = async () => {
+      // Gentle initial pause before typing starts
+      await wait(300);
+      if (isCancelled) return;
 
-    return () => clearTimeout(startTimeout);
+      // Stage 1: Type "EstateFlow" letter by letter
+      for (let i = 1; i <= brandWord.length; i++) {
+        if (isCancelled) return;
+        setTypedBrand(brandWord.slice(0, i));
+        await wait(95);
+      }
+
+      if (isCancelled) return;
+      // Natural breather before typing the category acronym
+      await wait(220);
+      if (isCancelled) return;
+
+      // Stage 2: Type "CRM"
+      for (let j = 1; j <= categoryWord.length; j++) {
+        if (isCancelled) return;
+        setTypedCategory(categoryWord.slice(0, j));
+        await wait(110);
+      }
+
+      if (isCancelled) return;
+      // Reveal subtle tagline
+      await wait(250);
+      if (isCancelled) return;
+      setShowTagline(true);
+    };
+
+    runTypewriter();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
-  // 2. 5-Second Percentage Count (00% -> 100%)
+  // 2. Synchronized 5-Second Percentage Count (00% -> 100%)
   useEffect(() => {
     const totalDuration = 4400; // Counter climbs steadily over 4.4 seconds
     let startTime = null;
@@ -47,7 +78,7 @@ export const SplashScreen = ({ onFinish }) => {
       const progress = Math.min(elapsed / totalDuration, 1);
 
       // Smooth custom ease-out curve
-      const ease = 1 - Math.pow(1 - progress, 2.8);
+      const ease = 1 - Math.pow(1 - progress, 2.7);
       const currentCount = Math.min(Math.floor(ease * 100), 100);
       setCount(currentCount);
 
@@ -56,12 +87,12 @@ export const SplashScreen = ({ onFinish }) => {
       } else {
         setCount(100);
 
-        // At 4.7s (300ms hold at 100%), start clean dissolve fade out
+        // At 4.7s (300ms hold at 100%), begin clean dissolve fade out
         const fadeTimer = setTimeout(() => {
           setIsFadingOut(true);
         }, 300);
 
-        // At 5.0s, transition into the application
+        // At 5.0s, transition seamlessly into the application
         const finishTimer = setTimeout(() => {
           if (onFinish) onFinish();
         }, 600);
@@ -96,7 +127,7 @@ export const SplashScreen = ({ onFinish }) => {
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Top Bar: Minimalist Skip Action */}
+      {/* Top Bar: Discreet Skip Action */}
       <div className="w-full flex justify-end">
         <button
           type="button"
@@ -110,14 +141,33 @@ export const SplashScreen = ({ onFinish }) => {
         </button>
       </div>
 
-      {/* Dead Center: Single-Focus Brand Typewriter */}
-      <div className="my-auto flex items-center justify-center text-center">
-        <div className="min-h-[40px] flex items-center justify-center">
-          <span className="text-xl sm:text-2xl font-bold tracking-[0.24em] uppercase text-zinc-950 font-sans whitespace-nowrap">
-            {typedText}
+      {/* Dead Center: Upgraded Dual-Tone Typewriter Brand Display */}
+      <div className="my-auto flex flex-col items-center justify-center text-center">
+        <div className="min-h-[48px] flex items-center justify-center whitespace-nowrap">
+          {/* Main Brand Word: "EstateFlow" */}
+          <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 font-sans">
+            {typedBrand}
           </span>
-          <span className="inline-block w-[2px] h-[1.15em] bg-zinc-950 ml-1.5 align-middle animate-cursor" />
+
+          {/* Category Acronym: "CRM" */}
+          {typedCategory && (
+            <span className="text-2xl sm:text-3xl font-medium tracking-wide text-zinc-400 font-mono ml-2">
+              {typedCategory}
+            </span>
+          )}
+
+          {/* Crisp Monospace Blinking Cursor */}
+          <span className="inline-block w-[2.5px] h-[1.15em] bg-zinc-950 ml-1.5 align-middle animate-cursor" />
         </div>
+
+        {/* Minimalist Subtitle */}
+        <p
+          className={`text-[11px] font-mono tracking-[0.28em] uppercase text-zinc-400 mt-2 transition-opacity duration-500 ${
+            showTagline ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          Real Estate Intelligence
+        </p>
       </div>
 
       {/* Bottom: Minimalist Number Count & Hairline Progress Track */}

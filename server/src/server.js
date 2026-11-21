@@ -101,12 +101,23 @@ app.get(['/download/apk', '/EstateFlow-CRM.apk'], (req, res) => {
   res.status(404).send('APK file not found.');
 });
 
-// Static frontend serving if client/dist exists
+// Static frontend serving if client/dist exists with instant auto-update headers
 const clientDistPath = path.join(__dirname, '../../client/dist');
 if (fs.existsSync(clientDistPath)) {
-  app.use(express.static(clientDistPath));
+  app.use(express.static(clientDistPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+      }
+    }
+  }));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.sendFile(path.join(clientDistPath, 'index.html'));
   });
 }

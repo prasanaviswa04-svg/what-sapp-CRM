@@ -110,6 +110,15 @@ app.get(['/download/apk', '/EstateFlow-CRM.apk'], (req, res) => {
   res.status(404).send('APK file not found.');
 });
 
+// Uploads static directory for WhatsApp media and property photos
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  } catch (e) {}
+}
+app.use('/uploads', express.static(uploadsDir));
+
 // Static frontend serving if client/dist exists with instant auto-update headers
 const clientDistPath = path.join(__dirname, '../../client/dist');
 if (fs.existsSync(clientDistPath)) {
@@ -123,7 +132,7 @@ if (fs.existsSync(clientDistPath)) {
     }
   }));
   app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api')) return next();
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');

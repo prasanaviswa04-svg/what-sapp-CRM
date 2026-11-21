@@ -262,7 +262,7 @@ async function requestPairingCode(phoneNumber) {
   return code;
 }
 
-async function sendBaileysMessage(to, text) {
+async function sendBaileysMessage(to, payload) {
   if (!waSocket || !connectionState.isConnected) {
     throw new Error('WhatsApp is not currently connected. Please link device by scanning the QR code first.');
   }
@@ -275,20 +275,126 @@ async function sendBaileysMessage(to, text) {
   const jid = `${cleanNumber}@s.whatsapp.net`;
   console.log(`🚀 Dispatching real WhatsApp message to JID: ${jid}...`);
 
+  // Normalize payload: accepts plain string (text) or rich object { text, photo, mediaUrl, location }
+  let text = '';
+  let photo = '';
+  let mediaUrl = '';
+  let location = null;
+
+  if (typeof payload === 'string') {
+    text = payload;
+  } else if (payload && typeof payload === 'object') {
+    text = payload.text || payload.content || payload.message || '';
+    photo = payload.photo || payload.image || '';
+    mediaUrl = payload.mediaUrl || '';
+    location = payload.location || null;
+  }
+
+  const rawMedia = photo || mediaUrl;
+
   try {
     // Send human typing presence
     try {
       await waSocket.presenceSubscribe(jid);
       await waSocket.sendPresenceUpdate('available');
       await waSocket.sendPresenceUpdate('composing', jid);
-      const typingDuration = Math.min(Math.max((text?.length || 10) * 15, 500), 1500);
+      const typingDuration = Math.min(Math.max((text?.length || 10) * 15, 300), 1200);
       await new Promise((r) => setTimeout(r, typingDuration));
       await waSocket.sendPresenceUpdate('paused', jid);
     } catch (e) {
       // non-fatal
     }
 
-    const sent = await waSocket.sendMessage(jid, { text });
+    let sent = null;
+
+    // 1. Resolve Location & Google Maps details
+    let locData = null;
+    if (location) {
+      const { parseGoogleMapsLocation } = require('../utils/mediaHelper');
+      locData = parseGoogleMapsLocation(location);
+    }
+
+    // 2. Prepare text & caption with Google Maps link if available
+    let finalCaption = text || '';
+    if (locData && locData.googleMapsUrl && !finalCaption.includes(locData.googleMapsUrl)) {
+      finalCaption = finalCaption
+        ? `${finalCaption}\n\n📍 Google Maps: ${locData.googleMapsUrl}`
+        : `📍 Google Maps: ${locData.googleMapsUrl}`;
+    }
+
+    // 3. Dispatch Photo / Image if present
+    if (rawMedia) {
+      let imageBuffer = null;
+
+      // Base64 Data URI
+      if (typeof rawMedia === 'string' && rawMedia.startsWith('data:image')) {
+        const base64Part = rawMedia.split(',')[1] || rawMedia;
+        imageBuffer = Buffer.from(base64Part, 'base64');
+      }
+      // Local file in uploads folder
+      else if (typeof rawMedia === 'string' && rawMedia.startsWith('/uploads/')) {
+        const localPath = path.join(__dirname, '../../uploads', path.basename(rawMedia));
+        if (fs.existsSync(localPath)) {
+          imageBuffer = fs.readFileSync(localPath);
+        }
+      }
+      // Public HTTP/HTTPS URL
+      else if (typeof rawMedia === 'string' && (rawMedia.startsWith('http://') || rawMedia.startsWith('https://'))) {
+        try {
+          const axios = require('axios');
+          const resp = await axios.get(rawMedia, { responseType: 'arraybuffer', timeout: 8000 });
+          imageBuffer = Buffer.from(resp.data);
+        } catch (fetchErr) {
+          console.warn('⚠️ Could not buffer image URL, passing URL directly to Baileys:', fetchErr.message);
+        }
+      } else if (Buffer.isBuffer(rawMedia)) {
+        imageBuffer = rawMedia;
+      }
+
+      try {
+        if (imageBuffer) {
+          sent = await waSocket.sendMessage(jid, {
+            image: imageBuffer,
+            caption: finalCaption || undefined
+          });
+          console.log(`📸 Real WhatsApp Photo delivered to ${cleanNumber}`);
+        } else {
+          sent = await waSocket.sendMessage(jid, {
+            image: { url: rawMedia },
+            caption: finalCaption || undefined
+          });
+          console.log(`📸 Real WhatsApp Photo URL delivered to ${cleanNumber}`);
+        }
+      } catch (imgErr) {
+        console.error('❌ Failed to deliver photo directly, falling back to text:', imgErr.message);
+      }
+    }
+
+    // 4. Dispatch Native WhatsApp Location Map Pin if coordinates are present
+    if (locData && locData.latitude && locData.longitude) {
+      try {
+        const locPayload = {
+          location: {
+            degreesLatitude: Number(locData.latitude),
+            degreesLongitude: Number(locData.longitude),
+            name: locData.name || 'Shared Google Maps Location',
+            address: locData.address || locData.googleMapsUrl || `${locData.latitude}, ${locData.longitude}`
+          }
+        };
+
+        const locSent = await waSocket.sendMessage(jid, locPayload);
+        if (!sent) sent = locSent;
+        console.log(`📍 Real WhatsApp Google Maps Location Pin delivered to ${cleanNumber} (${locData.latitude}, ${locData.longitude})`);
+      } catch (locErr) {
+        console.warn('⚠️ Non-fatal location pin dispatch warning:', locErr.message);
+      }
+    }
+
+    // 5. If no photo was sent, send standard text message (containing word and Google Maps link)
+    if (!sent || (!rawMedia && !(locData && locData.latitude && locData.longitude))) {
+      sent = await waSocket.sendMessage(jid, { text: finalCaption || 'Hello from EstateFlow CRM!' });
+    }
+
     console.log(`✅ WhatsApp message delivered to ${cleanNumber}! MessageId: ${sent?.key?.id}`);
     return {
       success: true,

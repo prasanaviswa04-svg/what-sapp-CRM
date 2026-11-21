@@ -11,6 +11,7 @@ const { sendTextMessage, sendMediaMessage, sendTemplateMessage } = require('../s
 const { generateAiRealEstateResponse } = require('../services/openAiService');
 const { calculateLeadScore } = require('../services/leadScoringService');
 const { emitCompanyEvent, emitConversationEvent } = require('../services/socketService');
+const { saveBase64Media, parseGoogleMapsLocation } = require('../utils/mediaHelper');
 const {
   initWhatsApp,
   getWhatsAppStatus,
@@ -446,7 +447,7 @@ const getMessages = async (req, res, next) => {
   }
 };
 
-// @desc    Send manual message or share property brochure via WhatsApp
+// @desc    Send manual message or share property brochure via WhatsApp (supports Text, Photo, and Google Maps)
 // @route   POST /api/whatsapp/send
 const sendMessage = async (req, res, next) => {
   try {
@@ -458,19 +459,48 @@ const sendMessage = async (req, res, next) => {
       recipientPhone,
       messageType = 'text',
       mediaUrl,
+      photo,
+      location,
       propertyId
     } = req.body;
 
     let targetText = message || content || '';
     let customer = null;
     let conversation = null;
+    let resolvedMediaUrl = mediaUrl || photo || '';
+    let resolvedMessageType = messageType;
+    let locData = null;
 
-    // 1. Resolve Customer if customerId provided
+    // 1. Process Photo / Media if provided (supports base64 data URI and URLs)
+    if (resolvedMediaUrl) {
+      if (typeof resolvedMediaUrl === 'string' && resolvedMediaUrl.startsWith('data:image')) {
+        const saved = saveBase64Media(resolvedMediaUrl, 'whatsapp_img');
+        if (saved.url) {
+          resolvedMediaUrl = saved.url;
+        }
+      }
+      resolvedMessageType = 'image';
+    }
+
+    // 2. Process Location / Google Maps
+    if (location) {
+      locData = parseGoogleMapsLocation(location);
+      if (locData && locData.googleMapsUrl && !targetText.includes(locData.googleMapsUrl)) {
+        targetText = targetText
+          ? `${targetText}\n\n📍 Google Maps: ${locData.googleMapsUrl}`
+          : `📍 Google Maps: ${locData.googleMapsUrl}`;
+      }
+      if (!resolvedMediaUrl) {
+        resolvedMessageType = 'location';
+      }
+    }
+
+    // 3. Resolve Customer if customerId provided
     if (customerId) {
       customer = await Customer.findOne({ _id: customerId, companyId: req.companyId });
     }
 
-    // 2. Resolve or Create Conversation
+    // 4. Resolve or Create Conversation
     if (conversationId) {
       conversation = await Conversation.findOne({
         _id: conversationId,
@@ -495,13 +525,39 @@ const sendMessage = async (req, res, next) => {
       }
     }
 
-    // 3. Format Property Brochure if propertyId provided
+    // 5. Format Property Brochure if propertyId provided (automatically attaches property image & Google Maps location)
     let property = null;
     if (propertyId) {
       const Property = require('../models/Property');
       property = await Property.findById(propertyId);
       if (property) {
         targetText = formatPropertyWhatsAppMessage(property, customer);
+
+        // Auto-attach primary property image
+        if (!resolvedMediaUrl && property.images && property.images.length > 0) {
+          resolvedMediaUrl = property.images[0];
+          resolvedMessageType = 'image';
+        }
+
+        // Auto-attach Google Maps location from property address
+        if (!locData && property.address) {
+          const propLocTitle = `${property.title}, ${property.address.locality || ''}`;
+          const gmapUrl =
+            property.address.googleMapsUrl ||
+            `https://maps.google.com/?q=${encodeURIComponent(`${propLocTitle}, ${property.address.city || ''}`)}`;
+
+          locData = {
+            latitude: property.coordinates?.lat || 28.4595,
+            longitude: property.coordinates?.lng || 77.0266,
+            name: property.title,
+            address: `${property.address.locality || ''}, ${property.address.city || ''}`,
+            googleMapsUrl: gmapUrl
+          };
+
+          if (!targetText.includes(gmapUrl)) {
+            targetText += `\n\n📍 Google Maps: ${gmapUrl}`;
+          }
+        }
       }
     }
 
@@ -515,23 +571,32 @@ const sendMessage = async (req, res, next) => {
       });
     }
 
-    if (!targetText && !mediaUrl) {
+    if (!targetText && !resolvedMediaUrl && !locData) {
       return res.status(400).json({
         success: false,
-        message: 'Message content or propertyId is required.'
+        message: 'Message content, photo, or Google Maps location is required.'
       });
     }
 
     const cleanPhone = targetPhone.replace(/[^\d]/g, '');
     const waDirectUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(targetText)}`;
 
-    // 4. Send via Live WhatsApp Gateway
+    // 6. Send via Live WhatsApp Gateway (dispatches text, photo, and interactive Google Maps pin)
     let sendRes = null;
     let liveDelivered = false;
     let gatewayNotice = '';
 
     try {
-      sendRes = await sendTextMessage(targetPhone, targetText, req.companyId);
+      sendRes = await sendTextMessage(
+        targetPhone,
+        {
+          text: targetText,
+          photo: resolvedMediaUrl,
+          mediaUrl: resolvedMediaUrl,
+          location: locData
+        },
+        req.companyId
+      );
       if (sendRes && sendRes.success && sendRes.live) {
         liveDelivered = true;
       }
@@ -539,9 +604,20 @@ const sendMessage = async (req, res, next) => {
       gatewayNotice = err.message;
     }
 
-    // 5. Record Message in CRM if conversation exists
+    // 7. Record Message in CRM if conversation exists
     let recordedMsg = null;
     if (conversation) {
+      let previewText = targetText;
+      if (property) {
+        previewText = `Shared ${property.title}`;
+      } else if (resolvedMediaUrl && locData) {
+        previewText = '📷 Photo & 📍 Google Map';
+      } else if (resolvedMediaUrl) {
+        previewText = '📷 Photo';
+      } else if (locData) {
+        previewText = '📍 Google Map';
+      }
+
       recordedMsg = await Message.create({
         companyId: req.companyId,
         conversationId: conversation._id,
@@ -549,16 +625,17 @@ const sendMessage = async (req, res, next) => {
         senderType: 'agent',
         senderId: req.user.id,
         senderName: `${req.user.firstName} ${req.user.lastName}`,
-        messageType,
+        messageType: resolvedMessageType,
         content: targetText,
-        mediaUrl: mediaUrl || '',
+        mediaUrl: resolvedMediaUrl || '',
+        metadata: locData ? { location: locData } : {},
         whatsappMessageId: sendRes?.messageId || `wamid_manual_${Date.now()}`,
         status: liveDelivered ? 'sent' : 'delivered',
         groundedPropertyId: property?._id || null
       });
 
       conversation.lastMessageAt = new Date();
-      conversation.lastMessagePreview = property ? `Shared ${property.title}` : targetText;
+      conversation.lastMessagePreview = previewText;
       await conversation.save();
 
       // Emit real-time sockets
@@ -575,6 +652,8 @@ const sendMessage = async (req, res, next) => {
         : (property ? `Property brochure created for ${targetPhone}. Ready to share.` : 'Message ready for WhatsApp.'),
       waDirectUrl,
       property,
+      photo: resolvedMediaUrl,
+      location: locData,
       messageRecord: recordedMsg
     });
   } catch (err) {

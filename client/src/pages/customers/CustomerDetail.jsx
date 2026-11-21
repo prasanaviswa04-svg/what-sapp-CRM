@@ -17,7 +17,11 @@ import {
   Send,
   CheckCircle2,
   ArrowLeft,
-  Share2
+  Share2,
+  Camera,
+  X,
+  ExternalLink,
+  Navigation
 } from 'lucide-react';
 
 export const CustomerDetail = () => {
@@ -30,6 +34,13 @@ export const CustomerDetail = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [newMessage, setNewMessage] = useState('');
   const [sendingMsg, setSendingMsg] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
+  const [customLocInput, setCustomLocInput] = useState('');
+  const [fetchingGps, setFetchingGps] = useState(false);
+  const fileInputRef = React.useRef(null);
 
   const fetchCustomerDetails = async () => {
     setLoading(true);
@@ -49,20 +60,102 @@ export const CustomerDetail = () => {
     fetchCustomerDetails();
   }, [id]);
 
+  const handlePhotoSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      addToast('Image must be smaller than 15MB', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setPhotoPreview(event.target.result);
+      setPhotoFile(file);
+      addToast('Photo attached! Ready to send via WhatsApp.', 'info');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFetchCurrentGps = () => {
+    if (!navigator.geolocation) {
+      addToast('Geolocation is not supported by your device', 'error');
+      return;
+    }
+    setFetchingGps(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setSelectedLocation({
+          latitude: lat,
+          longitude: lng,
+          name: 'Current Agent Location',
+          address: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+          googleMapsUrl: `https://maps.google.com/?q=${lat},${lng}`
+        });
+        setFetchingGps(false);
+        setShowLocationPicker(false);
+        addToast('📍 Current GPS location attached!', 'success');
+      },
+      (err) => {
+        setFetchingGps(false);
+        addToast(`Could not fetch GPS: ${err.message}`, 'error');
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
+
+  const handleApplyCustomLocation = () => {
+    if (!customLocInput.trim()) return;
+    const str = customLocInput.trim();
+    const coordRegex = /[@=]?(-?\d+\.\d+),\s*(-?\d+\.\d+)/;
+    const match = str.match(coordRegex);
+    if (match) {
+      const lat = parseFloat(match[1]);
+      const lng = parseFloat(match[2]);
+      setSelectedLocation({
+        latitude: lat,
+        longitude: lng,
+        name: 'Google Maps Pin',
+        address: `${lat}, ${lng}`,
+        googleMapsUrl: str.startsWith('http') ? str : `https://maps.google.com/?q=${lat},${lng}`
+      });
+    } else {
+      setSelectedLocation({
+        latitude: null,
+        longitude: null,
+        name: str,
+        address: str,
+        googleMapsUrl: str.startsWith('http') ? str : `https://maps.google.com/?q=${encodeURIComponent(str)}`
+      });
+    }
+    setCustomLocInput('');
+    setShowLocationPicker(false);
+    addToast('📍 Google Maps location attached!', 'success');
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !data.conversation) return;
+    if ((!newMessage.trim() && !photoPreview && !selectedLocation) || !data.conversation) return;
 
     setSendingMsg(true);
     try {
       const res = await api.post('/whatsapp/send', {
         conversationId: data.conversation._id,
-        content: newMessage
+        customerId: data.customer._id,
+        content: newMessage,
+        photo: photoPreview || undefined,
+        location: selectedLocation || undefined
       });
 
       if (res.data.success) {
         setNewMessage('');
-        addToast('Message sent to WhatsApp!', 'success');
+        setPhotoPreview(null);
+        setPhotoFile(null);
+        setSelectedLocation(null);
+        setShowLocationPicker(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        addToast('Message delivered via WhatsApp (+ Photo & GMap synced)!', 'success');
         fetchCustomerDetails();
       }
     } catch (err) {
@@ -394,6 +487,28 @@ export const CustomerDetail = () => {
             ) : (
               messages.map((m) => {
                 const isCustomer = m.senderType === 'customer';
+
+                // Media URL resolution
+                const rawMedia = m.mediaUrl;
+                let fullMediaUrl = '';
+                if (rawMedia) {
+                  if (rawMedia.startsWith('/uploads/')) {
+                    const apiOrigin = (api.defaults.baseURL || '').replace(/\/api\/?$/, '');
+                    fullMediaUrl = `${apiOrigin}${rawMedia}`;
+                  } else {
+                    fullMediaUrl = rawMedia;
+                  }
+                }
+
+                // Location detection
+                const loc = m.metadata?.location;
+                const contentHasGmap = m.content && (m.content.includes('maps.google.com') || m.content.includes('goo.gl/maps'));
+                let gmapLink = loc?.googleMapsUrl || '';
+                if (!gmapLink && contentHasGmap) {
+                  const match = m.content.match(/(https?:\/\/(?:maps\.google\.com|goo\.gl\/maps)[^\s]+)/);
+                  if (match) gmapLink = match[1];
+                }
+
                 return (
                   <div key={m._id} className={`flex ${isCustomer ? 'justify-start' : 'justify-end'}`}>
                     <div
@@ -406,7 +521,51 @@ export const CustomerDetail = () => {
                       <div className="text-[10px] font-bold opacity-75 mb-1">
                         {isCustomer ? customer.fullName : m.senderName || 'EstateFlow Agent'}
                       </div>
+
+                      {/* Photo / Image Attachment */}
+                      {fullMediaUrl && (
+                        <div className="mb-2 rounded-xl overflow-hidden border border-black/10 bg-black/5">
+                          <a href={fullMediaUrl} target="_blank" rel="noopener noreferrer">
+                            <img
+                              src={fullMediaUrl}
+                              alt="WhatsApp Photo Attachment"
+                              className="w-full max-h-60 object-cover hover:scale-[1.02] transition-transform cursor-pointer"
+                              onError={(e) => { e.target.style.display = 'none'; }}
+                            />
+                          </a>
+                        </div>
+                      )}
+
+                      {/* Text content */}
                       <div className="whitespace-pre-line">{m.content}</div>
+
+                      {/* Google Maps Location Preview Card */}
+                      {gmapLink && (
+                        <a
+                          href={gmapLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`mt-2.5 flex items-center gap-2.5 p-2.5 rounded-xl border transition-all ${
+                            isCustomer
+                              ? 'bg-emerald-50/80 border-emerald-200 text-emerald-950 hover:bg-emerald-100'
+                              : 'bg-zinc-700/80 border-zinc-600 text-emerald-300 hover:bg-zinc-700'
+                          }`}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <MapPin className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[11px] font-bold truncate">
+                              {loc?.name || 'Google Maps Location'}
+                            </p>
+                            <p className={`text-[10px] truncate ${isCustomer ? 'text-emerald-700' : 'text-zinc-300'}`}>
+                              {loc?.address || 'Click to view pin in Google Maps'}
+                            </p>
+                          </div>
+                          <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-75" />
+                        </a>
+                      )}
+
                       <div className="text-[9px] opacity-70 text-right mt-1.5 flex items-center justify-end gap-1">
                         {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         {!isCustomer && <CheckCircle2 className="w-2.5 h-2.5 inline" />}
@@ -417,17 +576,155 @@ export const CustomerDetail = () => {
               })
             )}
           </div>
-          <form onSubmit={handleSendMessage} className="p-3 bg-white flex items-center gap-2">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type message directly to client's WhatsApp..."
-              className="flex-1 text-xs border border-zinc-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
-            />
-            <Button type="submit" size="sm" isLoading={sendingMsg} icon={Send}>
-              Send
-            </Button>
+
+          <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-zinc-200 space-y-2">
+            {/* Previews of attached Photo or Location */}
+            {(photoPreview || selectedLocation) && (
+              <div className="flex items-center gap-2 flex-wrap pb-1">
+                {photoPreview && (
+                  <div className="flex items-center gap-2 p-1.5 pr-2.5 rounded-lg bg-zinc-100 border border-zinc-300 text-xs text-zinc-800">
+                    <img src={photoPreview} alt="Preview" className="w-7 h-7 object-cover rounded" />
+                    <span className="text-[11px] font-semibold truncate max-w-[140px]">
+                      {photoFile?.name || 'Photo attached'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPhotoPreview(null);
+                        setPhotoFile(null);
+                        if (fileInputRef.current) fileInputRef.current.value = '';
+                      }}
+                      className="text-zinc-400 hover:text-zinc-700 ml-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                {selectedLocation && (
+                  <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-300 text-xs text-emerald-900">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span className="text-[11px] font-semibold truncate max-w-[180px]">
+                      {selectedLocation.name || selectedLocation.address}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedLocation(null)}
+                      className="text-emerald-600 hover:text-emerald-900 ml-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Location Picker Popover / Drawer */}
+            {showLocationPicker && (
+              <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-zinc-900 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-600" /> Attach Google Maps Location
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowLocationPicker(false)}
+                    className="text-zinc-400 hover:text-zinc-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    isLoading={fetchingGps}
+                    onClick={handleFetchCurrentGps}
+                    className="text-[11px] border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                  >
+                    <Navigation className="w-3 h-3 mr-1" /> Use My Current GPS
+                  </Button>
+
+                  <div className="flex-1 flex gap-1.5">
+                    <input
+                      type="text"
+                      value={customLocInput}
+                      onChange={(e) => setCustomLocInput(e.target.value)}
+                      placeholder="Type address or paste Google Maps link..."
+                      className="flex-1 text-xs border border-zinc-300 rounded-lg px-2.5 py-1.5 bg-white"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleApplyCustomLocation();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleApplyCustomLocation}
+                      className="text-[11px] px-3"
+                    >
+                      Attach
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Message Input & Action Buttons */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Hidden Photo File Input */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                className="hidden"
+                onChange={handlePhotoSelect}
+              />
+
+              {/* Attach Photo Button */}
+              <button
+                type="button"
+                title="Attach Photo"
+                onClick={() => fileInputRef.current?.click()}
+                className={`p-2 rounded-lg border transition-colors ${
+                  photoPreview
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-zinc-50 hover:bg-zinc-100 text-zinc-700 border-zinc-300'
+                }`}
+              >
+                <Camera className="w-4 h-4" />
+              </button>
+
+              {/* Attach Google Maps Button */}
+              <button
+                type="button"
+                title="Attach Google Maps Location"
+                onClick={() => setShowLocationPicker((prev) => !prev)}
+                className={`p-2 rounded-lg border transition-colors ${
+                  selectedLocation || showLocationPicker
+                    ? 'bg-emerald-600 text-white border-emerald-600'
+                    : 'bg-zinc-50 hover:bg-zinc-100 text-zinc-700 border-zinc-300'
+                }`}
+              >
+                <MapPin className="w-4 h-4" />
+              </button>
+
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type message (+ Photo & GMap supported)..."
+                className="flex-1 text-xs border border-zinc-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
+              />
+
+              <Button type="submit" size="sm" isLoading={sendingMsg} icon={Send}>
+                Send
+              </Button>
+            </div>
           </form>
         </Card>
       )}

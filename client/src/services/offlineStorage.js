@@ -826,13 +826,17 @@ export function handleOfflineRequest(config) {
         body = JSON.parse(body);
       } catch (e) {}
     }
-    const phone = (body?.phone || '').replace(/\D/g, '');
-    const message = body?.message || '';
+    const phone = (body?.phone || body?.recipientPhone || '').replace(/\D/g, '');
+    let message = body?.message || body?.content || '';
+    if (body?.location?.googleMapsUrl) {
+      message += `\n\n📍 Google Maps: ${body.location.googleMapsUrl}`;
+    }
     const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     if (typeof window !== 'undefined') {
       window.open(whatsappUrl, '_blank');
     }
     return ok({
+      success: true,
       message: 'WhatsApp opened directly on your phone.',
       whatsappUrl,
     });

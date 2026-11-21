@@ -16,7 +16,11 @@ import {
   CheckCircle2,
   Share2,
   CalendarCheck,
-  ArrowLeft
+  ArrowLeft,
+  MessageSquare,
+  Send,
+  X,
+  ExternalLink
 } from 'lucide-react';
 
 export const PropertyDetail = () => {
@@ -27,6 +31,9 @@ export const PropertyDetail = () => {
   const [property, setProperty] = useState(null);
   const [interestedLeads, setInterestedLeads] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showWaShareModal, setShowWaShareModal] = useState(false);
+  const [waRecipientPhone, setWaRecipientPhone] = useState('+91 98948 76823');
+  const [sharingWa, setSharingWa] = useState(false);
 
   const fetchProperty = async () => {
     setLoading(true);
@@ -47,6 +54,31 @@ export const PropertyDetail = () => {
     fetchProperty();
   }, [id]);
 
+  const handleShareToWhatsApp = async (e) => {
+    e?.preventDefault();
+    if (!waRecipientPhone.trim()) {
+      addToast('Please enter a recipient phone number', 'error');
+      return;
+    }
+    setSharingWa(true);
+    try {
+      const res = await api.post('/whatsapp/send', {
+        recipientPhone: waRecipientPhone,
+        propertyId: property._id
+      });
+      if (res.data?.success) {
+        addToast(`✅ Shared ${property.title} with Photo & Google Map to ${waRecipientPhone}!`, 'success');
+        setShowWaShareModal(false);
+      } else {
+        addToast(res.data?.message || 'Failed to share property', 'error');
+      }
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Failed to share property via WhatsApp', 'error');
+    } finally {
+      setSharingWa(false);
+    }
+  };
+
   if (loading || !property) {
     return (
       <div className="space-y-4">
@@ -65,6 +97,15 @@ export const PropertyDetail = () => {
           Back to Inventory
         </Button>
         <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+            icon={MessageSquare}
+            onClick={() => setShowWaShareModal(true)}
+          >
+            WhatsApp (+ Photo & GMap)
+          </Button>
           <Button
             size="sm"
             variant="outline"
@@ -230,6 +271,89 @@ export const PropertyDetail = () => {
           </Card>
         </div>
       </div>
+
+      {/* WhatsApp Share Modal (+ Photo & Google Maps) */}
+      {showWaShareModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl border border-zinc-200">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                  <MessageSquare className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-950">Share via WhatsApp</h3>
+                  <p className="text-[11px] text-zinc-500">Includes property photo & Google Maps location</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowWaShareModal(false)}
+                className="text-zinc-400 hover:text-zinc-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-3 bg-zinc-50 rounded-xl space-y-2 border border-zinc-200">
+              <div className="flex items-center gap-3">
+                <img
+                  src={property.images?.[0] || getPropertyFallbackImage(property.category, property.title)}
+                  alt={property.title}
+                  className="w-12 h-12 object-cover rounded-lg shrink-0 border border-zinc-200"
+                />
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-xs font-bold text-zinc-950 truncate">{property.title}</h4>
+                  <p className="text-[11px] text-zinc-500 truncate flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
+                    {property.address?.locality || 'Prime Locality'}, {property.address?.city || 'Gurugram'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-emerald-800 font-medium pt-1">
+                <span className="bg-emerald-100 px-2 py-0.5 rounded">📸 Photo Included</span>
+                <span className="bg-emerald-100 px-2 py-0.5 rounded">📍 Google Map Pin Included</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleShareToWhatsApp} className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-zinc-700 mb-1">
+                  Recipient WhatsApp Phone
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={waRecipientPhone}
+                  onChange={(e) => setWaRecipientPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full text-xs border border-zinc-300 rounded-lg px-3 py-2 font-mono outline-none focus:border-zinc-950"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowWaShareModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  isLoading={sharingWa}
+                  icon={Send}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  Dispatch via WhatsApp
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

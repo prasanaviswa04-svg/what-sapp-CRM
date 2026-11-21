@@ -20,20 +20,24 @@ function verifyWebhookSignature(payloadBuffer, signatureHeader, appSecret) {
 }
 
 /**
- * Sends a text message via Meta WhatsApp Business Cloud API
+ * Sends a WhatsApp message (text, photo, and/or Google Maps location)
  */
-async function sendTextMessage(to, text, companyId) {
+async function sendTextMessage(to, payload, companyId) {
   const company = await Company.findById(companyId);
   const config = company?.whatsappConfig || {};
 
   const cleanTo = to.replace(/[^\d]/g, '');
+
+  let text = typeof payload === 'string' ? payload : (payload?.text || payload?.content || payload?.message || '');
+  const photo = payload?.photo || payload?.image || payload?.mediaUrl || '';
+  const location = payload?.location || null;
 
   // 1. If WhatsApp Web Multi-Device is linked, send through real paired WhatsApp phone
   try {
     const { getWhatsAppStatus, sendBaileysMessage } = require('./baileysService');
     const bStatus = getWhatsAppStatus();
     if (bStatus && bStatus.isConnected) {
-      const bRes = await sendBaileysMessage(to, text);
+      const bRes = await sendBaileysMessage(to, payload);
       return { success: true, messageId: bRes.messageId, live: true, via: 'baileys' };
     }
   } catch (bErr) {
@@ -45,25 +49,75 @@ async function sendTextMessage(to, text, companyId) {
   if (config.accessToken && config.phoneNumberId && config.status === 'connected') {
     try {
       const url = `https://graph.facebook.com/${config.apiVersion || 'v21.0'}/${config.phoneNumberId}/messages`;
-      const response = await axios.post(
-        url,
-        {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: cleanTo,
-          type: 'text',
-          text: { preview_url: true, body: text }
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${config.accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      let lastMsgId = `wamid_${Date.now()}`;
 
-      const msgId = response.data?.messages?.[0]?.id || `wamid_${Date.now()}`;
-      return { success: true, messageId: msgId, live: true, via: 'meta_cloud_api' };
+      // A) Send Photo if present
+      if (photo && (photo.startsWith('http://') || photo.startsWith('https://'))) {
+        const photoRes = await axios.post(
+          url,
+          {
+            messaging_product: 'whatsapp',
+            recipient_type: 'individual',
+            to: cleanTo,
+            type: 'image',
+            image: { link: photo, caption: text }
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${config.accessToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        lastMsgId = photoRes.data?.messages?.[0]?.id || lastMsgId;
+      }
+      // B) Send Location if present
+      if (location && location.latitude && location.longitude) {
+        const locRes = await axios.post(
+          url,
+          {
+            messaging_product: 'whatsapp',
+            recipient_type: 'individual',
+            to: cleanTo,
+            type: 'location',
+            location: {
+              latitude: Number(location.latitude),
+              longitude: Number(location.longitude),
+              name: location.name || 'Shared Location',
+              address: location.address || `${location.latitude}, ${location.longitude}`
+            }
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${config.accessToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        lastMsgId = locRes.data?.messages?.[0]?.id || lastMsgId;
+      }
+      // C) Send Text if not sent with photo
+      if (!photo) {
+        const response = await axios.post(
+          url,
+          {
+            messaging_product: 'whatsapp',
+            recipient_type: 'individual',
+            to: cleanTo,
+            type: 'text',
+            text: { preview_url: true, body: text }
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${config.accessToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        lastMsgId = response.data?.messages?.[0]?.id || lastMsgId;
+      }
+
+      return { success: true, messageId: lastMsgId, live: true, via: 'meta_cloud_api' };
     } catch (err) {
       console.error('Meta WhatsApp API call failed:', err.response?.data || err.message);
       throw new Error(err.response?.data?.error?.message || err.message || 'Meta Cloud API call failed');

@@ -21,7 +21,10 @@ import {
   ExternalLink,
   Check,
   SmartphoneCharging,
-  Camera
+  Camera,
+  MapPin,
+  Navigation,
+  X
 } from 'lucide-react';
 
 export const WhatsAppInbox = () => {
@@ -66,12 +69,19 @@ export const WhatsAppInbox = () => {
   });
   const [savingApi, setSavingApi] = useState(false);
 
-  // Test Message Sender
+  // Test / Direct WhatsApp Dispatcher State (+ Photo & + GMap)
   const [testRecipient, setTestRecipient] = useState('+91 98765 43210');
   const [testMessage, setTestMessage] = useState(
     '✅ Hello from EstateFlow CRM! Your WhatsApp is connected and ready to send & receive customer inquiries.'
   );
   const [sendingTest, setSendingTest] = useState(false);
+  const [testPhotoPreview, setTestPhotoPreview] = useState(null);
+  const [testPhotoFile, setTestPhotoFile] = useState(null);
+  const [testLocation, setTestLocation] = useState(null);
+  const [showTestLocPicker, setShowTestLocPicker] = useState(false);
+  const [customTestLoc, setCustomTestLoc] = useState('');
+  const [fetchingTestGps, setFetchingTestGps] = useState(false);
+  const testFileInputRef = React.useRef(null);
 
   // Listen to Socket Events for Real-Time QR & Connection
   useEffect(() => {
@@ -226,27 +236,109 @@ export const WhatsAppInbox = () => {
     }
   };
 
-  // Send Live Test Message
+  // Photo & Location Helpers for Direct Message Dispatch
+  const handleTestPhotoSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      addToast('Image must be smaller than 15MB', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setTestPhotoPreview(event.target.result);
+      setTestPhotoFile(file);
+      addToast('Photo attached! Ready to send via WhatsApp.', 'info');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFetchTestGps = () => {
+    if (!navigator.geolocation) {
+      addToast('Geolocation is not supported by your device', 'error');
+      return;
+    }
+    setFetchingTestGps(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setTestLocation({
+          latitude: lat,
+          longitude: lng,
+          name: 'Current Agent Location',
+          address: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+          googleMapsUrl: `https://maps.google.com/?q=${lat},${lng}`
+        });
+        setFetchingTestGps(false);
+        setShowTestLocPicker(false);
+        addToast('📍 Current GPS location attached!', 'success');
+      },
+      (err) => {
+        setFetchingTestGps(false);
+        addToast(`Could not fetch GPS: ${err.message}`, 'error');
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
+
+  const handleApplyTestCustomLoc = () => {
+    if (!customTestLoc.trim()) return;
+    const str = customTestLoc.trim();
+    const coordRegex = /[@=]?(-?\d+\.\d+),\s*(-?\d+\.\d+)/;
+    const match = str.match(coordRegex);
+    if (match) {
+      const lat = parseFloat(match[1]);
+      const lng = parseFloat(match[2]);
+      setTestLocation({
+        latitude: lat,
+        longitude: lng,
+        name: 'Google Maps Pin',
+        address: `${lat}, ${lng}`,
+        googleMapsUrl: str.startsWith('http') ? str : `https://maps.google.com/?q=${lat},${lng}`
+      });
+    } else {
+      setTestLocation({
+        latitude: null,
+        longitude: null,
+        name: str,
+        address: str,
+        googleMapsUrl: str.startsWith('http') ? str : `https://maps.google.com/?q=${encodeURIComponent(str)}`
+      });
+    }
+    setCustomTestLoc('');
+    setShowTestLocPicker(false);
+    addToast('📍 Google Maps location attached!', 'success');
+  };
+
+  // Send Live WhatsApp Message (+ Photo & + GMap)
   const handleSendTest = async (e) => {
     e.preventDefault();
-    if (!testRecipient.trim() || !testMessage.trim()) {
-      addToast('Please enter recipient phone and message', 'error');
+    if (!testRecipient.trim() || (!testMessage.trim() && !testPhotoPreview && !testLocation)) {
+      addToast('Please enter recipient phone and message, photo, or Google Maps location', 'error');
       return;
     }
     setSendingTest(true);
     try {
       const res = await api.post('/whatsapp/send', {
         recipientPhone: testRecipient,
-        message: testMessage
+        message: testMessage,
+        photo: testPhotoPreview || undefined,
+        location: testLocation || undefined
       });
       if (res.data?.success) {
-        addToast(`Test WhatsApp message sent to ${testRecipient}!`, 'success');
+        addToast(`✅ Live WhatsApp message delivered to ${testRecipient} (+ Photo & GMap synced)!`, 'success');
+        setTestPhotoPreview(null);
+        setTestPhotoFile(null);
+        setTestLocation(null);
+        setShowTestLocPicker(false);
+        if (testFileInputRef.current) testFileInputRef.current.value = '';
       } else {
-        addToast(res.data?.message || 'Failed to send test message', 'error');
+        addToast(res.data?.message || 'Failed to send message', 'error');
       }
     } catch (err) {
       console.error(err);
-      addToast(err.response?.data?.message || 'Failed to send test message. Check your WhatsApp connection.', 'error');
+      addToast(err.response?.data?.message || 'Failed to send message. Check your WhatsApp connection.', 'error');
     } finally {
       setSendingTest(false);
     }
@@ -737,20 +829,20 @@ export const WhatsAppInbox = () => {
         </Card>
       )}
 
-      {/* Real Test Message Sender (Available when connected) */}
+      {/* Real Live WhatsApp Direct Dispatcher (+ Photo & + GMap) */}
       {isConnected && (
-        <Card className="p-6 bg-white border-zinc-200 space-y-4">
+        <Card className="p-6 bg-white border-zinc-200 space-y-4 shadow-sm">
           <div className="border-b border-zinc-100 pb-3">
             <h3 className="text-sm font-bold text-zinc-950 flex items-center gap-1.5">
               <Send className="w-4 h-4 text-emerald-600" />
-              Send Live Test WhatsApp Message
+              Live WhatsApp Direct Dispatcher (+ Photo & + GMap)
             </h3>
             <p className="text-xs text-zinc-500 mt-0.5">
-              Verify your connected WhatsApp gateway by dispatching a live test message to any phone.
+              Dispatch live WhatsApp messages to any recipient. Easily attach photos and interactive Google Maps location pins.
             </p>
           </div>
 
-          <form onSubmit={handleSendTest} className="space-y-3 text-xs">
+          <form onSubmit={handleSendTest} className="space-y-4 text-xs">
             <div>
               <label className="block text-zinc-700 font-semibold mb-1">
                 Recipient WhatsApp Phone Number
@@ -767,24 +859,163 @@ export const WhatsAppInbox = () => {
 
             <div>
               <label className="block text-zinc-700 font-semibold mb-1">
-                Test Message Text
+                Message Text (Words)
               </label>
               <textarea
-                rows={2}
-                required
+                rows={3}
                 value={testMessage}
                 onChange={e => setTestMessage(e.target.value)}
+                placeholder="Type your WhatsApp message..."
                 className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-xs outline-none focus:bg-white resize-none"
               />
             </div>
 
-            <Button
-              type="submit"
-              disabled={sendingTest}
-              className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs px-5"
-            >
-              {sendingTest ? 'Sending...' : 'Send WhatsApp Ping →'}
-            </Button>
+            {/* Attached Photo & Location Chips */}
+            {(testPhotoPreview || testLocation) && (
+              <div className="flex items-center gap-2 flex-wrap p-2.5 bg-zinc-50 border border-zinc-200 rounded-lg">
+                {testPhotoPreview && (
+                  <div className="flex items-center gap-2 p-1.5 pr-2.5 rounded-lg bg-white border border-zinc-300 text-xs text-zinc-800 shadow-2xs">
+                    <img src={testPhotoPreview} alt="Preview" className="w-8 h-8 object-cover rounded" />
+                    <span className="text-[11px] font-semibold truncate max-w-[150px]">
+                      {testPhotoFile?.name || 'Photo Attached'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTestPhotoPreview(null);
+                        setTestPhotoFile(null);
+                        if (testFileInputRef.current) testFileInputRef.current.value = '';
+                      }}
+                      className="text-zinc-400 hover:text-zinc-700 ml-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                {testLocation && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-300 text-xs text-emerald-950 shadow-2xs">
+                    <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div className="max-w-[220px]">
+                      <p className="text-[11px] font-bold truncate">{testLocation.name || 'Google Maps Location'}</p>
+                      <p className="text-[10px] text-emerald-700 truncate">{testLocation.address}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setTestLocation(null)}
+                      className="text-emerald-600 hover:text-emerald-900 ml-1.5"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Google Maps Popover Drawer */}
+            {showTestLocPicker && (
+              <div className="p-3 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-zinc-900 flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-emerald-600" /> Share Google Maps Location
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowTestLocPicker(false)}
+                    className="text-zinc-400 hover:text-zinc-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    isLoading={fetchingTestGps}
+                    onClick={handleFetchTestGps}
+                    className="text-xs border-emerald-300 text-emerald-800 bg-white hover:bg-emerald-50"
+                  >
+                    <Navigation className="w-3.5 h-3.5 mr-1" /> Use My Current GPS
+                  </Button>
+
+                  <div className="flex-1 flex gap-1.5">
+                    <input
+                      type="text"
+                      value={customTestLoc}
+                      onChange={e => setCustomTestLoc(e.target.value)}
+                      placeholder="Type address or paste Google Maps link..."
+                      className="flex-1 text-xs border border-zinc-300 rounded-lg px-2.5 py-1.5 bg-white outline-none"
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleApplyTestCustomLoc();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleApplyTestCustomLoc}
+                      className="text-xs px-3"
+                    >
+                      Attach
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Bar with Attachment Buttons */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-zinc-100">
+              <div className="flex items-center gap-2">
+                {/* Hidden File Picker */}
+                <input
+                  type="file"
+                  ref={testFileInputRef}
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleTestPhotoSelect}
+                />
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => testFileInputRef.current?.click()}
+                  className={`text-xs ${
+                    testPhotoPreview ? 'bg-zinc-900 text-white border-zinc-900' : 'text-zinc-700 border-zinc-300'
+                  }`}
+                >
+                  <Camera className="w-3.5 h-3.5 mr-1.5" />
+                  {testPhotoPreview ? 'Change Photo' : '+ Photo'}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowTestLocPicker(prev => !prev)}
+                  className={`text-xs ${
+                    testLocation || showTestLocPicker
+                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      : 'text-zinc-700 border-zinc-300'
+                  }`}
+                >
+                  <MapPin className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+                  {testLocation ? 'Location Attached' : '+ GMap'}
+                </Button>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={sendingTest}
+                className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs px-6"
+              >
+                {sendingTest ? 'Sending...' : 'Send WhatsApp Message →'}
+              </Button>
+            </div>
           </form>
         </Card>
       )}

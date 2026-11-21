@@ -1,44 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Building2 } from 'lucide-react';
 
 /**
- * Minimalist Luxury Monochrome Splash Screen for EstateFlow CRM
- * Professional Animations:
- * - Architectural line-draw SVG animation
- * - Specular monochrome sheen sweep
- * - Expanding letter-tracking title reveal
- * - Horizon line expansion & status progression
- * - Cinematic zoom-through dissolve into the app
+ * Clean & Professional White Splash Screen
+ * Features:
+ * - Crisp White Background Theme
+ * - Realistic Typewriter Animation for "ESTATEFLOW CRM"
+ * - Dynamic Number Percentage Count (0% to 100%)
+ * - Minimalist Progress Bar
+ * - Smooth Dissolve Transition into the App
  */
 export const SplashScreen = ({ onFinish }) => {
+  const [typedText, setTypedText] = useState('');
+  const [count, setCount] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const [statusText, setStatusText] = useState('INITIALIZING WORKSPACE');
+  const [showSubtitle, setShowSubtitle] = useState(false);
+  const fullText = 'ESTATEFLOW CRM';
+  const animationFrameRef = useRef(null);
 
+  // 1. Typewriter Animation Effect
   useEffect(() => {
-    // Stage 1 -> Stage 2
-    const t1 = setTimeout(() => {
-      setStatusText('CONNECTING GATEWAY');
-    }, 700);
+    let index = 0;
+    const typingInterval = setInterval(() => {
+      index++;
+      setTypedText(fullText.slice(0, index));
+      if (index >= fullText.length) {
+        clearInterval(typingInterval);
+        setShowSubtitle(true);
+      }
+    }, 85);
 
-    // Stage 2 -> Stage 3
-    const t2 = setTimeout(() => {
-      setStatusText('WORKSPACE READY');
-    }, 1400);
+    return () => clearInterval(typingInterval);
+  }, []);
 
-    // Fade out initiated at 2.0s
-    const t3 = setTimeout(() => {
-      setIsFadingOut(true);
-    }, 2000);
+  // 2. Smooth Number Count-Up Animation (0% to 100%)
+  useEffect(() => {
+    const duration = 1600; // 1.6 seconds to reach 100%
+    let startTime = null;
 
-    // Unmount after smooth dissolve (2.5s)
-    const t4 = setTimeout(() => {
-      if (onFinish) onFinish();
-    }, 2500);
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Smooth Ease-Out Cubic Curve
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const currentCount = Math.floor(easeOut * 100);
+      setCount(currentCount);
+
+      if (progress < 1) {
+        animationFrameRef.current = requestAnimationFrame(step);
+      } else {
+        setCount(100);
+        // Hold 100% briefly, then smoothly fade out
+        const fadeTimer = setTimeout(() => {
+          setIsFadingOut(true);
+        }, 250);
+
+        const finishTimer = setTimeout(() => {
+          if (onFinish) onFinish();
+        }, 650);
+
+        return () => {
+          clearTimeout(fadeTimer);
+          clearTimeout(finishTimer);
+        };
+      }
+    };
+
+    animationFrameRef.current = requestAnimationFrame(step);
 
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, [onFinish]);
 
@@ -46,17 +81,17 @@ export const SplashScreen = ({ onFinish }) => {
     setIsFadingOut(true);
     setTimeout(() => {
       if (onFinish) onFinish();
-    }, 250);
+    }, 200);
   };
 
   return (
     <div
       onClick={handleSkip}
-      className={`fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-between py-10 px-6 select-none cursor-pointer transition-all duration-500 ease-out ${
-        isFadingOut ? 'opacity-0 scale-[1.03] pointer-events-none' : 'opacity-100 scale-100'
+      className={`fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-between py-10 px-6 select-none cursor-pointer transition-opacity duration-400 ease-out ${
+        isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Top Bar: Discreet Minimalist Skip Action */}
+      {/* Top Header: Discreet Skip Action */}
       <div className="w-full flex justify-end">
         <button
           type="button"
@@ -64,103 +99,58 @@ export const SplashScreen = ({ onFinish }) => {
             e.stopPropagation();
             handleSkip();
           }}
-          className="text-[10px] font-mono tracking-[0.2em] text-zinc-600 hover:text-white transition uppercase px-2.5 py-1 rounded border border-zinc-900 bg-zinc-950/80"
+          className="text-xs font-mono tracking-widest text-zinc-400 hover:text-zinc-900 transition uppercase px-2.5 py-1 rounded border border-zinc-200 bg-zinc-50"
         >
           SKIP &rarr;
         </button>
       </div>
 
-      {/* Center: Luxury Architectural Monogram & Typography */}
+      {/* Center: Brand Mark, Typewriter Title & Subtitle */}
       <div className="flex flex-col items-center justify-center my-auto text-center px-4">
-        {/* Emblem Badge Container with Sheen Reflection */}
-        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center shadow-2xl mb-6 overflow-hidden">
-          {/* Subtle Monochrome Specular Sheen Sweep */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="w-10 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-sheen" />
-          </div>
-
-          {/* Architectural Line-Drawing SVG Emblem */}
-          <svg
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-12 h-12 sm:w-14 sm:h-14"
-          >
-            {/* Outer Architectural Framing Lines */}
-            <path
-              d="M16 84V26L30 16H70L84 26V84"
-              stroke="#27272a"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            {/* Left High-Rise Tower (Animated Stroke) */}
-            <path
-              d="M26 84V46L38 38V84H26Z"
-              stroke="#ffffff"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="animate-emblem-draw"
-            />
-
-            {/* Center Landmark Spire (Highest Tower) */}
-            <path
-              d="M44 84V28L56 18V84H44Z"
-              stroke="#ffffff"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="animate-emblem-draw"
-            />
-
-            {/* Right High-Rise Tower */}
-            <path
-              d="M62 84V46L74 54V84H62Z"
-              stroke="#ffffff"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="animate-emblem-draw"
-            />
-
-            {/* Precision Crossbeams */}
-            <line x1="38" y1="52" x2="62" y2="38" stroke="#71717a" strokeWidth="1.5" strokeDasharray="2 3" />
-            <line x1="38" y1="66" x2="62" y2="52" stroke="#71717a" strokeWidth="1.5" strokeDasharray="2 3" />
-
-            {/* Spire Summit Beacon Star */}
-            <circle cx="56" cy="18" r="2.5" fill="#ffffff" className="animate-beacon" />
-          </svg>
+        {/* Minimalist Black Emblem */}
+        <div className="w-16 h-16 rounded-2xl bg-zinc-950 flex items-center justify-center text-white shadow-md border border-zinc-900 mb-6 transition-transform duration-300">
+          <Building2 className="w-8 h-8 text-white stroke-[2]" />
         </div>
 
-        {/* Animated Expanding Letter-Spacing Title */}
-        <h1 className="text-xl sm:text-2xl font-bold tracking-[0.32em] uppercase text-white font-sans animate-text-reveal">
-          ESTATEFLOW
-        </h1>
+        {/* Typewriter Text Heading */}
+        <div className="min-h-[44px] flex items-center justify-center">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-[0.22em] uppercase text-zinc-950 font-sans">
+            {typedText}
+          </h1>
+          <span className="inline-block w-[3px] h-6 sm:h-7 bg-zinc-950 ml-1.5 animate-cursor align-middle" />
+        </div>
 
-        {/* Minimalist Expanding Horizon Divider */}
-        <div className="w-12 h-[1px] bg-zinc-800 my-3.5 animate-horizon-expand" />
+        {/* Minimalist Divider */}
+        <div className="w-10 h-[1.5px] bg-zinc-200 my-4" />
 
-        {/* Animated Subtitle */}
-        <p className="text-[10px] sm:text-[11px] font-medium tracking-[0.24em] uppercase text-zinc-400 font-mono animate-subtitle-fade">
-          REAL ESTATE CRM &amp; WHATSAPP
+        {/* Smooth Subtitle */}
+        <p
+          className={`text-xs font-medium tracking-[0.2em] uppercase text-zinc-500 font-mono transition-opacity duration-500 ${
+            showSubtitle ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          REAL ESTATE WHATSAPP CRM
         </p>
       </div>
 
-      {/* Bottom: Minimalist Horizon Progress Line & Monospace Ticker */}
-      <div className="w-full max-w-[160px] flex flex-col items-center pb-4">
-        <p className="text-[9px] text-zinc-500 font-mono tracking-[0.2em] uppercase mb-2.5 transition-all duration-300">
-          {statusText}
-        </p>
-
-        {/* 1px Precision Horizon Line */}
-        <div className="w-full h-[1px] bg-zinc-900 rounded-full overflow-hidden relative">
-          <div className="h-full bg-white animate-horizon-expand shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+      {/* Bottom: Smooth Number Count & Progress Line */}
+      <div className="w-full max-w-xs flex flex-col items-center pb-6">
+        {/* Dynamic Percentage Counter */}
+        <div className="flex items-baseline font-mono text-zinc-950 font-bold text-3xl sm:text-4xl tracking-tight mb-3">
+          <span>{String(count).padStart(2, '0')}</span>
+          <span className="text-zinc-400 text-lg sm:text-xl font-normal ml-1">%</span>
         </div>
 
-        <span className="mt-3 text-[9px] tracking-[0.2em] uppercase text-zinc-700 font-mono">
-          v1.0 • SYSTEM ACTIVE
+        {/* Crisp Progress Track */}
+        <div className="w-52 sm:w-60 h-1.5 bg-zinc-100 rounded-full overflow-hidden border border-zinc-200/80">
+          <div
+            className="h-full bg-zinc-950 rounded-full transition-all duration-75 ease-out"
+            style={{ width: `${count}%` }}
+          />
+        </div>
+
+        <span className="mt-3 text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-mono">
+          LOADING REAL ESTATE OS
         </span>
       </div>
     </div>

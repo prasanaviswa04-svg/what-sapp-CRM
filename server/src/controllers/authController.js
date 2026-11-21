@@ -68,6 +68,7 @@ const register = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        avatar: user.avatar || '',
         companyId: company._id,
         companyName: company.name
       }
@@ -142,6 +143,7 @@ const login = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        avatar: user.avatar || '',
         companyId: user.companyId?._id || user.companyId,
         companyName: user.companyId?.name || 'EstateFlow Realty',
         currency: user.companyId?.currency || { code: 'INR', symbol: '₹' }
@@ -187,14 +189,21 @@ const updateProfile = async (req, res, next) => {
     const { firstName, lastName, phone, avatar, currentPassword, newPassword } = req.body;
     const user = await User.findById(req.user.id).select('+password');
 
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
-    if (phone) user.phone = phone;
-    if (avatar) user.avatar = avatar;
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (firstName) user.firstName = firstName.trim();
+    if (lastName) user.lastName = lastName.trim();
+    if (phone !== undefined) user.phone = phone.trim();
+    if (avatar !== undefined) user.avatar = avatar;
 
     if (newPassword) {
       if (!currentPassword) {
         return res.status(400).json({ success: false, message: 'Current password is required to change password' });
+      }
+      if (newPassword.length < 6) {
+        return res.status(400).json({ success: false, message: 'New password must be at least 6 characters long' });
       }
       const isMatch = await user.comparePassword(currentPassword);
       if (!isMatch) {
@@ -207,7 +216,7 @@ const updateProfile = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Profile updated successfully',
+      message: newPassword ? 'Profile and password updated successfully' : 'Profile updated successfully',
       user: {
         id: user._id,
         firstName: user.firstName,
@@ -216,7 +225,9 @@ const updateProfile = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        avatar: user.avatar
+        avatar: user.avatar,
+        lastLogin: user.lastLogin,
+        loginHistory: user.loginHistory?.slice(0, 5) || []
       }
     });
   } catch (err) {

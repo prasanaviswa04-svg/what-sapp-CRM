@@ -20,6 +20,7 @@ export const FollowUpAutomations = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [testCustomerId, setTestCustomerId] = useState('');
+  const [executingId, setExecutingId] = useState(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -96,16 +97,25 @@ export const FollowUpAutomations = () => {
       addToast('Please select a test customer first.', 'warning');
       return;
     }
+    setExecutingId(workflowId);
     try {
       const res = await api.post(`/automations/${workflowId}/execute`, {
         customerId: testCustomerId
       });
       if (res.data.success) {
-        addToast('Automation trigger executed and simulated on customer!', 'success');
-        fetchWorkflows();
+        addToast(res.data.message || 'Workflow executed and WhatsApp message delivered!', 'success');
+        if (res.data.workflow) {
+          setWorkflows((prev) =>
+            prev.map((w) => (w._id === workflowId ? { ...w, ...res.data.workflow } : w))
+          );
+        } else {
+          fetchWorkflows();
+        }
       }
     } catch (err) {
-      addToast('Execution failed', 'error');
+      addToast(err.response?.data?.message || 'Execution failed', 'error');
+    } finally {
+      setExecutingId(null);
     }
   };
 
@@ -204,6 +214,7 @@ export const FollowUpAutomations = () => {
                   size="sm"
                   variant="outline"
                   icon={Play}
+                  isLoading={executingId === wf._id}
                   onClick={() => handleTestExecute(wf._id)}
                   title="Run now on selected test customer"
                 >

@@ -18,7 +18,10 @@ import {
   Phone,
   MapPin,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Sparkles,
+  Share2,
+  ExternalLink
 } from 'lucide-react';
 
 export const CustomerList = () => {
@@ -31,6 +34,7 @@ export const CustomerList = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
+  const [matchResultModal, setMatchResultModal] = useState(null);
 
   // New Customer Form State
   const [formData, setFormData] = useState({
@@ -48,7 +52,8 @@ export const CustomerList = () => {
     purchaseTimeline: 'Near term (1-3 months)',
     priority: 'Medium',
     source: 'Manual Entry',
-    internalNotes: ''
+    internalNotes: '',
+    autoShareProperty: true
   });
 
   const { addToast } = useToast();
@@ -108,6 +113,7 @@ export const CustomerList = () => {
         source: formData.source,
         priority: formData.priority,
         internalNotes: formData.internalNotes,
+        autoShareProperty: formData.autoShareProperty,
         requirements: {
           propertyCategory: formData.propertyCategory,
           purpose: formData.purpose,
@@ -120,9 +126,15 @@ export const CustomerList = () => {
 
       const res = await api.post('/customers', payload);
       if (res.data.success) {
-        addToast('Customer & pipeline lead created successfully!', 'success');
         setIsNewModalOpen(false);
         fetchCustomers();
+
+        if (res.data.topMatchedProperty) {
+          setMatchResultModal(res.data);
+          addToast(res.data.message || 'Customer saved and matching property found!', 'success');
+        } else {
+          addToast(res.data.message || 'Customer & pipeline lead created successfully!', 'success');
+        }
       }
     } catch (err) {
       addToast(err.response?.data?.message || 'Failed to create customer', 'error');
@@ -485,14 +497,102 @@ export const CustomerList = () => {
             />
           </div>
 
+          {/* Auto WhatsApp Property Match Dispatch Banner */}
+          <div className="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl flex items-center justify-between gap-3">
+            <div>
+              <span className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" /> Auto-Share Matched Property on WhatsApp
+              </span>
+              <p className="text-[11px] text-emerald-700 mt-0.5">
+                Finds matching {formData.propertyCategory} listings and sends brochure directly to client.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              id="autoShareProperty"
+              checked={formData.autoShareProperty}
+              onChange={(e) => setFormData({ ...formData, autoShareProperty: e.target.checked })}
+              className="w-4 h-4 text-emerald-600 rounded border-zinc-300 focus:ring-emerald-500 cursor-pointer"
+            />
+          </div>
+
           <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200">
             <Button type="button" variant="outline" onClick={() => setIsNewModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Save Customer & Create Lead</Button>
+            <Button type="submit">Save Customer & Match Property</Button>
           </div>
         </form>
       </Modal>
+
+      {/* Property Match Notification & Instant WhatsApp Share Modal */}
+      {matchResultModal && (
+        <Modal
+          isOpen={Boolean(matchResultModal)}
+          onClose={() => setMatchResultModal(null)}
+          title="🎯 Property Matched for Customer!"
+          size="md"
+        >
+          <div className="space-y-4">
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl">
+              <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm">
+                <Sparkles className="w-4 h-4 text-emerald-600" />
+                <span>Found Matching {matchResultModal.topMatchedProperty?.category}!</span>
+              </div>
+              <p className="text-xs text-emerald-800 mt-1">
+                {matchResultModal.dispatchedToWhatsApp
+                  ? `Delivered directly to ${matchResultModal.customer?.fullName} (${matchResultModal.customer?.phone}) via connected WhatsApp Gateway!`
+                  : `Matched with ${matchResultModal.customer?.fullName}'s requirement. Ready to send via WhatsApp.`}
+              </p>
+            </div>
+
+            {matchResultModal.topMatchedProperty && (
+              <div className="border border-zinc-200 rounded-2xl p-4 space-y-2 bg-white shadow-xs">
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] font-bold uppercase bg-zinc-900 text-white px-2 py-0.5 rounded">
+                    {matchResultModal.topMatchedProperty.propertyCode}
+                  </span>
+                  <span className="text-sm font-extrabold text-zinc-950">
+                    ₹{(matchResultModal.topMatchedProperty.totalPrice / 10000000).toFixed(2)} Cr
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-zinc-900">{matchResultModal.topMatchedProperty.title}</h4>
+                <p className="text-xs text-zinc-500">
+                  📍 {matchResultModal.topMatchedProperty.address?.locality}, {matchResultModal.topMatchedProperty.address?.city}
+                </p>
+                <div className="text-xs text-zinc-600 font-medium pt-1 flex items-center gap-3">
+                  <span>🛏️ {matchResultModal.topMatchedProperty.bedrooms} BHK</span>
+                  <span>📐 {matchResultModal.topMatchedProperty.builtUpArea} {matchResultModal.topMatchedProperty.unit || 'sq.ft'}</span>
+                  <span>🏷️ {matchResultModal.topMatchedProperty.category}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              {matchResultModal.waDirectUrl && (
+                <a
+                  href={matchResultModal.waDirectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold text-center flex items-center justify-center gap-1.5 shadow-xs transition"
+                >
+                  <Share2 className="w-3.5 h-3.5" /> Open in WhatsApp App
+                </a>
+              )}
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  navigate(`/customers/${matchResultModal.customer?._id}`);
+                  setMatchResultModal(null);
+                }}
+              >
+                View Customer Profile →
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

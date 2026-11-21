@@ -28,7 +28,20 @@ async function sendTextMessage(to, text, companyId) {
 
   const cleanTo = to.replace(/[^\d]/g, '');
 
-  // If live credentials are valid and not test mode
+  // 1. If WhatsApp Web Multi-Device is linked, send through real paired WhatsApp phone
+  try {
+    const { getWhatsAppStatus, sendBaileysMessage } = require('./baileysService');
+    const bStatus = getWhatsAppStatus();
+    if (bStatus && bStatus.isConnected) {
+      const bRes = await sendBaileysMessage(to, text);
+      return { success: true, messageId: bRes.messageId, live: true, via: 'baileys' };
+    }
+  } catch (bErr) {
+    console.warn('Baileys real message error:', bErr.message);
+    throw bErr;
+  }
+
+  // 2. If live Meta Cloud API credentials are valid
   if (config.accessToken && config.phoneNumberId && config.status === 'connected') {
     try {
       const url = `https://graph.facebook.com/${config.apiVersion || 'v21.0'}/${config.phoneNumberId}/messages`;
@@ -50,24 +63,18 @@ async function sendTextMessage(to, text, companyId) {
       );
 
       const msgId = response.data?.messages?.[0]?.id || `wamid_${Date.now()}`;
-      return { success: true, messageId: msgId, live: true };
+      return { success: true, messageId: msgId, live: true, via: 'meta_cloud_api' };
     } catch (err) {
       console.error('Meta WhatsApp API call failed:', err.response?.data || err.message);
-      // Fallback to local recorded message
-      return {
-        success: true,
-        messageId: `wamid_fallback_${Date.now()}`,
-        live: false,
-        warning: err.response?.data?.error?.message || err.message
-      };
+      throw new Error(err.response?.data?.error?.message || err.message || 'Meta Cloud API call failed');
     }
   }
 
-  // Simulated mode (allows local development & demo without Meta account)
+  // If neither Baileys nor Meta API is connected, do NOT pretend success!
   return {
-    success: true,
-    messageId: `wamid_sim_${Date.now()}_${Math.random().toString(36).substring(7)}`,
-    live: false
+    success: false,
+    live: false,
+    message: 'WhatsApp is not connected! Please scan the QR code in WhatsApp > Linked Devices to link your phone first.'
   };
 }
 

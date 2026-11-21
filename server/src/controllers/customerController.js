@@ -9,7 +9,7 @@ const Payment = require('../models/Payment');
 const ActivityLog = require('../models/ActivityLog');
 const { normalizePhoneNumber } = require('../utils/phoneNormalizer');
 const { calculateLeadScore } = require('../services/leadScoringService');
-const { matchPropertiesForCustomer } = require('../services/matchingService');
+const { matchPropertiesForCustomer, formatPropertyWhatsAppMessage } = require('../services/matchingService');
 const { triggerAutomations } = require('../services/automationEngine');
 
 // @desc    Get all customers with advanced filtering & search
@@ -239,16 +239,89 @@ const createCustomer = async (req, res, next) => {
       details: { fullName, phone: normalizedPhone, source }
     });
 
+    // Automatically initialize/find a WhatsApp Conversation record for this customer
+    let conversation = await Conversation.findOne({
+      companyId: req.companyId,
+      customerId: customer._id
+    });
+    if (!conversation) {
+      conversation = await Conversation.create({
+        companyId: req.companyId,
+        customerId: customer._id,
+        channel: 'WhatsApp',
+        whatsappPhoneNumber: customer.phone,
+        lastMessage: '',
+        unreadCount: 0,
+        status: 'Open'
+      });
+    }
+
+    // Automatically match available properties against customer requirements (Category, Budget, Location)
+    const matchedProperties = await matchPropertiesForCustomer(customer, 5);
+    const topMatch = matchedProperties.length > 0 ? matchedProperties[0] : null;
+
+    let dispatchedToWhatsApp = false;
+    let sharedProperty = null;
+    let waDirectUrl = '';
+    let dispatchText = '';
+
+    if (topMatch && req.body.autoShareProperty !== false) {
+      sharedProperty = topMatch.property;
+      dispatchText = formatPropertyWhatsAppMessage(sharedProperty, customer);
+      const cleanPhone = customer.phone.replace(/[^\d]/g, '');
+      waDirectUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(dispatchText)}`;
+
+      try {
+        const { sendTextMessage } = require('../services/whatsappService');
+        const sendRes = await sendTextMessage(customer.phone, dispatchText, req.companyId);
+        if (sendRes && sendRes.success && sendRes.live) {
+          dispatchedToWhatsApp = true;
+
+          // Record in Message collection
+          await Message.create({
+            companyId: req.companyId,
+            conversationId: conversation._id,
+            customerId: customer._id,
+            senderType: 'agent',
+            senderId: req.user.id,
+            senderName: `${req.user.firstName} ${req.user.lastName}`,
+            messageType: 'text',
+            content: dispatchText,
+            whatsappMessageId: sendRes.messageId,
+            status: 'sent',
+            groundedPropertyId: sharedProperty._id
+          });
+
+          conversation.lastMessageAt = new Date();
+          conversation.lastMessagePreview = `Shared ${sharedProperty.title}`;
+          await conversation.save();
+        }
+      } catch (waErr) {
+        console.warn('Auto WhatsApp dispatch notice:', waErr.message);
+      }
+    }
+
     // Trigger 'new_enquiry' follow-up automation
     triggerAutomations('new_enquiry', customer._id, req.companyId, {
       propertyTitle: `${customer.requirements?.bedrooms || 3} BHK in ${customer.preferredLocation || 'Gurugram'}`
     });
 
+    const successMessage = dispatchedToWhatsApp
+      ? `Customer saved! Matching ${sharedProperty.category} "${sharedProperty.title}" was shared directly via WhatsApp.`
+      : topMatch
+        ? `Customer saved! Found matching ${topMatch.property.category} "${topMatch.property.title}". Ready to share.`
+        : 'Customer and lead record created successfully.';
+
     res.status(201).json({
       success: true,
-      message: 'Customer and lead record created successfully.',
+      message: successMessage,
       customer,
-      lead
+      lead,
+      conversationId: conversation._id,
+      matchedProperties,
+      topMatchedProperty: topMatch ? topMatch.property : null,
+      dispatchedToWhatsApp,
+      waDirectUrl
     });
   } catch (err) {
     next(err);

@@ -1,0 +1,10 @@
+{
+  "appId": "io.estateflow.crm",
+  "appName": "EstateFlow CRM",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http",
+    "cleartext": true,
+    "allowNavigation": ["*"]
+  }
+}

@@ -1,7 +1,12 @@
 const Property = require('../models/Property');
+const Customer = require('../models/Customer');
+const Conversation = require('../models/Conversation');
+const Message = require('../models/Message');
 const Booking = require('../models/Booking');
 const Lead = require('../models/Lead');
 const ActivityLog = require('../models/ActivityLog');
+const { matchCustomersForProperty, formatPropertyWhatsAppMessage } = require('../services/matchingService');
+const { sendTextMessage } = require('../services/whatsappService');
 
 // @desc    Get properties with filters, search, and pagination
 // @route   GET /api/properties
@@ -198,10 +203,16 @@ const createProperty = async (req, res, next) => {
       details: { code: property.propertyCode, title: property.title, price: property.totalPrice }
     });
 
+    // Auto-match existing customers who are actively looking for this property category
+    const matchingBuyers = await matchCustomersForProperty(property, 10);
+
     res.status(201).json({
       success: true,
-      message: 'Property listed successfully.',
-      property
+      message: matchingBuyers.length > 0
+        ? `Property listed! Found ${matchingBuyers.length} matching buyer(s) looking for ${property.category}.`
+        : 'Property listed successfully.',
+      property,
+      matchingBuyers
     });
   } catch (err) {
     next(err);
@@ -309,10 +320,124 @@ const deleteProperty = async (req, res, next) => {
   }
 };
 
+// @desc    Get matching customers looking for this property
+// @route   GET /api/properties/:id/matching-customers
+const getMatchingCustomersForProperty = async (req, res, next) => {
+  try {
+    const property = await Property.findOne({
+      _id: req.params.id,
+      companyId: req.companyId
+    });
+
+    if (!property) {
+      return res.status(404).json({ success: false, message: 'Property not found' });
+    }
+
+    const matches = await matchCustomersForProperty(property, 15);
+    res.status(200).json({
+      success: true,
+      property,
+      matchingCustomers: matches
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Share property via WhatsApp to selected or all matching customers
+// @route   POST /api/properties/:id/broadcast-matches
+const broadcastPropertyToMatches = async (req, res, next) => {
+  try {
+    const { customerIds = [] } = req.body;
+    const property = await Property.findOne({
+      _id: req.params.id,
+      companyId: req.companyId
+    });
+
+    if (!property) {
+      return res.status(404).json({ success: false, message: 'Property not found' });
+    }
+
+    let targetCustomers = [];
+    if (customerIds.length > 0) {
+      targetCustomers = await Customer.find({
+        _id: { $in: customerIds },
+        companyId: req.companyId
+      });
+    } else {
+      const matches = await matchCustomersForProperty(property, 10);
+      targetCustomers = matches.map(m => m.customer);
+    }
+
+    if (targetCustomers.length === 0) {
+      return res.status(400).json({ success: false, message: 'No matching customers found to share this property.' });
+    }
+
+    const results = [];
+    for (const cust of targetCustomers) {
+      const brochure = formatPropertyWhatsAppMessage(property, cust);
+      const cleanPhone = cust.phone.replace(/[^\d]/g, '');
+      const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(brochure)}`;
+
+      let liveSent = false;
+      try {
+        const sendRes = await sendTextMessage(cust.phone, brochure, req.companyId);
+        if (sendRes && sendRes.success && sendRes.live) {
+          liveSent = true;
+        }
+      } catch (e) {}
+
+      // Find or create conversation
+      let conv = await Conversation.findOne({ companyId: req.companyId, customerId: cust._id });
+      if (!conv) {
+        conv = await Conversation.create({
+          companyId: req.companyId,
+          customerId: cust._id,
+          channel: 'WhatsApp',
+          whatsappPhoneNumber: cust.phone,
+          status: 'Open'
+        });
+      }
+
+      await Message.create({
+        companyId: req.companyId,
+        conversationId: conv._id,
+        customerId: cust._id,
+        senderType: 'agent',
+        senderId: req.user.id,
+        senderName: `${req.user.firstName} ${req.user.lastName}`,
+        content: brochure,
+        groundedPropertyId: property._id,
+        status: liveSent ? 'sent' : 'delivered'
+      });
+
+      conv.lastMessageAt = new Date();
+      conv.lastMessagePreview = `Shared ${property.title}`;
+      await conv.save();
+
+      results.push({
+        customer: { id: cust._id, name: cust.fullName, phone: cust.phone },
+        liveSent,
+        waDirectUrl: waLink
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Property brochure prepared & shared for ${results.length} matching customer(s).`,
+      results
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getProperties,
   getPropertyById,
   createProperty,
   updateProperty,
-  deleteProperty
+  deleteProperty,
+  getMatchingCustomersForProperty,
+  broadcastPropertyToMatches
 };

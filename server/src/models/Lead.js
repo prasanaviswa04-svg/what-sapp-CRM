@@ -20,8 +20,26 @@ const leadSchema = new mongoose.Schema({
   },
   source: {
     type: String,
-    enum: ['WhatsApp', 'Website Form', 'Direct Call', 'Referral', 'Walk-in', 'Facebook Ad', 'Google Ad', 'Manual Entry'],
+    enum: [
+      'WhatsApp',
+      'Website Form',
+      'Direct Call',
+      'Referral',
+      'Walk-in',
+      'Facebook Ad',
+      'Google Ad',
+      'Manual Entry',
+      'Direct Property Owner',
+      'Real Estate Broker',
+      'Property Agent',
+      'Marketplace Submission'
+    ],
     default: 'WhatsApp'
+  },
+  marketplaceSubmissionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MarketplaceSubmission',
+    default: null
   },
   interestedPropertyId: {
     type: mongoose.Schema.Types.ObjectId,

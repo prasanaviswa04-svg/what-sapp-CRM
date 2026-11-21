@@ -4,8 +4,19 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../common/Button';
 
 export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNotifications }) => {
-  const { user, logout } = useAuth();
+  const { user, login, logout } = useAuth();
   const [userDropdown, setUserDropdown] = useState(false);
+  const [roleDropdown, setRoleDropdown] = useState(false);
+
+  const handleSwitchRole = async (email) => {
+    setRoleDropdown(false);
+    try {
+      await login(email, 'Admin@12345');
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <header className="h-14 bg-white border-b border-zinc-200 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between">
@@ -33,6 +44,46 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
 
       {/* Right: Actions, Notifications, Profile */}
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Portal Switcher Dropdown */}
+        <div className="relative hidden md:block">
+          <button
+            onClick={() => setRoleDropdown(!roleDropdown)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-900 transition shadow-2xs"
+            title="Switch Active Role Portal"
+          >
+            <Shield className="w-3.5 h-3.5 text-zinc-700" />
+            <span>Portal: {user?.role || 'Company Admin'}</span>
+            <ChevronDown className="w-3 h-3 text-zinc-400" />
+          </button>
+          {roleDropdown && (
+            <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-zinc-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
+              <span className="block px-3 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                Select Role Portal
+              </span>
+              {[
+                { role: 'Super Admin', email: 'superadmin@estateflow.io' },
+                { role: 'Company Admin', email: 'admin@estateflow.io' },
+                { role: 'Real Estate Manager', email: 'manager@estateflow.io' },
+                { role: 'Property Broker', email: 'broker@estateflow.io' },
+                { role: 'Sales Agent', email: 'agent@estateflow.io' },
+                { role: 'Customer Support Agent', email: 'support@estateflow.io' }
+              ].map((r) => (
+                <button
+                  key={r.email}
+                  type="button"
+                  onClick={() => handleSwitchRole(r.email)}
+                  className={`w-full text-left px-3 py-1.5 text-xs flex items-center justify-between transition ${
+                    user?.role === r.role ? 'bg-zinc-100 font-bold text-zinc-950' : 'text-zinc-700 hover:bg-zinc-50'
+                  }`}
+                >
+                  <span>{r.role}</span>
+                  {user?.role === r.role && <span className="w-1.5 h-1.5 rounded-full bg-zinc-900"></span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* WhatsApp Webhook Simulator Button */}
         <Button
           onClick={onOpenSimulator}
@@ -62,8 +113,12 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
             onClick={() => setUserDropdown(!userDropdown)}
             className="flex items-center gap-2 p-1 rounded-lg hover:bg-zinc-50 transition border border-transparent hover:border-zinc-200"
           >
-            <div className="w-7 h-7 rounded-full bg-zinc-100 border border-zinc-300 text-zinc-900 font-bold flex items-center justify-center text-xs">
-              {user?.firstName?.[0] || 'A'}{user?.lastName?.[0] || 'S'}
+            <div className="w-7 h-7 rounded-full bg-zinc-100 border border-zinc-300 text-zinc-900 font-bold flex items-center justify-center text-xs overflow-hidden shrink-0">
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user?.firstName} className="w-full h-full object-cover" />
+              ) : (
+                `${user?.firstName?.[0] || 'A'}${user?.lastName?.[0] || 'S'}`
+              )}
             </div>
             <div className="hidden md:flex flex-col text-left">
               <span className="text-xs font-semibold text-zinc-900 leading-tight tracking-tight">
@@ -78,14 +133,25 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
 
           {userDropdown && (
             <div
-              className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-zinc-200 py-1 z-50 animate-in fade-in zoom-in-95 duration-100"
+              className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-zinc-200 py-1 z-50 animate-in fade-in zoom-in-95 duration-100"
               onClick={() => setUserDropdown(false)}
             >
-              <div className="px-3.5 py-2 border-b border-zinc-100 text-xs">
-                <p className="font-semibold text-zinc-900">{user?.name || `${user?.firstName} ${user?.lastName}`}</p>
-                <p className="text-zinc-500 truncate text-[11px]">{user?.email}</p>
-                <div className="mt-1 flex items-center gap-1 text-[10px] text-zinc-700 font-medium">
-                  <Shield className="w-3 h-3" /> {user?.role}
+              <div className="px-3.5 py-2.5 border-b border-zinc-100 text-xs">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-8 h-8 rounded-full bg-zinc-100 border border-zinc-300 text-zinc-900 font-bold flex items-center justify-center text-xs overflow-hidden shrink-0">
+                    {user?.avatar ? (
+                      <img src={user.avatar} alt={user?.firstName} className="w-full h-full object-cover" />
+                    ) : (
+                      `${user?.firstName?.[0] || 'A'}${user?.lastName?.[0] || 'S'}`
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-zinc-900 truncate">{user?.name || `${user?.firstName} ${user?.lastName}`}</p>
+                    <p className="text-zinc-500 truncate text-[11px]">{user?.email}</p>
+                  </div>
+                </div>
+                <div className="mt-1 flex items-center gap-1 text-[10px] text-zinc-700 font-medium bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200">
+                  <Shield className="w-3 h-3 text-zinc-500" /> {user?.role}
                 </div>
               </div>
 
@@ -93,7 +159,7 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
                 href="/settings"
                 className="flex items-center gap-2 px-3.5 py-2 text-xs text-zinc-700 hover:bg-zinc-50 transition"
               >
-                <Building className="w-3.5 h-3.5 text-zinc-400" /> Settings
+                <Building className="w-3.5 h-3.5 text-zinc-400" /> Profile & Settings
               </a>
 
               <button

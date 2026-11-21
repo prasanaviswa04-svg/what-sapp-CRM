@@ -6,10 +6,19 @@ const Message = require('../models/Message');
 const ActivityLog = require('../models/ActivityLog');
 const Notification = require('../models/Notification');
 const { normalizePhoneNumber } = require('../utils/phoneNormalizer');
+const { formatPropertyWhatsAppMessage } = require('../services/matchingService');
 const { sendTextMessage, sendMediaMessage, sendTemplateMessage } = require('../services/whatsappService');
 const { generateAiRealEstateResponse } = require('../services/openAiService');
 const { calculateLeadScore } = require('../services/leadScoringService');
 const { emitCompanyEvent, emitConversationEvent } = require('../services/socketService');
+const {
+  initWhatsApp,
+  getWhatsAppStatus,
+  requestPairingCode,
+  sendBaileysMessage,
+  disconnectWhatsApp,
+  refreshQR
+} = require('../services/baileysService');
 
 // @desc    Meta Webhook Verification (GET)
 // @route   GET /api/whatsapp/webhook
@@ -437,64 +446,136 @@ const getMessages = async (req, res, next) => {
   }
 };
 
-// @desc    Send manual message from broker
+// @desc    Send manual message or share property brochure via WhatsApp
 // @route   POST /api/whatsapp/send
 const sendMessage = async (req, res, next) => {
   try {
-    const { conversationId, content, messageType = 'text', mediaUrl, propertyId } = req.body;
+    const {
+      conversationId,
+      customerId,
+      content,
+      message,
+      recipientPhone,
+      messageType = 'text',
+      mediaUrl,
+      propertyId
+    } = req.body;
 
-    if (!conversationId || (!content && !mediaUrl && !propertyId)) {
-      return res.status(400).json({ success: false, message: 'conversationId and content/media are required.' });
+    let targetText = message || content || '';
+    let customer = null;
+    let conversation = null;
+
+    // 1. Resolve Customer if customerId provided
+    if (customerId) {
+      customer = await Customer.findOne({ _id: customerId, companyId: req.companyId });
     }
 
-    const conversation = await Conversation.findOne({
-      _id: conversationId,
-      companyId: req.companyId
-    }).populate('customerId');
-
-    if (!conversation) {
-      return res.status(404).json({ success: false, message: 'Conversation not found' });
-    }
-
-    let finalContent = content;
-    if (propertyId) {
-      const Property = require('../models/Property');
-      const prop = await Property.findById(propertyId);
-      if (prop) {
-        finalContent = `🏡 *${prop.title}* (${prop.propertyCode})\n📍 Locality: ${prop.address.locality}, ${prop.address.city}\n💰 Price: ₹${(prop.totalPrice / 10000000).toFixed(2)} Cr\n🛏️ ${prop.bedrooms} BHK | ${prop.builtUpArea} sq.ft\n🏊 ${prop.amenities.slice(0, 3).join(', ')}`;
+    // 2. Resolve or Create Conversation
+    if (conversationId) {
+      conversation = await Conversation.findOne({
+        _id: conversationId,
+        companyId: req.companyId
+      }).populate('customerId');
+      if (conversation && !customer) {
+        customer = conversation.customerId;
+      }
+    } else if (customer) {
+      conversation = await Conversation.findOne({
+        companyId: req.companyId,
+        customerId: customer._id
+      });
+      if (!conversation) {
+        conversation = await Conversation.create({
+          companyId: req.companyId,
+          customerId: customer._id,
+          channel: 'WhatsApp',
+          whatsappPhoneNumber: customer.phone,
+          status: 'Open'
+        });
       }
     }
 
-    // Send via WhatsApp
-    const sendRes = await sendTextMessage(conversation.whatsappPhoneNumber, finalContent, req.companyId);
+    // 3. Format Property Brochure if propertyId provided
+    let property = null;
+    if (propertyId) {
+      const Property = require('../models/Property');
+      property = await Property.findById(propertyId);
+      if (property) {
+        targetText = formatPropertyWhatsAppMessage(property, customer);
+      }
+    }
 
-    // Record Message
-    const msg = await Message.create({
-      companyId: req.companyId,
-      conversationId: conversation._id,
-      customerId: conversation.customerId._id,
-      senderType: 'agent',
-      senderId: req.user.id,
-      senderName: `${req.user.firstName} ${req.user.lastName}`,
-      messageType,
-      content: finalContent,
-      mediaUrl: mediaUrl || '',
-      whatsappMessageId: sendRes.messageId,
-      status: sendRes.live ? 'sent' : 'delivered'
-    });
+    // Determine target recipient phone
+    const targetPhone = recipientPhone || conversation?.whatsappPhoneNumber || customer?.phone;
 
-    conversation.lastMessageAt = new Date();
-    conversation.lastMessagePreview = finalContent;
-    await conversation.save();
+    if (!targetPhone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Could not determine recipient phone number. Provide recipientPhone, customerId, or conversationId.'
+      });
+    }
 
-    // Emit Socket
-    emitConversationEvent(conversation._id.toString(), 'new_message', msg);
-    emitCompanyEvent(req.companyId.toString(), 'new_message', msg);
-    emitCompanyEvent(req.companyId.toString(), 'conversation_updated', conversation);
+    if (!targetText && !mediaUrl) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message content or propertyId is required.'
+      });
+    }
+
+    const cleanPhone = targetPhone.replace(/[^\d]/g, '');
+    const waDirectUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(targetText)}`;
+
+    // 4. Send via Live WhatsApp Gateway
+    let sendRes = null;
+    let liveDelivered = false;
+    let gatewayNotice = '';
+
+    try {
+      sendRes = await sendTextMessage(targetPhone, targetText, req.companyId);
+      if (sendRes && sendRes.success && sendRes.live) {
+        liveDelivered = true;
+      }
+    } catch (err) {
+      gatewayNotice = err.message;
+    }
+
+    // 5. Record Message in CRM if conversation exists
+    let recordedMsg = null;
+    if (conversation) {
+      recordedMsg = await Message.create({
+        companyId: req.companyId,
+        conversationId: conversation._id,
+        customerId: conversation.customerId?._id || customer?._id,
+        senderType: 'agent',
+        senderId: req.user.id,
+        senderName: `${req.user.firstName} ${req.user.lastName}`,
+        messageType,
+        content: targetText,
+        mediaUrl: mediaUrl || '',
+        whatsappMessageId: sendRes?.messageId || `wamid_manual_${Date.now()}`,
+        status: liveDelivered ? 'sent' : 'delivered',
+        groundedPropertyId: property?._id || null
+      });
+
+      conversation.lastMessageAt = new Date();
+      conversation.lastMessagePreview = property ? `Shared ${property.title}` : targetText;
+      await conversation.save();
+
+      // Emit real-time sockets
+      emitConversationEvent(conversation._id.toString(), 'new_message', recordedMsg);
+      emitCompanyEvent(req.companyId.toString(), 'new_message', recordedMsg);
+      emitCompanyEvent(req.companyId.toString(), 'conversation_updated', conversation);
+    }
 
     res.status(200).json({
       success: true,
-      message: msg
+      live: liveDelivered,
+      message: liveDelivered
+        ? (property ? `Shared ${property.title} to ${targetPhone} via WhatsApp!` : 'Message dispatched successfully!')
+        : (property ? `Property brochure created for ${targetPhone}. Ready to share.` : 'Message ready for WhatsApp.'),
+      waDirectUrl,
+      property,
+      messageRecord: recordedMsg
     });
   } catch (err) {
     next(err);
@@ -533,6 +614,66 @@ const toggleHumanTakeover = async (req, res, next) => {
   }
 };
 
+// @desc    Get Live WhatsApp Connection Status & Real QR
+// @route   GET /api/whatsapp/connect-status
+const getConnectStatus = async (req, res, next) => {
+  try {
+    const status = getWhatsAppStatus();
+    if (!status.isConnected && !status.qr) {
+      initWhatsApp(req.companyId);
+    }
+    res.status(200).json({
+      success: true,
+      ...getWhatsAppStatus()
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Request 8-character phone pairing code
+// @route   POST /api/whatsapp/pair-code
+const requestPhonePairingCode = async (req, res, next) => {
+  try {
+    const { phone } = req.body;
+    if (!phone) {
+      return res.status(400).json({ success: false, message: 'Please provide phone number' });
+    }
+    const code = await requestPairingCode(phone);
+    res.status(200).json({
+      success: true,
+      pairingCode: code
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Disconnect WhatsApp Multi-Device
+// @route   POST /api/whatsapp/disconnect
+const disconnectDevice = async (req, res, next) => {
+  try {
+    const result = await disconnectWhatsApp(req.companyId);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Refresh / Force regenerate QR code
+// @route   POST /api/whatsapp/refresh-qr
+const refreshDeviceQR = async (req, res, next) => {
+  try {
+    await refreshQR(req.companyId);
+    res.status(200).json({
+      success: true,
+      ...getWhatsAppStatus()
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   verifyWebhook,
   handleWebhook,
@@ -540,5 +681,9 @@ module.exports = {
   getConversations,
   getMessages,
   sendMessage,
-  toggleHumanTakeover
+  toggleHumanTakeover,
+  getConnectStatus,
+  requestPhonePairingCode,
+  disconnectDevice,
+  refreshDeviceQR
 };

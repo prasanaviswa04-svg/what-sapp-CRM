@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
+import { isMobileNative } from '../services/api';
 
 const SocketContext = createContext(null);
 
@@ -17,8 +18,12 @@ export const SocketProvider = ({ children }) => {
       return;
     }
 
+    const socketUrl = isMobileNative()
+      ? (localStorage.getItem('estateflow_server_host') || 'http://10.1.40.73:5000')
+      : window.location.origin;
+
     // Connect to server (using origin or fallback localhost:5000)
-    const newSocket = io(window.location.origin, {
+    const newSocket = io(socketUrl, {
       transports: ['websocket', 'polling'],
     });
 

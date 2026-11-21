@@ -17,7 +17,12 @@ import {
   Bed,
   Bath,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Users,
+  Share2,
+  Sparkles,
+  Send,
+  ExternalLink
 } from 'lucide-react';
 
 export const PropertyList = () => {
@@ -30,6 +35,8 @@ export const PropertyList = () => {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [matchingBuyersModal, setMatchingBuyersModal] = useState(null);
+  const [broadcasting, setBroadcasting] = useState(false);
 
   // Add Property Form State
   const [formData, setFormData] = useState({
@@ -124,12 +131,52 @@ export const PropertyList = () => {
 
       const res = await api.post('/properties', payload);
       if (res.data.success) {
-        addToast('Property listing created successfully!', 'success');
         setIsAddModalOpen(false);
         fetchProperties();
+
+        if (res.data.matchingBuyers?.length > 0) {
+          setMatchingBuyersModal({
+            property: res.data.property,
+            buyers: res.data.matchingBuyers
+          });
+          addToast(res.data.message || `Found ${res.data.matchingBuyers.length} matching buyers!`, 'success');
+        } else {
+          addToast('Property listing created successfully!', 'success');
+        }
       }
     } catch (err) {
       addToast(err.response?.data?.message || 'Failed to create listing', 'error');
+    }
+  };
+
+  const openMatchingBuyers = async (prop) => {
+    try {
+      const res = await api.get(`/properties/${prop._id}/matching-customers`);
+      if (res.data.success && res.data.matchingCustomers?.length > 0) {
+        setMatchingBuyersModal({
+          property: prop,
+          buyers: res.data.matchingCustomers
+        });
+      } else {
+        addToast(`No active customers currently looking for ${prop.category}`, 'info');
+      }
+    } catch (err) {
+      addToast('Could not fetch matching customers', 'error');
+    }
+  };
+
+  const handleBroadcastToMatches = async (propertyId, customerIds = []) => {
+    setBroadcasting(true);
+    try {
+      const res = await api.post(`/properties/${propertyId}/broadcast-matches`, { customerIds });
+      if (res.data.success) {
+        addToast(res.data.message || 'Property brochure dispatched to buyers via WhatsApp!', 'success');
+        setMatchingBuyersModal(null);
+      }
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Failed to dispatch via WhatsApp', 'error');
+    } finally {
+      setBroadcasting(false);
     }
   };
 
@@ -284,16 +331,30 @@ export const PropertyList = () => {
               </div>
 
               {/* Price & Action Footer */}
-              <div className="p-4 pt-3 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between">
+              <div className="p-4 pt-3 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between gap-2">
                 <div>
                   <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Total Price</div>
                   <div className="text-base font-extrabold text-zinc-950">
                     ₹{(prop.totalPrice / 10000000).toFixed(2)} Cr
                   </div>
                 </div>
-                <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/properties/${prop._id}`); }}>
-                  Details
-                </Button>
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    icon={Share2}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openMatchingBuyers(prop);
+                    }}
+                    title="Find matching buyers & share on WhatsApp"
+                  >
+                    Share
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/properties/${prop._id}`); }}>
+                    Details
+                  </Button>
+                </div>
               </div>
             </Card>
           ))}
@@ -438,6 +499,92 @@ export const PropertyList = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Matching Buyers WhatsApp Dispatch Modal */}
+      {matchingBuyersModal && (
+        <Modal
+          isOpen={Boolean(matchingBuyersModal)}
+          onClose={() => setMatchingBuyersModal(null)}
+          title={`🎯 Matching Buyers for ${matchingBuyersModal.property?.title}`}
+          size="lg"
+        >
+          <div className="space-y-4">
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between gap-3">
+              <div>
+                <span className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-emerald-600" />
+                  Found {matchingBuyersModal.buyers?.length} Active Buyer(s) Looking for {matchingBuyersModal.property?.category}
+                </span>
+                <p className="text-[11px] text-emerald-700 mt-0.5">
+                  Send this property brochure directly to their WhatsApp with 1 tap.
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant="primary"
+                isLoading={broadcasting}
+                icon={Share2}
+                onClick={() => handleBroadcastToMatches(matchingBuyersModal.property._id)}
+              >
+                Send to All via WhatsApp
+              </Button>
+            </div>
+
+            <div className="max-h-72 overflow-y-auto divide-y divide-zinc-200 border border-zinc-200 rounded-xl bg-white">
+              {matchingBuyersModal.buyers?.map(({ customer, matchScore, matchFactors }) => {
+                const cleanPhone = (customer.phone || '').replace(/[^\d]/g, '');
+                const directWaLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+                  `🏡 *Exclusive Match from EstateFlow CRM!*\n\nHello *${customer.fullName}*! Here is a verified *${matchingBuyersModal.property.category}* matching your requirement:\n\n✨ *${matchingBuyersModal.property.title}* (${matchingBuyersModal.property.propertyCode})\n📍 Location: ${matchingBuyersModal.property.address?.locality || 'Gurugram'}, ${matchingBuyersModal.property.address?.city || 'Gurugram'}\n💰 Price: ₹${(matchingBuyersModal.property.totalPrice / 10000000).toFixed(2)} Cr\n📐 Layout: ${matchingBuyersModal.property.bedrooms} BHK | ${matchingBuyersModal.property.builtUpArea} ${matchingBuyersModal.property.unit || 'sq.ft'}\n\nWould you like to schedule an exclusive site visit?`
+                )}`;
+
+                return (
+                  <div key={customer._id} className="p-3.5 flex items-center justify-between gap-3 hover:bg-zinc-50 transition">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-zinc-950">{customer.fullName}</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200">
+                          {matchScore}% Match
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-zinc-500 mt-0.5 flex items-center gap-3">
+                        <span>📞 {customer.phone}</span>
+                        <span>📍 {customer.preferredLocation || 'Gurugram'}</span>
+                        <span>
+                          💰 Up to ₹{customer.requirements?.maxBudget ? (customer.requirements.maxBudget / 10000000).toFixed(2) + ' Cr' : 'Flexible'}
+                        </span>
+                      </div>
+                      {matchFactors?.length > 0 && (
+                        <div className="text-[10px] text-emerald-700 font-medium mt-1">
+                          ✓ {matchFactors.slice(0, 2).join(' • ')}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        onClick={() => handleBroadcastToMatches(matchingBuyersModal.property._id, [customer._id])}
+                      >
+                        Send
+                      </Button>
+                      <a
+                        href={directWaLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded-lg border border-zinc-300 text-zinc-700 hover:bg-zinc-100 transition"
+                        title="Open WhatsApp directly"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

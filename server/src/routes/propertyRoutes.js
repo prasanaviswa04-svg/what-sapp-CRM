@@ -5,7 +5,9 @@ const {
   getPropertyById,
   createProperty,
   updateProperty,
-  deleteProperty
+  deleteProperty,
+  getMatchingCustomersForProperty,
+  broadcastPropertyToMatches
 } = require('../controllers/propertyController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -16,5 +18,7 @@ router.post('/', createProperty);
 router.get('/:id', getPropertyById);
 router.put('/:id', updateProperty);
 router.delete('/:id', deleteProperty);
+router.get('/:id/matching-customers', getMatchingCustomersForProperty);
+router.post('/:id/broadcast-matches', broadcastPropertyToMatches);
 
 module.exports = router;

@@ -28,6 +28,7 @@ const searchRoutes = require('./routes/searchRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
+const marketplaceRoutes = require('./routes/marketplaceRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -38,20 +39,18 @@ initSocket(server);
 // Middleware
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', 'blob:', 'https:', '*'],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
-        fontSrc: ["'self'", 'https:', 'data:'],
-        connectSrc: ["'self'", 'https:', 'http:', 'ws:', 'wss:', '*']
-      }
-    },
+    contentSecurityPolicy: false,
+    strictTransportSecurity: false,
     crossOriginResourcePolicy: false,
-    crossOriginEmbedderPolicy: false
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false
   })
 );
+// Reset HSTS if previously cached by browser
+app.use((req, res, next) => {
+  res.setHeader('Strict-Transport-Security', 'max-age=0');
+  next();
+});
 app.use(cors({ origin: true, credentials: true }));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '25mb' }));
@@ -87,10 +86,22 @@ app.use('/api/search', searchRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/activity-logs', activityRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/marketplace', marketplaceRoutes);
 
-// Static frontend serving if client/dist exists
 const path = require('path');
 const fs = require('fs');
+
+// Direct Android APK Download Route
+app.get(['/download/apk', '/EstateFlow-CRM.apk'], (req, res) => {
+  const apkPath = path.join(__dirname, '../../EstateFlow-CRM.apk');
+  if (fs.existsSync(apkPath)) {
+    res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+    return res.download(apkPath, 'EstateFlow-CRM.apk');
+  }
+  res.status(404).send('APK file not found.');
+});
+
+// Static frontend serving if client/dist exists
 const clientDistPath = path.join(__dirname, '../../client/dist');
 if (fs.existsSync(clientDistPath)) {
   app.use(express.static(clientDistPath));
@@ -197,9 +208,9 @@ const startServer = async () => {
       console.log('✅ Complete real estate seed data successfully populated.');
     }
 
-    server.listen(env.PORT, () => {
-      console.log(`🚀 EstateFlow CRM Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-      console.log(`🔗 Health check: http://localhost:${env.PORT}/api/health`);
+    server.listen(env.PORT, '0.0.0.0', () => {
+      console.log(`🚀 EstateFlow CRM Server running on port ${env.PORT} on 0.0.0.0 in ${env.NODE_ENV} mode`);
+      console.log(`🔗 Local Health check: http://localhost:${env.PORT}/api/health`);
     });
   } catch (err) {
     console.error('❌ Failed to start server:', err);

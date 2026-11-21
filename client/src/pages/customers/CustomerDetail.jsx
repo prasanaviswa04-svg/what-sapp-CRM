@@ -72,22 +72,30 @@ export const CustomerDetail = () => {
     }
   };
 
-  const handleShareProperty = async (property) => {
-    if (!data.conversation) {
-      addToast('No WhatsApp conversation exists for this customer yet.', 'warning');
-      return;
-    }
-
+  const handleShareProperty = async (property, openDirectApp = false) => {
     try {
-      await api.post('/whatsapp/send', {
-        conversationId: data.conversation._id,
+      const res = await api.post('/whatsapp/send', {
+        customerId: data.customer._id,
+        conversationId: data.conversation?._id,
         propertyId: property._id
       });
-      addToast(`Shared ${property.title} via WhatsApp!`, 'success');
-      setActiveTab('chat');
-      fetchCustomerDetails();
+
+      if (res.data.success) {
+        if (res.data.live) {
+          addToast(`✅ Shared ${property.title} to ${data.customer.phone} via WhatsApp!`, 'success');
+        } else {
+          addToast(`WhatsApp brochure prepared for ${data.customer.phone}!`, 'info');
+        }
+
+        if (openDirectApp && res.data.waDirectUrl) {
+          window.open(res.data.waDirectUrl, '_blank');
+        }
+
+        setActiveTab('chat');
+        fetchCustomerDetails();
+      }
     } catch (err) {
-      addToast('Failed to share property', 'error');
+      addToast(err.response?.data?.message || 'Failed to share property', 'error');
     }
   };
 
@@ -294,21 +302,31 @@ export const CustomerDetail = () => {
                       </div>
                     </div>
 
-                    <div className="mt-3 pt-3 border-t border-zinc-100 flex items-center justify-between">
+                    <div className="mt-3 pt-3 border-t border-zinc-100 flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-1.5">
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          icon={Share2}
+                          onClick={() => handleShareProperty(property, false)}
+                        >
+                          Send WhatsApp
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleShareProperty(property, true)}
+                          title="Open WhatsApp directly"
+                        >
+                          📱 Open App
+                        </Button>
+                      </div>
                       <Button
                         size="sm"
-                        variant="primary"
-                        icon={Share2}
-                        onClick={() => handleShareProperty(property)}
-                      >
-                        Share via WhatsApp
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
+                        variant="ghost"
                         onClick={() => navigate(`/properties/${property._id}`)}
                       >
-                        View Property
+                        View Details →
                       </Button>
                     </div>
                   </div>

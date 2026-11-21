@@ -166,6 +166,27 @@ const propertySchema = new mongoose.Schema({
   isFeatured: {
     type: Boolean,
     default: false
+  },
+  sourceType: {
+    type: String,
+    enum: ['Internal Agency', 'Direct Property Owner', 'Real Estate Broker', 'Property Agent', 'Website Submission'],
+    default: 'Internal Agency',
+    index: true
+  },
+  marketplaceSubmissionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MarketplaceSubmission',
+    default: null
+  },
+  externalOwnerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MarketplaceUser',
+    default: null
+  },
+  externalBrokerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MarketplaceUser',
+    default: null
   }
 }, { timestamps: true });
 

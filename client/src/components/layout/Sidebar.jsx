@@ -5,45 +5,83 @@ import {
   Users,
   GitBranch,
   Building2,
-  Sparkles,
   MessageSquare,
-  Bot,
-  CalendarCheck,
-  Zap,
-  CheckSquare,
-  Radio,
-  CreditCard,
-  BarChart3,
   UserCheck,
-  Layers,
-  FileText,
   Settings,
-  HelpCircle,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Shield,
+  Store
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) => {
-  const navigationItems = [
-    { name: 'Overview Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Customers', path: '/customers', icon: Users },
-    { name: 'Leads & Pipeline', path: '/leads', icon: GitBranch },
-    { name: 'Properties', path: '/properties', icon: Building2 },
-    { name: 'AI Property Matching', path: '/matching', icon: Sparkles, badge: 'AI' },
-    { name: 'WhatsApp Inbox', path: '/whatsapp', icon: MessageSquare, badge: 'Live' },
-    { name: 'AI Assistant & KB', path: '/ai-assistant', icon: Bot },
-    { name: 'Bookings & Visits', path: '/appointments', icon: CalendarCheck },
-    { name: 'Follow-Up Automation', path: '/automations', icon: Zap },
-    { name: 'Tasks & Reminders', path: '/tasks', icon: CheckSquare },
-    { name: 'Campaigns & Broadcasts', path: '/campaigns', icon: Radio },
-    { name: 'Payments & Transactions', path: '/payments', icon: CreditCard },
-    { name: 'Reports & Analytics', path: '/analytics', icon: BarChart3 },
-    { name: 'Team Management', path: '/team', icon: UserCheck },
-    { name: 'Integrations & Meta API', path: '/integrations', icon: Layers },
-    { name: 'Activity & Audit Logs', path: '/activity-logs', icon: FileText },
-    { name: 'Settings', path: '/settings', icon: Settings },
-    { name: 'Help & Support', path: '/help', icon: HelpCircle },
-  ];
+  const { user } = useAuth();
+  const role = user?.role || 'Company Admin';
+
+  const getNavigationItems = () => {
+    switch (role) {
+      case 'Super Admin':
+        return [
+          { name: 'System Console', path: '/dashboard', icon: LayoutDashboard },
+          { name: 'Marketplace Submissions', path: '/marketplace-manager', icon: Store, badge: 'Submissions' },
+          { name: 'Customers', path: '/customers', icon: Users },
+          { name: 'Leads & Pipeline', path: '/leads', icon: GitBranch },
+          { name: 'Properties', path: '/properties', icon: Building2 },
+          { name: 'Connect WhatsApp', path: '/whatsapp', icon: MessageSquare },
+          { name: 'Team & Admins', path: '/team', icon: UserCheck },
+          { name: 'System Settings', path: '/settings', icon: Settings },
+        ];
+      case 'Real Estate Manager':
+        return [
+          { name: 'Operations Dashboard', path: '/dashboard', icon: LayoutDashboard },
+          { name: 'Marketplace Submissions', path: '/marketplace-manager', icon: Store, badge: 'Submissions' },
+          { name: 'Customers', path: '/customers', icon: Users },
+          { name: 'Leads & Pipeline', path: '/leads', icon: GitBranch },
+          { name: 'Properties', path: '/properties', icon: Building2 },
+          { name: 'Connect WhatsApp', path: '/whatsapp', icon: MessageSquare },
+          { name: 'Team Management', path: '/team', icon: UserCheck },
+        ];
+      case 'Property Broker':
+        return [
+          { name: 'Broker Portal', path: '/dashboard', icon: LayoutDashboard },
+          { name: 'Marketplace Submissions', path: '/marketplace-manager', icon: Store, badge: 'Submissions' },
+          { name: 'My Properties', path: '/properties', icon: Building2 },
+          { name: 'Leads Pipeline', path: '/leads', icon: GitBranch },
+          { name: 'Client Database', path: '/customers', icon: Users },
+          { name: 'Connect WhatsApp', path: '/whatsapp', icon: MessageSquare },
+        ];
+      case 'Sales Agent':
+        return [
+          { name: 'Agent Pipeline', path: '/dashboard', icon: LayoutDashboard },
+          { name: 'Leads & Pipeline', path: '/leads', icon: GitBranch },
+          { name: 'Assigned Clients', path: '/customers', icon: Users },
+          { name: 'Properties', path: '/properties', icon: Building2 },
+          { name: 'Connect WhatsApp', path: '/whatsapp', icon: MessageSquare },
+        ];
+      case 'Customer Support Agent':
+        return [
+          { name: 'Support Dashboard', path: '/dashboard', icon: LayoutDashboard },
+          { name: 'Connect WhatsApp', path: '/whatsapp', icon: MessageSquare },
+          { name: 'Customer Directory', path: '/customers', icon: Users },
+          { name: 'Properties Inventory', path: '/properties', icon: Building2 },
+        ];
+      case 'Company Admin':
+      default:
+        return [
+          { name: 'Executive Dashboard', path: '/dashboard', icon: LayoutDashboard },
+          { name: 'Marketplace Submissions', path: '/marketplace-manager', icon: Store, badge: 'Submissions' },
+          { name: 'Customers', path: '/customers', icon: Users },
+          { name: 'Leads & Pipeline', path: '/leads', icon: GitBranch },
+          { name: 'Properties', path: '/properties', icon: Building2 },
+          { name: 'Connect WhatsApp', path: '/whatsapp', icon: MessageSquare },
+          { name: 'Team Management', path: '/team', icon: UserCheck },
+          { name: 'Settings', path: '/settings', icon: Settings },
+        ];
+    }
+  };
+
+  const navigationItems = getNavigationItems();
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-white text-zinc-600 border-r border-zinc-200 select-none">
@@ -70,6 +108,19 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
           {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
         </button>
       </div>
+
+      {/* Active Role Pill */}
+      {!isCollapsed && (
+        <div className="px-3 pt-2.5 pb-1">
+          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-50 border border-zinc-200 text-xs">
+            <div className="flex items-center gap-1.5 truncate">
+              <Shield className="w-3.5 h-3.5 text-zinc-700 flex-shrink-0" />
+              <span className="font-semibold text-zinc-900 truncate text-[11px]">{role}</span>
+            </div>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-zinc-200/70 text-zinc-700 font-mono font-medium">Portal</span>
+          </div>
+        </div>
+      )}
 
       {/* Navigation Links */}
       <div className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">

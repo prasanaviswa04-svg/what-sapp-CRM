@@ -12,6 +12,9 @@ const Campaign = require('../models/Campaign');
 const Task = require('../models/Task');
 const KnowledgeBase = require('../models/KnowledgeBase');
 const ActivityLog = require('../models/ActivityLog');
+const MarketplaceUser = require('../models/MarketplaceUser');
+const MarketplaceSubmission = require('../models/MarketplaceSubmission');
+const MarketplaceActivity = require('../models/MarketplaceActivity');
 
 async function seedFullRealEstateData(companyId, brokerId) {
   // Clear existing company demo records
@@ -560,6 +563,261 @@ async function seedFullRealEstateData(companyId, brokerId) {
       category: 'Legal & Documentation',
       content: 'All properties listed on EstateFlow are 100% RERA verified with clear, marketable freehold title deeds. Our legal advisory team assists buyers with stamp duty registration.',
       tags: ['RERA', 'Legal', 'Title']
+    }
+  ]);
+
+  // 11. Seed Marketplace Multi-Vendor Users & Submissions
+  await Promise.all([
+    MarketplaceUser.deleteMany({ companyId }),
+    MarketplaceSubmission.deleteMany({ companyId }),
+    MarketplaceActivity.deleteMany({ companyId })
+  ]);
+
+  const [owner1, owner2, broker1, broker2] = await Promise.all([
+    MarketplaceUser.create({
+      companyId,
+      userType: 'Owner',
+      firstName: 'Rajesh',
+      lastName: 'Singhania',
+      fullName: 'Rajesh Singhania',
+      email: 'owner.rajesh@gmail.com',
+      phone: '+919811099887',
+      whatsappNumber: '+919811099887',
+      password: 'Admin@12345',
+      status: 'Active',
+      isVerified: true,
+      ownerProfile: {
+        currentCity: 'Gurugram',
+        currentAddress: 'Sector 54, Golf Course Road',
+        ownershipType: 'Individual'
+      }
+    }),
+    MarketplaceUser.create({
+      companyId,
+      userType: 'Owner',
+      firstName: 'Sunita',
+      lastName: 'Mehra',
+      fullName: 'Sunita Mehra',
+      email: 'owner.sunita@gmail.com',
+      phone: '+919822077665',
+      whatsappNumber: '+919822077665',
+      password: 'Admin@12345',
+      status: 'Active',
+      isVerified: true,
+      ownerProfile: {
+        currentCity: 'New Delhi',
+        currentAddress: 'Vasant Vihar, New Delhi',
+        ownershipType: 'Joint'
+      }
+    }),
+    MarketplaceUser.create({
+      companyId,
+      userType: 'Broker',
+      firstName: 'Karan',
+      lastName: 'Varma',
+      fullName: 'Karan Varma',
+      email: 'karan@primeacrerealty.com',
+      phone: '+919833055443',
+      whatsappNumber: '+919833055443',
+      password: 'Admin@12345',
+      status: 'Active',
+      isVerified: true,
+      brokerProfile: {
+        companyName: 'Prime Acre Realty Advisors',
+        operatingLocations: ['Golf Course Road', 'DLF Phase 5', 'Sohna Road'],
+        serviceAreas: ['Luxury Condos', 'Commercial Leases'],
+        propertyCategories: ['Apartment', 'Penthouse', 'Office Space'],
+        yearsExperience: 8,
+        reraNumber: 'HARERA/GGM/2021/889'
+      }
+    }),
+    MarketplaceUser.create({
+      companyId,
+      userType: 'Broker',
+      firstName: 'Deepak',
+      lastName: 'Chopra',
+      fullName: 'Deepak Chopra',
+      email: 'deepak@horizoncommercial.in',
+      phone: '+919844033221',
+      whatsappNumber: '+919844033221',
+      password: 'Admin@12345',
+      status: 'Active',
+      isVerified: true,
+      brokerProfile: {
+        companyName: 'Horizon Commercial Asset Advisory',
+        operatingLocations: ['Cyber City', 'Golf Course Ext Road', 'Udyog Vihar'],
+        serviceAreas: ['Corporate Leasing', 'Grade-A IT Parks'],
+        propertyCategories: ['Commercial', 'Office Space'],
+        yearsExperience: 12,
+        reraNumber: 'HARERA/GGM/2019/312'
+      }
+    })
+  ]);
+
+  // Seed Initial Marketplace Submissions
+  await MarketplaceSubmission.create([
+    {
+      companyId,
+      submissionId: 'SUB-2026-0001',
+      marketplaceUserId: owner1._id,
+      submitterType: 'Owner',
+      submitterName: 'Rajesh Singhania',
+      submitterEmail: 'owner.rajesh@gmail.com',
+      submitterPhone: '+919811099887',
+      organization: 'Direct Property Owner',
+      submissionCategory: 'Property',
+      submissionType: 'Property for Sale',
+      status: 'Under Review',
+      source: 'Direct Property Owner',
+      title: 'Sobha City Luxury 3 BHK Garden Suite',
+      description: 'Corner garden-facing 3 BHK luxury flat with wide running balcony, Italian marble, modular kitchen, and 2 dedicated parking bays in Sector 108.',
+      propertyDetails: {
+        category: 'Apartment',
+        propertyType: 'Apartment',
+        purpose: 'Sale',
+        price: 26500000, // 2.65 Cr
+        builtUpArea: 2072,
+        bedrooms: 3,
+        bathrooms: 3,
+        furnishing: 'Semi-Furnished',
+        address: { street: 'Upper Dwarka Expressway', locality: 'Sector 108', city: 'Gurugram', state: 'Haryana', country: 'India', postalCode: '122017' },
+        amenities: ['Clubhouse', 'Olympic Size Pool', 'Tennis Court', '24/7 Security'],
+        images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1000&q=80']
+      },
+      statusHistory: [{ status: 'New Submission', changedBy: 'Rajesh Singhania', note: 'Direct owner submission' }],
+      communicationHistory: [{ channel: 'WhatsApp', template: 'SUBMISSION_RECEIVED', message: 'Hello Rajesh! Submission received.', status: 'delivered', recipientPhone: '+919811099887' }]
+    },
+    {
+      companyId,
+      submissionId: 'SUB-2026-0002',
+      marketplaceUserId: broker1._id,
+      submitterType: 'Broker',
+      submitterName: 'Karan Varma',
+      submitterEmail: 'karan@primeacrerealty.com',
+      submitterPhone: '+919833055443',
+      organization: 'Prime Acre Realty Advisors',
+      submissionCategory: 'Property',
+      submissionType: 'Commercial Properties',
+      status: 'Approved',
+      source: 'Real Estate Broker',
+      title: 'One Horizon Centre - Grade-A Corporate Suite',
+      description: 'Fully furnished 3,800 sqft plug-and-play corporate office on 14th floor facing Golf Course Road with 40 workstations and 3 conference rooms.',
+      propertyDetails: {
+        category: 'Commercial',
+        propertyType: 'Office Space',
+        purpose: 'Rent',
+        rentalPrice: 650000, // 6.5 Lacs/mo
+        price: 0,
+        builtUpArea: 3800,
+        bathrooms: 2,
+        furnishing: 'Fully Furnished',
+        address: { street: 'Golf Course Road', locality: 'DLF Phase 5', city: 'Gurugram', state: 'Haryana', country: 'India', postalCode: '122002' },
+        amenities: ['Centrally Air Conditioned', 'High Speed Elevators', 'Cafeteria', '100% DG Backup'],
+        images: ['https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=80']
+      },
+      verification: { verifiedByName: 'Vikram Malhotra', verifiedAt: new Date(), publishedAt: new Date() },
+      statusHistory: [
+        { status: 'New Submission', changedBy: 'Karan Varma', note: 'Broker submission' },
+        { status: 'Approved', changedBy: 'Vikram Malhotra', note: 'Listing verified and approved for corporate leasing.' }
+      ]
+    },
+    {
+      companyId,
+      submissionId: 'SUB-2026-0003',
+      marketplaceUserId: broker2._id,
+      submitterType: 'Broker',
+      submitterName: 'Deepak Chopra',
+      submitterEmail: 'deepak@horizoncommercial.in',
+      submitterPhone: '+919844033221',
+      organization: 'Horizon Commercial Asset Advisory',
+      submissionCategory: 'Property',
+      submissionType: 'Property for Sale',
+      status: 'Information Required',
+      source: 'Real Estate Broker',
+      title: 'M3M Golfestate - 4 BHK Fairway Penthouse',
+      description: 'Luxury 4 BHK duplex penthouse overlooking 9-hole executive golf course in Sector 65 Gurugram.',
+      propertyDetails: {
+        category: 'Penthouse',
+        propertyType: 'Penthouse',
+        purpose: 'Sale',
+        price: 95000000, // 9.5 Cr
+        builtUpArea: 5200,
+        bedrooms: 4,
+        bathrooms: 5,
+        furnishing: 'Semi-Furnished',
+        address: { street: 'Golf Course Extension Road', locality: 'Sector 65', city: 'Gurugram', state: 'Haryana', country: 'India', postalCode: '122018' },
+        amenities: ['Private Plunge Pool', 'Golf Course View', 'Gymnasium', 'Concierge Desk'],
+        images: ['https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80']
+      },
+      verification: { informationRequested: 'Please upload original floor layout and HOA maintenance schedule.' },
+      statusHistory: [
+        { status: 'New Submission', changedBy: 'Deepak Chopra', note: 'Broker listing' },
+        { status: 'Information Required', changedBy: 'Neha Kapoor', note: 'Missing floor layout documentation.' }
+      ]
+    },
+    {
+      companyId,
+      submissionId: 'SUB-2026-0004',
+      marketplaceUserId: broker1._id,
+      submitterType: 'Broker',
+      submitterName: 'Karan Varma',
+      submitterEmail: 'karan@primeacrerealty.com',
+      submitterPhone: '+919833055443',
+      organization: 'Prime Acre Realty Advisors',
+      submissionCategory: 'Requirement',
+      submissionType: 'Buyer Requirements',
+      status: 'Verified',
+      source: 'Real Estate Broker',
+      title: 'NRI Managing Director Buyer Requirement: 4 BHK (₹10-15 Cr)',
+      description: 'High net worth client returning to India seeking ready 4 BHK penthouse or independent villa on Golf Course Road or Camellias.',
+      requirementDetails: {
+        clientName: 'Aditya Birla Group VP',
+        clientPhone: '+919811990011',
+        clientEmail: 'aditya.corp@adityabirla.com',
+        customerType: 'Buyer',
+        budgetMin: 100000000, // 10 Cr
+        budgetMax: 150000000, // 15 Cr
+        preferredLocations: ['Golf Course Road', 'DLF Phase 5'],
+        propertyCategories: ['Apartment', 'Penthouse', 'Villa'],
+        preferredBedrooms: [4, 5],
+        possessionTimeline: 'Immediate (0-1 month)',
+        financingRequired: false,
+        notes: 'Pre-approved self-financed fund transfer. High closing priority.'
+      },
+      statusHistory: [{ status: 'Verified', changedBy: 'Vikram Malhotra', note: 'Requirement verified. Matched with Camellias and Trump Towers.' }]
+    },
+    {
+      companyId,
+      submissionId: 'SUB-2026-0005',
+      marketplaceUserId: owner2._id,
+      submitterType: 'Owner',
+      submitterName: 'Sunita Mehra',
+      submitterEmail: 'owner.sunita@gmail.com',
+      submitterPhone: '+919822077665',
+      organization: 'Direct Property Owner',
+      submissionCategory: 'Property',
+      submissionType: 'Property for Sale',
+      status: 'New Submission',
+      source: 'Direct Property Owner',
+      title: 'DLF Camellias 4 BHK Golf Course (Duplicate Test)',
+      description: 'Direct owner selling 4 BHK Camellias facing golf course with 4 car parking.',
+      propertyDetails: {
+        category: 'Apartment',
+        propertyType: 'Apartment',
+        purpose: 'Sale',
+        price: 185000000, // 18.5 Cr
+        builtUpArea: 7300,
+        bedrooms: 4,
+        bathrooms: 5,
+        address: { street: 'Golf Drive', locality: 'Golf Course Road', city: 'Gurugram', state: 'Haryana', country: 'India', postalCode: '122002' }
+      },
+      duplicateDetection: {
+        isDuplicate: true,
+        confidenceScore: 92,
+        flaggedReason: 'Matches existing inventory listing in CRM: "DLF The Camellias - Ultra Luxury Penthouse" (EF-APT-101). Flagged for internal broker review.',
+        reviewStatus: 'Flagged'
+      },
+      statusHistory: [{ status: 'New Submission', changedBy: 'Sunita Mehra', note: 'Flagged by duplicate detection engine.' }]
     }
   ]);
 

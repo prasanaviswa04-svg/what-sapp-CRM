@@ -5,10 +5,20 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('estateflow_user');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('estateflow_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
   });
-  const [token, setToken] = useState(() => localStorage.getItem('estateflow_token'));
+  const [token, setToken] = useState(() => {
+    try {
+      return localStorage.getItem('estateflow_token');
+    } catch (e) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +28,9 @@ export const AuthProvider = ({ children }) => {
           const res = await api.get('/auth/me');
           if (res.data.success) {
             setUser(res.data.user);
-            localStorage.setItem('estateflow_user', JSON.stringify(res.data.user));
+            try {
+              localStorage.setItem('estateflow_user', JSON.stringify(res.data.user));
+            } catch (e) {}
           }
         } catch (err) {
           console.error('Session expired or error fetching profile:', err.message);
@@ -36,8 +48,10 @@ export const AuthProvider = ({ children }) => {
     if (res.data.success) {
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('estateflow_token', res.data.token);
-      localStorage.setItem('estateflow_user', JSON.stringify(res.data.user));
+      try {
+        localStorage.setItem('estateflow_token', res.data.token);
+        localStorage.setItem('estateflow_user', JSON.stringify(res.data.user));
+      } catch (e) {}
     }
     return res.data;
   };
@@ -47,8 +61,10 @@ export const AuthProvider = ({ children }) => {
     if (res.data.success) {
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('estateflow_token', res.data.token);
-      localStorage.setItem('estateflow_user', JSON.stringify(res.data.user));
+      try {
+        localStorage.setItem('estateflow_token', res.data.token);
+        localStorage.setItem('estateflow_user', JSON.stringify(res.data.user));
+      } catch (e) {}
     }
     return res.data;
   };
@@ -56,14 +72,18 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('estateflow_token');
-    localStorage.removeItem('estateflow_user');
+    try {
+      localStorage.removeItem('estateflow_token');
+      localStorage.removeItem('estateflow_user');
+    } catch (e) {}
   };
 
   const updateUser = (updated) => {
     setUser((prev) => {
       const merged = { ...prev, ...updated };
-      localStorage.setItem('estateflow_user', JSON.stringify(merged));
+      try {
+        localStorage.setItem('estateflow_user', JSON.stringify(merged));
+      } catch (e) {}
       return merged;
     });
   };

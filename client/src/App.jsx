@@ -30,6 +30,18 @@ import { ActivityLogs } from './pages/activity/ActivityLogs';
 import { Settings } from './pages/settings/Settings';
 import { HelpSupport } from './pages/help/HelpSupport';
 
+// Marketplace Module Pages
+import { MarketplaceLanding } from './pages/marketplace/MarketplaceLanding';
+import { OwnerRegistration } from './pages/marketplace/OwnerRegistration';
+import { BrokerRegistration } from './pages/marketplace/BrokerRegistration';
+import { MarketplaceLogin } from './pages/marketplace/MarketplaceLogin';
+import { OwnerDashboard } from './pages/marketplace/OwnerDashboard';
+import { BrokerDashboard } from './pages/marketplace/BrokerDashboard';
+import { PropertySubmissionForm } from './pages/marketplace/PropertySubmissionForm';
+import { RequirementSubmissionForm } from './pages/marketplace/RequirementSubmissionForm';
+import { SubmissionTracker } from './pages/marketplace/SubmissionTracker';
+import { MarketplaceManager } from './pages/marketplace/MarketplaceManager';
+
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -56,6 +68,18 @@ export function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
+              {/* Public & External Marketplace Portal Routes */}
+              <Route path="/marketplace" element={<MarketplaceLanding />} />
+              <Route path="/marketplace/register/owner" element={<OwnerRegistration />} />
+              <Route path="/marketplace/register/broker" element={<BrokerRegistration />} />
+              <Route path="/marketplace/login" element={<MarketplaceLogin />} />
+              <Route path="/marketplace/owner/dashboard" element={<OwnerDashboard />} />
+              <Route path="/marketplace/broker/dashboard" element={<BrokerDashboard />} />
+              <Route path="/marketplace/submit-property" element={<PropertySubmissionForm />} />
+              <Route path="/marketplace/submit-requirement" element={<RequirementSubmissionForm />} />
+              <Route path="/marketplace/track" element={<SubmissionTracker />} />
+              <Route path="/marketplace/track/:submissionId" element={<SubmissionTracker />} />
+
               {/* Protected App Routes */}
               <Route
                 path="/"
@@ -67,6 +91,7 @@ export function App() {
               >
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
+                <Route path="marketplace-manager" element={<MarketplaceManager />} />
                 <Route path="customers" element={<CustomerList />} />
                 <Route path="customers/:id" element={<CustomerDetail />} />
                 <Route path="leads" element={<LeadPipeline />} />

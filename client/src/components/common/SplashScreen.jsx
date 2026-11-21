@@ -156,26 +156,26 @@ export const SplashScreen = ({ onFinish }) => {
       {/* Center: Lottie Geometric Loader & Brand Typewriter */}
       <div className="my-auto flex flex-col items-center justify-center text-center">
         {/* Black & White Lottie Geometric Orbiting Loader */}
-        <div className="w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center mb-2">
+        <div className="w-40 h-40 sm:w-52 sm:h-52 flex items-center justify-center mb-3">
           {LottieView}
         </div>
 
-        {/* Dual-Tone Brand Typewriter */}
-        <div className="min-h-[44px] flex items-center justify-center whitespace-nowrap">
-          <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 font-sans">
+        {/* Dual-Tone Brand Typewriter with Increased Font Size */}
+        <div className="min-h-[52px] sm:min-h-[64px] flex items-center justify-center whitespace-nowrap">
+          <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-zinc-950 font-sans">
             {typedBrand}
           </span>
           {typedCategory && (
-            <span className="text-2xl sm:text-3xl font-medium tracking-wide text-zinc-400 font-mono ml-2">
+            <span className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-wide text-zinc-400 font-mono ml-2.5">
               {typedCategory}
             </span>
           )}
-          <span className="inline-block w-[2.5px] h-[1.15em] bg-zinc-950 ml-1.5 align-middle animate-cursor" />
+          <span className="inline-block w-[3px] sm:w-[3.5px] h-[1.15em] bg-zinc-950 ml-2 align-middle animate-cursor" />
         </div>
 
         {/* Minimalist Subtitle */}
         <p
-          className={`text-[11px] font-mono tracking-[0.28em] uppercase text-zinc-400 mt-2 transition-opacity duration-500 ${
+          className={`text-xs sm:text-sm font-mono tracking-[0.28em] uppercase text-zinc-400 mt-3 transition-opacity duration-500 ${
             showTagline ? 'opacity-100' : 'opacity-0'
           }`}
         >
@@ -186,12 +186,12 @@ export const SplashScreen = ({ onFinish }) => {
       {/* Bottom: Minimalist Number Count & Hairline Progress Track */}
       <div className="flex flex-col items-center pb-4">
         {/* Monospaced Percentage Count */}
-        <span className="font-mono text-xs tracking-[0.25em] text-zinc-400 font-medium">
+        <span className="font-mono text-sm sm:text-base tracking-[0.25em] text-zinc-400 font-medium">
           {String(count).padStart(2, '0')}%
         </span>
 
         {/* Ultra-Thin Hairline Progress Track */}
-        <div className="w-32 h-[1.5px] bg-zinc-100 rounded-full overflow-hidden mt-3">
+        <div className="w-36 sm:w-44 h-[2px] bg-zinc-100 rounded-full overflow-hidden mt-3">
           <div
             className="h-full bg-zinc-950 rounded-full transition-all duration-75 ease-out"
             style={{ width: `${count}%` }}

@@ -11,7 +11,6 @@ import {
   Shield,
   Key,
   Save,
-  RefreshCw,
   Mail,
   Phone,
   Clock,
@@ -21,7 +20,6 @@ import {
   Trash2,
   X,
   Laptop,
-  Sparkles,
   Link as LinkIcon
 } from 'lucide-react';
 
@@ -30,7 +28,7 @@ export const Settings = () => {
   const { addToast } = useToast();
   const fileInputRef = useRef(null);
 
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'company' | 'security' | 'demo'
+  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'company' | 'security'
   const [loading, setLoading] = useState(true);
 
   // Profile Form State
@@ -59,7 +57,6 @@ export const Settings = () => {
   const [currencyCode, setCurrencyCode] = useState('INR');
   const [timeZone, setTimeZone] = useState('Asia/Kolkata');
   const [savingCompany, setSavingCompany] = useState(false);
-  const [seeding, setSeeding] = useState(false);
 
   // Initialize from Auth user and backend
   useEffect(() => {
@@ -304,23 +301,6 @@ export const Settings = () => {
     }
   };
 
-  // Handle Seed Demo Data
-  const handleSeedDemoData = async () => {
-    if (!window.confirm('Reset and seed rich realistic real estate demo data? (Properties, customers, pipeline leads, and WhatsApp chats will be regenerated)')) return;
-
-    setSeeding(true);
-    try {
-      const res = await api.post('/settings/seed-data');
-      if (res.data.success) {
-        addToast('Complete real estate demo dataset seeded successfully!', 'success');
-      }
-    } catch (err) {
-      addToast('Failed to seed demo data', 'error');
-    } finally {
-      setSeeding(false);
-    }
-  };
-
   const getRoleDescription = (role) => {
     switch (role) {
       case 'Super Admin':
@@ -345,13 +325,18 @@ export const Settings = () => {
       {/* Header */}
       <div className="border-b border-zinc-200 pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100/90 text-amber-950 border border-amber-300/80">
+              SYSTEM PREFERENCES & ACCOUNT
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Account & Platform Settings</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Manage your personal profile, credentials, brokerage company branding, and system configurations.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="active" size="md">
+          <Badge variant="gold" size="md">
             Logged in as: {user?.role || 'Company Admin'}
           </Badge>
         </div>
@@ -363,8 +348,8 @@ export const Settings = () => {
           onClick={() => setActiveTab('profile')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
             activeTab === 'profile'
-              ? 'border-zinc-950 text-zinc-950 bg-zinc-50/50'
-              : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'
+              ? 'border-[#ffd700] text-amber-950 bg-amber-50/60 font-bold'
+              : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-amber-200'
           }`}
         >
           <User className="w-4 h-4" />
@@ -375,8 +360,8 @@ export const Settings = () => {
           onClick={() => setActiveTab('company')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
             activeTab === 'company'
-              ? 'border-zinc-950 text-zinc-950 bg-zinc-50/50'
-              : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'
+              ? 'border-[#ffd700] text-amber-950 bg-amber-50/60 font-bold'
+              : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-amber-200'
           }`}
         >
           <Building className="w-4 h-4" />
@@ -387,24 +372,12 @@ export const Settings = () => {
           onClick={() => setActiveTab('security')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
             activeTab === 'security'
-              ? 'border-zinc-950 text-zinc-950 bg-zinc-50/50'
-              : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'
+              ? 'border-[#ffd700] text-amber-950 bg-amber-50/60 font-bold'
+              : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-amber-200'
           }`}
         >
           <Key className="w-4 h-4" />
           <span>Security & Passwords</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('demo')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
-            activeTab === 'demo'
-              ? 'border-zinc-950 text-zinc-950 bg-zinc-50/50'
-              : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'
-          }`}
-        >
-          <Sparkles className="w-4 h-4 text-zinc-700" />
-          <span>Demo Data & Tools</span>
         </button>
       </div>
 
@@ -668,7 +641,7 @@ export const Settings = () => {
                     <span className="text-xs text-zinc-500">
                       Changes update immediately across the platform.
                     </span>
-                    <Button type="submit" size="sm" isLoading={savingProfile} icon={Save}>
+                    <Button type="submit" variant="gold" size="sm" isLoading={savingProfile} icon={Save}>
                       Save Profile Changes
                     </Button>
                   </div>
@@ -817,7 +790,7 @@ export const Settings = () => {
                   </div>
 
                   <div className="pt-3 border-t border-zinc-100 flex justify-end">
-                    <Button type="submit" size="sm" isLoading={savingCompany} icon={Save}>
+                    <Button type="submit" variant="gold" size="sm" isLoading={savingCompany} icon={Save}>
                       Save Company Profile
                     </Button>
                   </div>
@@ -899,7 +872,7 @@ export const Settings = () => {
                   </div>
 
                   <div className="pt-2 flex justify-end">
-                    <Button type="submit" size="sm" isLoading={savingPassword} icon={Key}>
+                    <Button type="submit" variant="gold" size="sm" isLoading={savingPassword} icon={Key}>
                       Update Password
                     </Button>
                   </div>
@@ -923,71 +896,6 @@ export const Settings = () => {
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-zinc-900 shrink-0 mt-0.5" />
                   <span>JWT tokens expire automatically to protect client customer databases.</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* TAB 4: DEMO DATA & UTILITIES */}
-      {/* ======================================================== */}
-      {activeTab === 'demo' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader
-                title="Interactive Demo Seeder"
-                subtitle="One-click dataset reset and population with luxury properties & leads"
-              />
-              <CardContent className="space-y-4 text-xs leading-relaxed text-zinc-700">
-                <p>
-                  Populate or reset the platform with high-end real estate listings (DLF Camellias, Trump Towers, Eco Villas), active CRM pipeline leads, and WhatsApp chat history.
-                </p>
-
-                <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-3">
-                  <div className="flex items-center gap-2 font-bold text-zinc-950">
-                    <RefreshCw className="w-4 h-4 text-zinc-800" />
-                    <span>Instant Sample Data Seeding</span>
-                  </div>
-                  <p className="text-zinc-600 text-[11px]">
-                    Includes pre-seeded listings, verified phone numbers, pre-configured WhatsApp customer conversations, and site visit appointments.
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full sm:w-auto"
-                    isLoading={seeding}
-                    icon={RefreshCw}
-                    onClick={handleSeedDemoData}
-                  >
-                    Seed Rich Demo Real Estate Data
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="space-y-6">
-            <Card className="border border-zinc-200 bg-zinc-50/50">
-              <CardHeader title="System Information" subtitle="Environment & runtime details" />
-              <CardContent className="space-y-2.5 text-xs text-zinc-600">
-                <div className="flex justify-between py-1 border-b border-zinc-200">
-                  <span className="text-zinc-500">Framework</span>
-                  <span className="font-semibold text-zinc-900">React + Vite + Node.js</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-zinc-200">
-                  <span className="text-zinc-500">Database</span>
-                  <span className="font-semibold text-zinc-900">MongoDB with Mongoose</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-zinc-200">
-                  <span className="text-zinc-500">WhatsApp Engine</span>
-                  <span className="font-semibold text-zinc-900">Meta Cloud API v20.0</span>
-                </div>
-                <div className="flex justify-between py-1">
-                  <span className="text-zinc-500">AI Engine</span>
-                  <span className="font-semibold text-zinc-900">OpenAI GPT-4o Mini</span>
                 </div>
               </CardContent>
             </Card>

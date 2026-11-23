@@ -348,7 +348,7 @@ export const Settings = () => {
           onClick={() => setActiveTab('profile')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
             activeTab === 'profile'
-              ? 'border-[#ffd700] text-amber-950 bg-amber-50/60 font-bold'
+              ? 'border-[#ff9e43] text-amber-950 bg-amber-50/60 font-bold'
               : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-amber-200'
           }`}
         >
@@ -360,7 +360,7 @@ export const Settings = () => {
           onClick={() => setActiveTab('company')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
             activeTab === 'company'
-              ? 'border-[#ffd700] text-amber-950 bg-amber-50/60 font-bold'
+              ? 'border-[#ff9e43] text-amber-950 bg-amber-50/60 font-bold'
               : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-amber-200'
           }`}
         >
@@ -372,7 +372,7 @@ export const Settings = () => {
           onClick={() => setActiveTab('security')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
             activeTab === 'security'
-              ? 'border-[#ffd700] text-amber-950 bg-amber-50/60 font-bold'
+              ? 'border-[#ff9e43] text-amber-950 bg-amber-50/60 font-bold'
               : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-amber-200'
           }`}
         >

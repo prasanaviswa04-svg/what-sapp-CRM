@@ -122,7 +122,7 @@ export const TeamManagement = () => {
                   <tr key={member._id} className="hover:bg-amber-50/30 transition">
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-[#fef9c3] text-[#524100] border border-[#ffd700] font-bold flex items-center justify-center text-xs shadow-2xs">
+                        <div className="w-8 h-8 rounded-full bg-[#ffedd5] text-[#7c2d12] border border-[#ff9e43] font-bold flex items-center justify-center text-xs shadow-2xs">
                           {member.firstName?.[0]}{member.lastName?.[0]}
                         </div>
                         <div>

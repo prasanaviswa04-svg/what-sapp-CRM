@@ -144,7 +144,7 @@ export const Appointments = () => {
             onClick={() => setStatusFilter(st)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
               statusFilter === st
-                ? 'bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#e6c200] text-zinc-950 font-bold border border-[#ffd700] shadow-xs'
+                ? 'bg-gradient-to-r from-[#ffbe76] via-[#ff9e43] to-[#f58428] text-zinc-950 font-bold border border-[#ff9e43] shadow-xs'
                 : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-amber-50/50 hover:text-amber-950'
             }`}
           >

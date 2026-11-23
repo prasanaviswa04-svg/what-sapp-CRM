@@ -10,32 +10,32 @@ export default {
         black: '#000000',
         white: '#ffffff',
         gold: {
-          50: '#fffdf0',
-          100: '#fef9c3',
-          200: '#fef08a',
-          300: '#ffe55c',
-          400: '#ffd700', // True Pure Gold #ffd700
-          DEFAULT: '#ffd700',
-          500: '#ffd700', // Pure Gold #ffd700
-          600: '#d4af37', // Metallic Luxury Gold
-          700: '#a68500', // Deep Rich Gold
-          800: '#786000', // Dark Gold for high contrast text
-          900: '#524100', // Deepest Gold text
-          950: '#382c00',
+          50: '#fff7ed',   // Warm soft light orange/cream
+          100: '#ffedd5',  // Very soft light orange tint
+          200: '#fed7aa',  // Soft light orange border
+          300: '#fdba74',  // Light orange accent border
+          400: '#fb923c',  // Crisp light orange
+          DEFAULT: '#ff9e43', // Pure Light Orange
+          500: '#ff9e43',  // Pure Light Orange
+          600: '#f58428',  // Vibrant light orange
+          700: '#ea580c',  // Rich warm orange
+          800: '#9a3412',  // High contrast dark orange text
+          900: '#7c2d12',  // Deep dark orange text
+          950: '#431407',  // Deepest dark orange text for maximum readability
         },
         amber: {
-          50: '#fffdf0',
-          100: '#fef9c3',
-          200: '#fef08a',
-          300: '#ffe55c',
-          400: '#ffd700', // True Pure Gold #ffd700
-          DEFAULT: '#ffd700',
-          500: '#ffd700', // Pure Gold #ffd700 (replaces default orange)
-          600: '#d4af37', // Metallic Luxury Gold (replaces dark orange)
-          700: '#a68500', // Deep Rich Gold (replaces brown-orange)
-          800: '#786000',
-          900: '#524100',
-          950: '#382c00',
+          50: '#fff7ed',
+          100: '#ffedd5',
+          200: '#fed7aa',
+          300: '#fdba74',
+          400: '#fb923c',
+          DEFAULT: '#ff9e43',
+          500: '#ff9e43',
+          600: '#f58428',
+          700: '#ea580c',
+          800: '#9a3412',
+          900: '#7c2d12',
+          950: '#431407',
         },
         zinc: {
           50: '#fafafa',

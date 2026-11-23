@@ -210,7 +210,7 @@ export const PropertyList = () => {
             onClick={() => { setCategoryFilter(cat); setPage(1); }}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               categoryFilter === cat
-                ? 'bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#e6c200] text-zinc-950 font-bold shadow-xs border border-[#ffd700]'
+                ? 'bg-gradient-to-r from-[#ffbe76] via-[#ff9e43] to-[#f58428] text-zinc-950 font-bold shadow-xs border border-[#ff9e43]'
                 : 'bg-white text-zinc-600 hover:bg-amber-50/50 hover:text-amber-950 border border-zinc-200'
             }`}
           >

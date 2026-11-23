@@ -8,7 +8,7 @@ export const Card = ({ children, className = '', hover = false, gold = false, ..
           ? 'bg-gradient-to-br from-amber-50/40 via-white to-amber-50/15 border border-amber-200/80 shadow-xs'
           : 'bg-white border border-zinc-200/80'
       } ${
-        hover ? 'hover:border-amber-300 hover:shadow-[0_2px_12px_rgba(255,215,0,0.12)]' : ''
+        hover ? 'hover:border-amber-300 hover:shadow-[0_2px_12px_rgba(255,158,67,0.15)]' : ''
       } ${className}`}
       {...props}
     >

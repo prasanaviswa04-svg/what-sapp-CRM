@@ -38,9 +38,9 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
           title="EstateFlow CRM Home"
         >
           <span className="font-extrabold text-base sm:text-lg text-zinc-950 tracking-tight font-sans">
-            Estate<span className="text-[#d4af37] group-hover:text-[#ffd700] transition-colors">Flow</span>
+            Estate<span className="text-[#f58428] group-hover:text-[#ff9e43] transition-colors">Flow</span>
           </span>
-          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#fffdf0] text-[#524100] border border-[#ffd700] uppercase shadow-2xs group-hover:bg-[#fef9c3] transition">
+          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#fff7ed] text-[#7c2d12] border border-[#ff9e43] uppercase shadow-2xs group-hover:bg-[#ffedd5] transition">
             CRM
           </span>
         </Link>
@@ -114,22 +114,22 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
         {/* Notification Bell */}
         <button
           onClick={onOpenNotifications}
-          className="relative p-2 rounded-lg text-zinc-600 hover:text-[#786000] hover:bg-[#fffdf0] transition"
+          className="relative p-2 rounded-lg text-zinc-600 hover:text-[#9a3412] hover:bg-[#fff7ed] transition"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#ffd700] rounded-full ring-2 ring-white" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#ff9e43] rounded-full ring-2 ring-white" />
         </button>
 
-        <div className="h-4 w-px bg-[#fef08a] hidden sm:block" />
+        <div className="h-4 w-px bg-[#fed7aa] hidden sm:block" />
 
         {/* User Profile Dropdown */}
         <div className="relative">
           <button
             onClick={() => setUserDropdown(!userDropdown)}
-            className="flex items-center gap-2 p-1 rounded-lg hover:bg-[#fffdf0] transition border border-transparent hover:border-[#ffd700]"
+            className="flex items-center gap-2 p-1 rounded-lg hover:bg-[#fff7ed] transition border border-transparent hover:border-[#ff9e43]"
           >
-            <div className="w-7 h-7 rounded-full bg-[#fef9c3] border border-[#ffd700] text-[#524100] font-bold flex items-center justify-center text-xs overflow-hidden shrink-0 shadow-2xs">
+            <div className="w-7 h-7 rounded-full bg-[#ffedd5] border border-[#ff9e43] text-[#7c2d12] font-bold flex items-center justify-center text-xs overflow-hidden shrink-0 shadow-2xs">
               {user?.avatar ? (
                 <img src={user.avatar} alt={user?.firstName} className="w-full h-full object-cover" />
               ) : (

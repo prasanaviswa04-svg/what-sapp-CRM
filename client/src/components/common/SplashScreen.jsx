@@ -53,18 +53,18 @@ const LottiePlayer = ({ animationData }) => {
 const FallbackOrbitLoader = () => (
   <div className="w-36 h-36 flex items-center justify-center">
     <svg className="w-28 h-28 animate-spin" viewBox="0 0 100 100" style={{ animationDuration: '3s' }}>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#fef3c7" strokeWidth="2.5" />
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#ffedd5" strokeWidth="2.5" />
       <circle
         cx="50"
         cy="50"
         r="38"
         fill="none"
-        stroke="#d4af37"
+        stroke="#ff9e43"
         strokeWidth="3"
         strokeDasharray="60 180"
         strokeLinecap="round"
       />
-      <circle cx="50" cy="12" r="5" fill="#c5a059" />
+      <circle cx="50" cy="12" r="5" fill="#f58428" />
     </svg>
   </div>
 );
@@ -223,17 +223,17 @@ export const SplashScreen = ({ onFinish }) => {
           </LottieErrorBoundary>
         </div>
 
-        {/* Dual-Tone Brand Typewriter with High-Contrast Typography & Light Gold Accent */}
+        {/* Dual-Tone Brand Typewriter with High-Contrast Typography & Light Orange Accent */}
         <div className="min-h-[52px] sm:min-h-[64px] flex items-center justify-center whitespace-nowrap">
           <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-zinc-950 font-sans">
             {typedBrand}
           </span>
           {typedCategory && (
-            <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#ffd700] via-[#ffe066] to-[#d4af37] font-mono ml-2.5">
+            <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#ff9e43] via-[#ffbe76] to-[#f58428] font-mono ml-2.5">
               {typedCategory}
             </span>
           )}
-          <span className="inline-block w-[3px] sm:w-[3.5px] h-[1.15em] bg-gradient-to-b from-[#ffe066] to-[#ffd700] ml-2 align-middle animate-cursor shadow-2xs" />
+          <span className="inline-block w-[3px] sm:w-[3.5px] h-[1.15em] bg-gradient-to-b from-[#ffbe76] to-[#ff9e43] ml-2 align-middle animate-cursor shadow-2xs" />
         </div>
 
         {/* Minimalist Subtitle */}
@@ -248,15 +248,15 @@ export const SplashScreen = ({ onFinish }) => {
 
       {/* Bottom: Minimalist Number Count & Hairline Progress Track */}
       <div className="flex flex-col items-center pb-4">
-        {/* Monospaced Percentage Count with Light Golden Warmth */}
+        {/* Monospaced Percentage Count with Light Orange Warmth */}
         <span className="font-mono text-sm sm:text-base tracking-[0.25em] text-amber-700/90 font-semibold">
           {String(count).padStart(2, '0')}%
         </span>
 
-        {/* Ultra-Thin Hairline Progress Track with Light Gold Fill */}
+        {/* Ultra-Thin Hairline Progress Track with Light Orange Fill */}
         <div className="w-36 sm:w-44 h-[2.5px] bg-amber-100/60 rounded-full overflow-hidden mt-3 shadow-inner">
           <div
-            className="h-full bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#d4af37] rounded-full transition-all duration-75 ease-out shadow-[0_0_10px_rgba(255,215,0,0.5)]"
+            className="h-full bg-gradient-to-r from-[#ffbe76] via-[#ff9e43] to-[#f58428] rounded-full transition-all duration-75 ease-out shadow-[0_0_10px_rgba(255,158,67,0.5)]"
             style={{ width: `${count}%` }}
           />
         </div>

@@ -168,7 +168,7 @@ export const LeadPipeline = () => {
                     columnLeads.map((lead) => (
                       <div
                         key={lead._id}
-                        className="bg-white p-3.5 rounded-xl border border-zinc-200/90 shadow-xs hover:border-amber-300 hover:shadow-[0_2px_10px_rgba(255,215,0,0.15)] transition-all space-y-2.5 cursor-pointer"
+                        className="bg-white p-3.5 rounded-xl border border-zinc-200/90 shadow-xs hover:border-amber-300 hover:shadow-[0_2px_10px_rgba(255,158,67,0.15)] transition-all space-y-2.5 cursor-pointer"
                         onClick={() => lead.customerId && navigate(`/customers/${lead.customerId._id}`)}
                       >
                         {/* Title & Priority */}

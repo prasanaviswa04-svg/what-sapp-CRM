@@ -62,7 +62,7 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
   const latestEnquiries = Array.isArray(data?.latestEnquiries) ? data.latestEnquiries : [];
   const upcomingAppointments = Array.isArray(data?.upcomingAppointments) ? data.upcomingAppointments : [];
 
-  const GOLD_PALETTE_COLORS = ['#ffd700', '#ffe066', '#d4af37', '#a68500', '#71717a', '#cbd5e1'];
+  const GOLD_PALETTE_COLORS = ['#ff9e43', '#ffbe76', '#f58428', '#ea580c', '#71717a', '#cbd5e1'];
 
   return (
     <div className="space-y-5 animate-in fade-in duration-150">
@@ -232,11 +232,11 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
                 <BarChart data={charts.monthlyEnquiries} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="goldBarGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#ffd700" stopOpacity={0.95} />
-                      <stop offset="100%" stopColor="#d4af37" stopOpacity={0.9} />
+                      <stop offset="0%" stopColor="#ff9e43" stopOpacity={0.95} />
+                      <stop offset="100%" stopColor="#f58428" stopOpacity={0.9} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#fef9c3" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffedd5" />
                   <XAxis dataKey="month" stroke="#71717a" fontSize={11} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={11} tickLine={false} />
                   <Tooltip
@@ -245,8 +245,8 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
                       borderRadius: '8px',
                       color: '#09090b',
                       fontSize: '12px',
-                      border: '1px solid #ffd700',
-                      boxShadow: '0 4px 6px -1px rgb(255 215 0 / 0.15)'
+                      border: '1px solid #ff9e43',
+                      boxShadow: '0 4px 6px -1px rgb(255 158 67 / 0.15)'
                     }}
                   />
                   <Bar dataKey="enquiries" fill="url(#goldBarGrad)" radius={[4, 4, 0, 0]} name="Enquiries" />
@@ -282,8 +282,8 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
                       borderRadius: '8px',
                       color: '#09090b',
                       fontSize: '12px',
-                      border: '1px solid #ffd700',
-                      boxShadow: '0 4px 6px -1px rgb(255 215 0 / 0.15)'
+                      border: '1px solid #ff9e43',
+                      boxShadow: '0 4px 6px -1px rgb(255 158 67 / 0.15)'
                     }}
                   />
                   <Legend

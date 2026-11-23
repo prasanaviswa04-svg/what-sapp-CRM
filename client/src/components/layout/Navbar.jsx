@@ -21,9 +21,6 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
 
   return (
     <header className="h-14 bg-white border-b border-zinc-200 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between relative shadow-2xs">
-      {/* Subtle Hairline Light Gold Accent Bar */}
-      <div className="h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent absolute bottom-0 left-0 right-0 pointer-events-none opacity-80" />
-
       {/* Left: Mobile Toggle, App Name & Global Search */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
         <button

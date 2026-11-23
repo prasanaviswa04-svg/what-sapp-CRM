@@ -28,9 +28,6 @@ export const AppLayout = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 flex relative">
-      {/* Subtle Luxury Light Golden Accent Line on Top */}
-      <div className="h-[2px] bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 w-full fixed top-0 left-0 z-50 pointer-events-none" />
-
       {/* Sidebar Navigation */}
       <Sidebar
         isCollapsed={isCollapsed}

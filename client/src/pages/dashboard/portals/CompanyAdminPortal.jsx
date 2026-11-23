@@ -68,7 +68,6 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
     <div className="space-y-5 animate-in fade-in duration-150">
       {/* Top Banner & Quick Actions with Subtle Light Golden Accent */}
       <div className="bg-gradient-to-r from-white via-amber-50/20 to-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-amber-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs relative overflow-hidden">
-        <div className="h-[2px] bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 absolute top-0 left-0 right-0 pointer-events-none" />
         <div>
           <div className="flex items-center gap-1.5 mb-1">
             <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/80 text-amber-900 border border-amber-300/80 flex items-center gap-1">

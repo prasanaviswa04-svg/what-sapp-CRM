@@ -10,16 +10,32 @@ export default {
         black: '#000000',
         white: '#ffffff',
         gold: {
-          50: '#fdfbf7',
-          100: '#fbf7ee',
-          200: '#f5ecd6',
-          300: '#eedcb5',
-          400: '#dfbe7e',
-          500: '#c5a059',
-          600: '#ad8744',
-          700: '#8e6c34',
-          800: '#73572d',
-          900: '#5e4726',
+          50: '#fffdf0',
+          100: '#fef9c3',
+          200: '#fef08a',
+          300: '#ffe55c',
+          400: '#ffd700', // True Pure Gold #ffd700
+          DEFAULT: '#ffd700',
+          500: '#ffd700', // Pure Gold #ffd700
+          600: '#d4af37', // Metallic Luxury Gold
+          700: '#a68500', // Deep Rich Gold
+          800: '#786000', // Dark Gold for high contrast text
+          900: '#524100', // Deepest Gold text
+          950: '#382c00',
+        },
+        amber: {
+          50: '#fffdf0',
+          100: '#fef9c3',
+          200: '#fef08a',
+          300: '#ffe55c',
+          400: '#ffd700', // True Pure Gold #ffd700
+          DEFAULT: '#ffd700',
+          500: '#ffd700', // Pure Gold #ffd700 (replaces default orange)
+          600: '#d4af37', // Metallic Luxury Gold (replaces dark orange)
+          700: '#a68500', // Deep Rich Gold (replaces brown-orange)
+          800: '#786000',
+          900: '#524100',
+          950: '#382c00',
         },
         zinc: {
           50: '#fafafa',

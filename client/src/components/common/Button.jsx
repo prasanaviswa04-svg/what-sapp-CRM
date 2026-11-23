@@ -20,8 +20,8 @@ export const Button = ({
 
   const variantStyles = {
     primary: 'bg-zinc-950 hover:bg-zinc-800 text-white shadow-2xs active:bg-black',
-    gold: 'bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white shadow-xs font-semibold border border-amber-400/50 active:scale-[0.99]',
-    goldOutline: 'border border-amber-300 bg-amber-50/60 hover:bg-amber-100 text-amber-950 shadow-2xs font-semibold',
+    gold: 'bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#e6c200] hover:from-[#ffd700] hover:to-[#c9a400] text-zinc-950 font-bold shadow-xs border border-[#ffd700] active:scale-[0.99]',
+    goldOutline: 'border border-[#ffd700] bg-[#fffdf0] hover:bg-[#fef9c3] text-[#524100] shadow-2xs font-semibold',
     secondary: 'bg-zinc-800 hover:bg-zinc-700 text-white shadow-2xs',
     outline: 'border border-zinc-200 hover:border-amber-300 bg-white hover:bg-amber-50/30 text-zinc-900 shadow-2xs',
     ghost: 'text-zinc-600 hover:text-amber-950 hover:bg-amber-50/40',

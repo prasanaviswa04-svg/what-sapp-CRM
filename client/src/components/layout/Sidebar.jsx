@@ -88,13 +88,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       {/* Brand Header */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-amber-200/60 bg-white">
         <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-600 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
-            <Building2 className="w-4 h-4 text-white stroke-[2.2]" />
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#ffe066] via-[#ffd700] to-[#d4af37] text-zinc-950 font-bold flex items-center justify-center flex-shrink-0 shadow-xs">
+            <Building2 className="w-4 h-4 text-zinc-950 stroke-[2.2]" />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
               <span className="font-bold text-zinc-950 text-sm tracking-tight leading-none flex items-center gap-1.5">
-                ESTATEFLOW <span className="text-[9px] bg-amber-50 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded font-mono font-bold">CRM</span>
+                ESTATEFLOW <span className="text-[9px] bg-[#fffdf0] text-[#524100] border border-[#ffd700] px-1.5 py-0.2 rounded font-mono font-bold">CRM</span>
               </span>
               <span className="text-[10px] text-zinc-400 font-medium tracking-tight mt-1">Light Minimalist Real Estate</span>
             </div>
@@ -134,7 +134,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
               className={({ isActive }) =>
                 `flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all group relative tracking-tight ${
                   isActive
-                    ? 'bg-gradient-to-r from-amber-50/90 to-amber-50/30 text-amber-950 font-semibold border border-amber-200/90 border-l-[3.5px] border-l-amber-500 shadow-2xs'
+                    ? 'bg-gradient-to-r from-amber-50/90 to-amber-50/30 text-amber-950 font-semibold border border-amber-200/90 border-l-[3.5px] border-l-[#ffd700] shadow-2xs'
                     : 'text-zinc-600 hover:text-amber-950 hover:bg-amber-50/30'
                 }`
               }
@@ -166,7 +166,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       {!isCollapsed && (
         <div className="p-3 border-t border-amber-200/60 bg-white">
           <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-amber-50/40 border border-amber-200/60 text-[11px] text-amber-900 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ffd700] animate-pulse" />
             <span className="truncate tracking-tight">Meta WhatsApp API Active</span>
           </div>
         </div>

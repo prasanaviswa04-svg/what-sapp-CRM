@@ -31,16 +31,16 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* App Name in Top Navigation with Light Golden Accent */}
+        {/* App Name in Top Navigation with True Gold Accent */}
         <Link
           to="/dashboard"
           className="flex items-center gap-1.5 group select-none"
           title="EstateFlow CRM Home"
         >
           <span className="font-extrabold text-base sm:text-lg text-zinc-950 tracking-tight font-sans">
-            Estate<span className="text-amber-600 group-hover:text-amber-500 transition-colors">Flow</span>
+            Estate<span className="text-[#d4af37] group-hover:text-[#ffd700] transition-colors">Flow</span>
           </span>
-          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 uppercase shadow-2xs group-hover:bg-amber-100 transition">
+          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#fffdf0] text-[#524100] border border-[#ffd700] uppercase shadow-2xs group-hover:bg-[#fef9c3] transition">
             CRM
           </span>
         </Link>
@@ -114,22 +114,22 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
         {/* Notification Bell */}
         <button
           onClick={onOpenNotifications}
-          className="relative p-2 rounded-lg text-zinc-600 hover:text-amber-900 hover:bg-amber-50/50 transition"
+          className="relative p-2 rounded-lg text-zinc-600 hover:text-[#786000] hover:bg-[#fffdf0] transition"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-white" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#ffd700] rounded-full ring-2 ring-white" />
         </button>
 
-        <div className="h-4 w-px bg-amber-200/60 hidden sm:block" />
+        <div className="h-4 w-px bg-[#fef08a] hidden sm:block" />
 
         {/* User Profile Dropdown */}
         <div className="relative">
           <button
             onClick={() => setUserDropdown(!userDropdown)}
-            className="flex items-center gap-2 p-1 rounded-lg hover:bg-amber-50/40 transition border border-transparent hover:border-amber-200/60"
+            className="flex items-center gap-2 p-1 rounded-lg hover:bg-[#fffdf0] transition border border-transparent hover:border-[#ffd700]"
           >
-            <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-300 text-amber-900 font-bold flex items-center justify-center text-xs overflow-hidden shrink-0 shadow-2xs">
+            <div className="w-7 h-7 rounded-full bg-[#fef9c3] border border-[#ffd700] text-[#524100] font-bold flex items-center justify-center text-xs overflow-hidden shrink-0 shadow-2xs">
               {user?.avatar ? (
                 <img src={user.avatar} alt={user?.firstName} className="w-full h-full object-cover" />
               ) : (

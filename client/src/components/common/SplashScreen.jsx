@@ -229,11 +229,11 @@ export const SplashScreen = ({ onFinish }) => {
             {typedBrand}
           </span>
           {typedCategory && (
-            <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 font-mono ml-2.5">
+            <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#ffd700] via-[#ffe066] to-[#d4af37] font-mono ml-2.5">
               {typedCategory}
             </span>
           )}
-          <span className="inline-block w-[3px] sm:w-[3.5px] h-[1.15em] bg-gradient-to-b from-amber-400 to-amber-600 ml-2 align-middle animate-cursor shadow-2xs" />
+          <span className="inline-block w-[3px] sm:w-[3.5px] h-[1.15em] bg-gradient-to-b from-[#ffe066] to-[#ffd700] ml-2 align-middle animate-cursor shadow-2xs" />
         </div>
 
         {/* Minimalist Subtitle */}
@@ -256,7 +256,7 @@ export const SplashScreen = ({ onFinish }) => {
         {/* Ultra-Thin Hairline Progress Track with Light Gold Fill */}
         <div className="w-36 sm:w-44 h-[2.5px] bg-amber-100/60 rounded-full overflow-hidden mt-3 shadow-inner">
           <div
-            className="h-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 rounded-full transition-all duration-75 ease-out shadow-[0_0_8px_rgba(217,119,6,0.35)]"
+            className="h-full bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#d4af37] rounded-full transition-all duration-75 ease-out shadow-[0_0_10px_rgba(255,215,0,0.5)]"
             style={{ width: `${count}%` }}
           />
         </div>

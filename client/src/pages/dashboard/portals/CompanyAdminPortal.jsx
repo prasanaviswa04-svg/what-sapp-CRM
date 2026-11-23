@@ -62,7 +62,7 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
   const latestEnquiries = Array.isArray(data?.latestEnquiries) ? data.latestEnquiries : [];
   const upcomingAppointments = Array.isArray(data?.upcomingAppointments) ? data.upcomingAppointments : [];
 
-  const MONOCHROME_COLORS = ['#d97706', '#f59e0b', '#fbbf24', '#71717a', '#a1a1aa', '#cbd5e1'];
+  const GOLD_PALETTE_COLORS = ['#ffd700', '#ffe066', '#d4af37', '#a68500', '#71717a', '#cbd5e1'];
 
   return (
     <div className="space-y-5 animate-in fade-in duration-150">
@@ -232,11 +232,11 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
                 <BarChart data={charts.monthlyEnquiries} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="goldBarGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.9} />
-                      <stop offset="100%" stopColor="#d97706" stopOpacity={0.9} />
+                      <stop offset="0%" stopColor="#ffd700" stopOpacity={0.95} />
+                      <stop offset="100%" stopColor="#d4af37" stopOpacity={0.9} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f4ede1" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#fef9c3" />
                   <XAxis dataKey="month" stroke="#71717a" fontSize={11} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={11} tickLine={false} />
                   <Tooltip
@@ -245,8 +245,8 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
                       borderRadius: '8px',
                       color: '#09090b',
                       fontSize: '12px',
-                      border: '1px solid #fde68a',
-                      boxShadow: '0 4px 6px -1px rgb(217 119 6 / 0.1)'
+                      border: '1px solid #ffd700',
+                      boxShadow: '0 4px 6px -1px rgb(255 215 0 / 0.15)'
                     }}
                   />
                   <Bar dataKey="enquiries" fill="url(#goldBarGrad)" radius={[4, 4, 0, 0]} name="Enquiries" />
@@ -273,7 +273,7 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
                     dataKey="count"
                   >
                     {charts.leadFunnel.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={MONOCHROME_COLORS[index % MONOCHROME_COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={GOLD_PALETTE_COLORS[index % GOLD_PALETTE_COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
@@ -282,8 +282,8 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
                       borderRadius: '8px',
                       color: '#09090b',
                       fontSize: '12px',
-                      border: '1px solid #fde68a',
-                      boxShadow: '0 4px 6px -1px rgb(217 119 6 / 0.1)'
+                      border: '1px solid #ffd700',
+                      boxShadow: '0 4px 6px -1px rgb(255 215 0 / 0.15)'
                     }}
                   />
                   <Legend

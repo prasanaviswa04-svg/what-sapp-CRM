@@ -9,6 +9,18 @@ export default {
       colors: {
         black: '#000000',
         white: '#ffffff',
+        gold: {
+          50: '#fdfbf7',
+          100: '#fbf7ee',
+          200: '#f5ecd6',
+          300: '#eedcb5',
+          400: '#dfbe7e',
+          500: '#c5a059',
+          600: '#ad8744',
+          700: '#8e6c34',
+          800: '#73572d',
+          900: '#5e4726',
+        },
         zinc: {
           50: '#fafafa',
           100: '#f4f4f5',

@@ -66,9 +66,15 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
 
   return (
     <div className="space-y-5 animate-in fade-in duration-150">
-      {/* Top Banner & Quick Actions */}
-      <div className="bg-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+      {/* Top Banner & Quick Actions with Subtle Light Golden Accent */}
+      <div className="bg-gradient-to-r from-white via-amber-50/20 to-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-amber-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs relative overflow-hidden">
+        <div className="h-[2px] bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 absolute top-0 left-0 right-0 pointer-events-none" />
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/80 text-amber-900 border border-amber-300/80 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-600" /> LUXURY REAL ESTATE INTELLIGENCE
+            </span>
+          </div>
           <h1 className="text-xl font-bold tracking-tight text-zinc-950">
             Agency Executive Dashboard
           </h1>
@@ -80,7 +86,7 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
           <Button size="sm" variant="outline" onClick={onRefresh} icon={RefreshCw}>
             Refresh
           </Button>
-          <Button size="sm" variant="primary" onClick={() => navigate('/customers?action=new')} icon={Plus}>
+          <Button size="sm" variant="primary" onClick={() => navigate('/customers?action=new')} icon={Plus} className="bg-zinc-950 hover:bg-zinc-800 text-white border border-amber-500/30">
             New Customer
           </Button>
           <Button size="sm" variant="outline" onClick={() => navigate('/properties?action=new')} icon={Building2}>
@@ -122,21 +128,21 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
         </Card>
 
         {/* Hot / High Intent */}
-        <Card hover onClick={() => navigate('/leads?priority=High')} className="cursor-pointer">
+        <Card hover onClick={() => navigate('/leads?priority=High')} className="cursor-pointer border-zinc-200 hover:border-amber-300 transition-colors">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-zinc-500">Hot & High Intent</p>
               <h3 className="text-2xl font-bold text-zinc-950 mt-1">{kpis.hotLeads}</h3>
-              <p className="text-[11px] text-zinc-600 font-medium mt-1">AI score ≥ 70%</p>
+              <p className="text-[11px] text-amber-700 font-semibold mt-1">AI score ≥ 70%</p>
             </div>
-            <div className="p-2.5 bg-zinc-100 text-zinc-900 rounded-lg border border-zinc-200">
-              <Flame className="w-4 h-4" />
+            <div className="p-2.5 bg-amber-50 text-amber-900 rounded-lg border border-amber-300">
+              <Flame className="w-4 h-4 text-amber-600" />
             </div>
           </CardContent>
         </Card>
 
         {/* Available Properties */}
-        <Card hover onClick={() => navigate('/properties')} className="cursor-pointer">
+        <Card hover onClick={() => navigate('/properties')} className="cursor-pointer border-zinc-200 hover:border-amber-300 transition-colors">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-zinc-500">Available Properties</p>
@@ -150,7 +156,7 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
         </Card>
 
         {/* Confirmed Bookings */}
-        <Card hover onClick={() => navigate('/bookings')} className="cursor-pointer">
+        <Card hover onClick={() => navigate('/bookings')} className="cursor-pointer border-zinc-200 hover:border-amber-300 transition-colors">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-zinc-500">Confirmed Bookings</p>
@@ -163,18 +169,18 @@ export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
           </CardContent>
         </Card>
 
-        {/* Revenue Collected */}
-        <Card hover onClick={() => navigate('/payments')} className="cursor-pointer">
+        {/* Revenue Collected with Subtle Golden Card Accent */}
+        <Card hover onClick={() => navigate('/payments')} className="cursor-pointer bg-gradient-to-br from-amber-50/50 via-white to-amber-50/20 border-amber-200/80 hover:border-amber-300 transition-all shadow-xs">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-zinc-500">Revenue Collected</p>
-              <h3 className="text-xl sm:text-2xl font-bold text-zinc-950 mt-1">
+              <p className="text-xs font-bold text-amber-900">Revenue Collected</p>
+              <h3 className="text-xl sm:text-2xl font-black text-amber-950 mt-1">
                 ₹{(kpis.totalRevenue / 10000000).toFixed(2)} Cr
               </h3>
-              <p className="text-[11px] text-zinc-600 font-medium mt-1">Verified advances</p>
+              <p className="text-[11px] text-amber-700/80 font-medium mt-1">Verified advances</p>
             </div>
-            <div className="p-2.5 bg-zinc-100 text-zinc-900 rounded-lg border border-zinc-200">
-              <CreditCard className="w-4 h-4" />
+            <div className="p-2.5 bg-amber-100/80 text-amber-900 rounded-lg border border-amber-300 shadow-2xs">
+              <CreditCard className="w-4 h-4 text-amber-700" />
             </div>
           </CardContent>
         </Card>

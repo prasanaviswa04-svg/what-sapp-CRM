@@ -53,18 +53,18 @@ const LottiePlayer = ({ animationData }) => {
 const FallbackOrbitLoader = () => (
   <div className="w-36 h-36 flex items-center justify-center">
     <svg className="w-28 h-28 animate-spin" viewBox="0 0 100 100" style={{ animationDuration: '3s' }}>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#e4e4e7" strokeWidth="2.5" />
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#fef3c7" strokeWidth="2.5" />
       <circle
         cx="50"
         cy="50"
         r="38"
         fill="none"
-        stroke="#09090b"
+        stroke="#d4af37"
         strokeWidth="3"
         strokeDasharray="60 180"
         strokeLinecap="round"
       />
-      <circle cx="50" cy="12" r="4.5" fill="#09090b" />
+      <circle cx="50" cy="12" r="5" fill="#c5a059" />
     </svg>
   </div>
 );
@@ -211,8 +211,11 @@ export const SplashScreen = ({ onFinish }) => {
         </button>
       </div>
 
-      {/* Center: Safe Lottie Geometric Loader & Brand Typewriter */}
-      <div className="my-auto flex flex-col items-center justify-center text-center">
+      {/* Center: Safe Lottie Geometric Loader & Brand Typewriter with Light Golden Accents */}
+      <div className="my-auto flex flex-col items-center justify-center text-center relative">
+        {/* Subtle Warm Light Golden Radial Aura */}
+        <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-amber-100/40 blur-3xl pointer-events-none -z-10" />
+
         {/* Black & White Lottie Geometric Orbiting Loader with Safe Error Boundary */}
         <div className="w-40 h-40 sm:w-52 sm:h-52 flex items-center justify-center mb-3">
           <LottieErrorBoundary fallback={<FallbackOrbitLoader />}>
@@ -220,22 +223,22 @@ export const SplashScreen = ({ onFinish }) => {
           </LottieErrorBoundary>
         </div>
 
-        {/* Dual-Tone Brand Typewriter with High-Contrast Typography */}
+        {/* Dual-Tone Brand Typewriter with High-Contrast Typography & Light Gold Accent */}
         <div className="min-h-[52px] sm:min-h-[64px] flex items-center justify-center whitespace-nowrap">
           <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-zinc-950 font-sans">
             {typedBrand}
           </span>
           {typedCategory && (
-            <span className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-wide text-zinc-400 font-mono ml-2.5">
+            <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 font-mono ml-2.5">
               {typedCategory}
             </span>
           )}
-          <span className="inline-block w-[3px] sm:w-[3.5px] h-[1.15em] bg-zinc-950 ml-2 align-middle animate-cursor" />
+          <span className="inline-block w-[3px] sm:w-[3.5px] h-[1.15em] bg-gradient-to-b from-amber-400 to-amber-600 ml-2 align-middle animate-cursor shadow-2xs" />
         </div>
 
         {/* Minimalist Subtitle */}
         <p
-          className={`text-xs sm:text-sm font-mono tracking-[0.28em] uppercase text-zinc-400 mt-3 transition-opacity duration-500 ${
+          className={`text-xs sm:text-sm font-mono tracking-[0.28em] uppercase text-amber-800/80 font-medium mt-3 transition-opacity duration-500 ${
             showTagline ? 'opacity-100' : 'opacity-0'
           }`}
         >
@@ -245,15 +248,15 @@ export const SplashScreen = ({ onFinish }) => {
 
       {/* Bottom: Minimalist Number Count & Hairline Progress Track */}
       <div className="flex flex-col items-center pb-4">
-        {/* Monospaced Percentage Count */}
-        <span className="font-mono text-sm sm:text-base tracking-[0.25em] text-zinc-400 font-medium">
+        {/* Monospaced Percentage Count with Light Golden Warmth */}
+        <span className="font-mono text-sm sm:text-base tracking-[0.25em] text-amber-700/90 font-semibold">
           {String(count).padStart(2, '0')}%
         </span>
 
-        {/* Ultra-Thin Hairline Progress Track */}
-        <div className="w-36 sm:w-44 h-[2px] bg-zinc-100 rounded-full overflow-hidden mt-3">
+        {/* Ultra-Thin Hairline Progress Track with Light Gold Fill */}
+        <div className="w-36 sm:w-44 h-[2.5px] bg-amber-100/60 rounded-full overflow-hidden mt-3 shadow-inner">
           <div
-            className="h-full bg-zinc-950 rounded-full transition-all duration-75 ease-out"
+            className="h-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 rounded-full transition-all duration-75 ease-out shadow-[0_0_8px_rgba(217,119,6,0.35)]"
             style={{ width: `${count}%` }}
           />
         </div>

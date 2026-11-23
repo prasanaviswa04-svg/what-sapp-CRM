@@ -9,17 +9,22 @@ export const Badge = ({ children, variant = 'default', size = 'sm', className = 
 
   const getVariantStyles = (v) => {
     switch (v?.toLowerCase()) {
+      case 'gold':
+      case 'luxury':
+      case 'vip':
+      case 'hot':
+      case 'urgent':
+      case 'high':
+      case 'high intent':
+        return 'bg-amber-50 text-amber-900 border border-amber-300 font-semibold';
       case 'available':
       case 'completed':
       case 'paid':
-      case 'high intent':
       case 'active':
         return 'bg-zinc-100 text-zinc-950 border border-zinc-300 font-semibold';
       case 'reserved':
       case 'under negotiation':
       case 'partially paid':
-      case 'urgent':
-      case 'hot':
         return 'bg-zinc-100 text-zinc-900 border border-zinc-300 font-medium';
       case 'sold':
       case 'closed':
@@ -34,7 +39,6 @@ export const Badge = ({ children, variant = 'default', size = 'sm', className = 
       case 'scheduled':
       case 'qualified':
       case 'warm':
-      case 'high':
       case 'medium':
       case 'low':
         return 'bg-zinc-50 text-zinc-700 border border-zinc-200';

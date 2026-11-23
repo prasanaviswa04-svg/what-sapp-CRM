@@ -20,7 +20,10 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
   };
 
   return (
-    <header className="h-14 bg-white border-b border-zinc-200 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between">
+    <header className="h-14 bg-white border-b border-zinc-200 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between relative shadow-2xs">
+      {/* Subtle Hairline Light Gold Accent Bar */}
+      <div className="h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent absolute bottom-0 left-0 right-0 pointer-events-none opacity-80" />
+
       {/* Left: Mobile Toggle, App Name & Global Search */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
         <button
@@ -31,7 +34,7 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* App Name in Top Navigation */}
+        {/* App Name in Top Navigation with Light Golden Accent */}
         <Link
           to="/dashboard"
           className="flex items-center gap-1.5 group select-none"
@@ -40,7 +43,7 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
           <span className="font-extrabold text-base sm:text-lg text-zinc-950 tracking-tight font-sans">
             EstateFlow
           </span>
-          <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-200 uppercase group-hover:bg-zinc-200 transition">
+          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 uppercase shadow-2xs group-hover:bg-amber-100 transition">
             CRM
           </span>
         </Link>

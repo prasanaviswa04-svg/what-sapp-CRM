@@ -88,13 +88,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       {/* Brand Header */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-zinc-200 bg-white">
         <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-600 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
             <Building2 className="w-4 h-4 text-white stroke-[2.2]" />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
               <span className="font-bold text-zinc-950 text-sm tracking-tight leading-none flex items-center gap-1.5">
-                ESTATEFLOW <span className="text-[9px] bg-zinc-100 text-zinc-700 border border-zinc-200 px-1 py-0.2 rounded font-mono font-medium">CRM</span>
+                ESTATEFLOW <span className="text-[9px] bg-amber-50 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded font-mono font-bold">CRM</span>
               </span>
               <span className="text-[10px] text-zinc-400 font-medium tracking-tight mt-1">Light Minimalist Real Estate</span>
             </div>
@@ -114,10 +114,10 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
         <div className="px-3 pt-2.5 pb-1">
           <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-50 border border-zinc-200 text-xs">
             <div className="flex items-center gap-1.5 truncate">
-              <Shield className="w-3.5 h-3.5 text-zinc-700 flex-shrink-0" />
+              <Shield className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
               <span className="font-semibold text-zinc-900 truncate text-[11px]">{role}</span>
             </div>
-            <span className="text-[9px] px-1.5 py-0.2 rounded bg-zinc-200/70 text-zinc-700 font-mono font-medium">Portal</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-100/70 text-amber-900 font-mono font-bold">Portal</span>
           </div>
         </div>
       )}
@@ -134,7 +134,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
               className={({ isActive }) =>
                 `flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all group relative tracking-tight ${
                   isActive
-                    ? 'bg-zinc-100 text-zinc-950 font-semibold border border-zinc-200/80 shadow-xs'
+                    ? 'bg-amber-50/70 text-zinc-950 font-semibold border border-amber-200/80 shadow-xs'
                     : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50'
                 }`
               }
@@ -144,7 +144,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
               {!isCollapsed && <span className="truncate flex-1">{item.name}</span>}
               {!isCollapsed && item.badge && (
                 <span
-                  className="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-700 border border-zinc-200"
+                  className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-100/70 text-amber-900 border border-amber-300/80"
                 >
                   {item.badge}
                 </span>

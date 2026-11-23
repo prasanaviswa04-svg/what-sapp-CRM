@@ -92,11 +92,11 @@ export const PropertyMatching = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-xs bg-zinc-100 text-zinc-900 border border-zinc-200 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-zinc-950" /> AI-Powered Recommendation Engine
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" /> AI-POWERED RECOMMENDATION ENGINE
             </span>
           </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">
@@ -189,15 +189,15 @@ export const PropertyMatching = () => {
                         <span
                           className={`text-xs font-semibold px-2.5 py-1 rounded-md border ${
                             matchScore >= 80
-                              ? 'bg-zinc-100 text-zinc-950 border-zinc-300 font-bold'
-                              : 'bg-zinc-50 text-zinc-700 border-zinc-200'
+                              ? 'bg-amber-100/90 text-amber-950 border-amber-300 font-bold shadow-2xs'
+                              : 'bg-amber-50/50 text-amber-900 border-amber-200'
                           }`}
                         >
                           {matchPercentage} Match Score
                         </span>
                         <span className="text-xs text-zinc-500 font-medium">{recommendedAction}</span>
                       </div>
-                      <div className="text-lg font-extrabold text-zinc-950">
+                      <div className="text-lg font-black text-amber-950">
                         ₹{(property.totalPrice / 10000000).toFixed(2)} Cr
                       </div>
                     </div>
@@ -243,7 +243,7 @@ export const PropertyMatching = () => {
                   <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between">
                     <Button
                       size="sm"
-                      variant="primary"
+                      variant="gold"
                       icon={Share2}
                       onClick={() => handleShareToWhatsApp(property)}
                     >

@@ -101,7 +101,12 @@ export const AiAssistant = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border-b border-zinc-200 pb-5">
+      <div className="border-b border-amber-200/60 pb-5">
+        <div className="flex items-center gap-1.5 mb-1">
+          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+            <Sparkles className="w-3 h-3 text-amber-600" /> SEMANTIC KNOWLEDGE GROUNDING
+          </span>
+        </div>
         <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">AI Assistant & Knowledge Grounding</h1>
         <p className="text-xs text-zinc-500 mt-1">
           Configure conversational parameters, manage company FAQs & policies, and test database-grounded recommendations.
@@ -130,7 +135,7 @@ export const AiAssistant = () => {
                     placeholder="Ask about properties, pricing, policies, or site visits..."
                   />
                 </div>
-                <Button type="submit" size="sm" isLoading={isTesting} icon={Sparkles}>
+                <Button type="submit" size="sm" variant="gold" isLoading={isTesting} icon={Sparkles}>
                   Generate Grounded AI Response
                 </Button>
               </form>
@@ -170,7 +175,7 @@ export const AiAssistant = () => {
             title="Knowledge Base & Policy Grounding"
             subtitle="Verified company info, payment policies, and FAQs"
             action={
-              <Button size="sm" icon={Plus} onClick={() => setIsAddModalOpen(true)}>
+              <Button size="sm" variant="gold" icon={Plus} onClick={() => setIsAddModalOpen(true)}>
                 Add Entry
               </Button>
             }

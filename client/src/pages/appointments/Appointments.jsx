@@ -117,15 +117,20 @@ export const Appointments = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <CalendarCheck className="w-3 h-3 text-amber-600" /> SHOWING SCHEDULES & VISITS
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Property Visits & Appointments</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Manage client walkthrough schedules, broker assignments, conflict detection, and WhatsApp reminders.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
             Schedule Site Visit
           </Button>
         </div>
@@ -139,8 +144,8 @@ export const Appointments = () => {
             onClick={() => setStatusFilter(st)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
               statusFilter === st
-                ? 'bg-zinc-950 text-white shadow-xs'
-                : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-100'
+                ? 'bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#e6c200] text-zinc-950 font-bold border border-[#ffd700] shadow-xs'
+                : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-amber-50/50 hover:text-amber-950'
             }`}
           >
             {st} Visits
@@ -167,10 +172,10 @@ export const Appointments = () => {
         ) : (
           <div className="divide-y divide-zinc-200">
             {appointments.map((app) => (
-              <div key={app._id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-zinc-50 transition">
+              <div key={app._id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-amber-50/30 transition">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-zinc-100 text-zinc-950 flex-shrink-0 mt-0.5">
-                    <Calendar className="w-5 h-5" />
+                  <div className="p-3 rounded-xl bg-amber-50 text-amber-900 border border-amber-200/80 flex-shrink-0 mt-0.5">
+                    <Calendar className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">

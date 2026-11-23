@@ -90,15 +90,20 @@ export const Tasks = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <CheckSquare className="w-3 h-3 text-amber-600" /> DAILY TASKS & DELIVERABLES
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Tasks & Operational Reminders</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Track broker deliverables, client document collection, bank approvals, and walkthrough coordination.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
             Add Task
           </Button>
         </div>
@@ -112,8 +117,8 @@ export const Tasks = () => {
             onClick={() => setStatusFilter(st)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
               statusFilter === st
-                ? 'bg-zinc-950 text-white shadow-xs'
-                : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-100'
+                ? 'bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#e6c200] text-zinc-950 font-bold border border-[#ffd700] shadow-xs'
+                : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-amber-50/50 hover:text-amber-950'
             }`}
           >
             {st} Tasks

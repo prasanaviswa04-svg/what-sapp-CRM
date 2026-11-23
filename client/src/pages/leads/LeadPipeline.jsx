@@ -100,8 +100,13 @@ export const LeadPipeline = () => {
   return (
     <div className="space-y-6">
       {/* Header & Filter */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Sparkles className="w-3 h-3 text-amber-600" /> CONVERSION FUNNEL & VELOCITY
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Leads & Sales Pipeline Kanban</h1>
           <p className="text-xs text-zinc-500 mt-1">
             10-stage automated pipeline with real-time AI scoring and WhatsApp engagement tracking.
@@ -112,14 +117,14 @@ export const LeadPipeline = () => {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="text-xs border border-zinc-300 rounded-lg px-3 py-2 bg-white text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950"
+            className="text-xs border border-amber-200/80 rounded-lg px-3 py-2 bg-white text-zinc-800 focus:outline-none focus:ring-1 focus:ring-amber-400"
           >
             <option value="All">All Priorities</option>
             <option value="Urgent">Urgent Only</option>
             <option value="High">High Priority</option>
             <option value="Medium">Medium</option>
           </select>
-          <Button size="sm" onClick={() => navigate('/customers?action=new')}>
+          <Button variant="gold" size="sm" onClick={() => navigate('/customers?action=new')}>
             + New Lead
           </Button>
         </div>
@@ -149,7 +154,7 @@ export const LeadPipeline = () => {
                 <div className="p-3 border-b border-zinc-200 bg-white rounded-t-xl flex items-center justify-between sticky top-0 z-10">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-zinc-900 tracking-tight">{stage}</span>
-                    <span className="w-5 h-5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-300 text-[10px] font-bold flex items-center justify-center">
+                    <span className="w-5 h-5 rounded-full bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold flex items-center justify-center">
                       {columnLeads.length}
                     </span>
                   </div>
@@ -163,7 +168,7 @@ export const LeadPipeline = () => {
                     columnLeads.map((lead) => (
                       <div
                         key={lead._id}
-                        className="bg-white p-3.5 rounded-xl border border-zinc-200 shadow-xs hover:border-zinc-300 transition-all space-y-2.5 cursor-pointer"
+                        className="bg-white p-3.5 rounded-xl border border-zinc-200/90 shadow-xs hover:border-amber-300 hover:shadow-[0_2px_10px_rgba(255,215,0,0.15)] transition-all space-y-2.5 cursor-pointer"
                         onClick={() => lead.customerId && navigate(`/customers/${lead.customerId._id}`)}
                       >
                         {/* Title & Priority */}
@@ -185,8 +190,8 @@ export const LeadPipeline = () => {
                         </div>
 
                         {/* Budget & Locality */}
-                        <div className="flex items-center justify-between text-[11px] bg-zinc-50 p-2 rounded-lg border border-zinc-200">
-                          <span className="font-bold text-zinc-950">
+                        <div className="flex items-center justify-between text-[11px] bg-amber-50/40 p-2 rounded-lg border border-amber-200/80">
+                          <span className="font-bold text-amber-950">
                             {lead.budget?.max
                               ? `₹${(lead.budget.max / 10000000).toFixed(2)} Cr`
                               : 'Budget Open'}
@@ -199,8 +204,8 @@ export const LeadPipeline = () => {
                         {/* AI Score & Stage Selector */}
                         <div className="flex items-center justify-between pt-1 border-t border-zinc-100 text-[11px]">
                           <div className="flex items-center gap-1">
-                            <Sparkles className="w-3 h-3 text-zinc-800" />
-                            <span className="font-bold text-zinc-950">{lead.score}%</span>
+                            <Sparkles className="w-3 h-3 text-amber-600" />
+                            <span className="font-bold text-amber-950">{lead.score}%</span>
                             <span className="text-[9px] text-zinc-500">({lead.scoreClassification})</span>
                           </div>
 

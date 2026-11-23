@@ -159,18 +159,23 @@ export const CustomerList = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Sparkles className="w-3 h-3 text-amber-600" /> CLIENT DATABASE & PROFILES
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Customer Relationship Management</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Manage your verified buyer profiles, investment preferences, and communication records ({total} total).
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" icon={Download} onClick={handleExportCsv}>
+          <Button variant="outline" size="sm" icon={Download} onClick={handleExportCsv} className="border-amber-200/70 hover:bg-amber-50/50 hover:border-amber-300 text-amber-950">
             Export CSV
           </Button>
-          <Button size="sm" icon={Plus} onClick={() => setIsNewModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsNewModalOpen(true)}>
             Add Customer
           </Button>
         </div>
@@ -246,7 +251,7 @@ export const CustomerList = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
+              <thead className="bg-amber-50/50 text-amber-950 uppercase tracking-wider font-semibold border-b border-amber-200/80">
                 <tr>
                   <th className="py-3.5 px-4">Customer Name & Phone</th>
                   <th className="py-3.5 px-4">Category & Requirements</th>
@@ -261,7 +266,7 @@ export const CustomerList = () => {
                 {customers.map((c) => (
                   <tr
                     key={c._id}
-                    className="hover:bg-zinc-50 transition cursor-pointer"
+                    className="hover:bg-amber-50/30 transition cursor-pointer"
                     onClick={() => navigate(`/customers/${c._id}`)}
                   >
                     <td className="py-3.5 px-4">
@@ -284,7 +289,7 @@ export const CustomerList = () => {
                         {c.customerType} • {c.requirements?.purchaseTimeline}
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-zinc-950">
+                    <td className="py-3.5 px-4 font-bold text-amber-950">
                       {c.requirements?.maxBudget
                         ? `₹${(c.requirements.maxBudget / 10000000).toFixed(2)} Cr`
                         : 'Not specified'}

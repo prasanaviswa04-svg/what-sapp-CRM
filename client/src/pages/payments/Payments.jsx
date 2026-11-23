@@ -88,15 +88,20 @@ export const Payments = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <CreditCard className="w-3 h-3 text-amber-600" /> FINANCIAL MANAGEMENT & ESCROW
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Payments & Transaction Management</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Verified financial transaction tracking, advance collections, remaining balances, and downloadable receipts.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" icon={Plus} onClick={() => setIsRecordModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsRecordModalOpen(true)}>
             Record Payment
           </Button>
         </div>
@@ -104,20 +109,20 @@ export const Payments = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="p-5 flex items-center justify-between bg-white text-zinc-900 border-zinc-200 shadow-xs">
+        <Card className="p-5 flex items-center justify-between bg-gradient-to-br from-amber-100/50 via-amber-50/35 to-yellow-50/30 border-amber-300 shadow-xs">
           <div>
-            <span className="text-xs text-zinc-500 font-medium">Total Revenue Collected</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold mt-1 text-zinc-950">
+            <span className="text-xs text-amber-900 font-bold">Total Revenue Collected</span>
+            <h2 className="text-2xl sm:text-3xl font-black mt-1 text-amber-950">
               ₹{(totalCollected / 10000000).toFixed(2)} Cr
             </h2>
-            <p className="text-[11px] text-zinc-500 mt-1">Directly deposited via verified banking</p>
+            <p className="text-[11px] text-amber-800/80 mt-1 font-medium">Directly deposited via verified banking</p>
           </div>
-          <div className="p-3.5 bg-zinc-100 rounded-2xl border border-zinc-200">
-            <CheckCircle2 className="w-8 h-8 text-zinc-800" />
+          <div className="p-3.5 bg-amber-100 text-amber-900 rounded-2xl border border-amber-300 shadow-2xs">
+            <CheckCircle2 className="w-8 h-8 text-amber-700" />
           </div>
         </Card>
 
-        <Card className="p-5 flex items-center justify-between bg-white text-zinc-900 border-zinc-200 shadow-xs">
+        <Card className="p-5 flex items-center justify-between bg-white text-zinc-900 border-zinc-200 hover:border-amber-300 shadow-xs">
           <div>
             <span className="text-xs text-zinc-500 font-medium">Total Pending Receivables</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold mt-1 text-zinc-950">
@@ -151,7 +156,7 @@ export const Payments = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
+              <thead className="bg-amber-50/50 text-amber-950 uppercase tracking-wider font-semibold border-b border-amber-200/80">
                 <tr>
                   <th className="py-3 px-4">Invoice & Ref ID</th>
                   <th className="py-3 px-4">Customer</th>
@@ -165,7 +170,7 @@ export const Payments = () => {
               </thead>
               <tbody className="divide-y divide-zinc-200">
                 {payments.map((p) => (
-                  <tr key={p._id} className="hover:bg-zinc-50 transition">
+                  <tr key={p._id} className="hover:bg-amber-50/30 transition">
                     <td className="py-3.5 px-4 font-mono">
                       <div className="font-bold text-zinc-950">{p.invoiceNumber}</div>
                       <div className="text-[10px] text-zinc-400">{p.transactionId}</div>
@@ -179,7 +184,7 @@ export const Payments = () => {
                       </div>
                       <div className="text-[10px] text-zinc-400">{p.propertyId?.propertyCode}</div>
                     </td>
-                    <td className="py-3.5 px-4 font-extrabold text-zinc-950">
+                    <td className="py-3.5 px-4 font-extrabold text-amber-950">
                       ₹{(p.amountPaid / 100000).toFixed(2)} Lakhs
                     </td>
                     <td className="py-3.5 px-4 font-semibold text-zinc-700">

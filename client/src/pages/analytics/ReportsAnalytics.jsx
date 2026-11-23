@@ -4,7 +4,8 @@ import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Skeleton } from '../../components/common/Skeleton';
 import {
-  Download
+  Download,
+  Sparkles
 } from 'lucide-react';
 import {
   BarChart,
@@ -69,8 +70,13 @@ export const ReportsAnalytics = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Sparkles className="w-3 h-3 text-amber-600" /> INTELLIGENCE & TELEMETRY
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Real Estate Reports & Analytics</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Real MongoDB aggregation reports on customer acquisition, conversion pipelines, and sales performance.
@@ -79,7 +85,7 @@ export const ReportsAnalytics = () => {
         <div className="flex items-center gap-2">
           <Button
             size="sm"
-            variant="outline"
+            variant="gold"
             icon={Download}
             onClick={() => window.open('/api/customers/export/csv', '_blank')}
           >
@@ -90,29 +96,29 @@ export const ReportsAnalytics = () => {
 
       {/* KPI Summary Banner */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="p-4 border-zinc-200">
+        <Card className="p-4 border-zinc-200/90 hover:border-amber-300">
           <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Total Pipeline Leads</span>
           <div className="text-2xl font-bold text-zinc-950 mt-1">{kpis.totalLeads}</div>
-          <span className="text-xs text-zinc-600 font-medium">100% verified DB records</span>
+          <span className="text-xs text-amber-800/80 font-medium">100% verified DB records</span>
         </Card>
-        <Card className="p-4 border-zinc-200">
+        <Card className="p-4 border-zinc-200/90 hover:border-amber-300">
           <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Confirmed Bookings</span>
           <div className="text-2xl font-bold text-zinc-950 mt-1">{kpis.confirmedBookings}</div>
-          <span className="text-xs text-zinc-500 font-medium">Conversion rate {kpis.conversionRate}</span>
+          <span className="text-xs text-amber-800/80 font-medium">Conversion rate {kpis.conversionRate}</span>
         </Card>
-        <Card className="p-4 border-zinc-200">
-          <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Revenue Collected</span>
-          <div className="text-2xl font-bold text-zinc-950 mt-1">
+        <Card className="p-4 bg-gradient-to-br from-amber-100/50 via-amber-50/35 to-yellow-50/30 border-amber-300 shadow-xs">
+          <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider">Revenue Collected</span>
+          <div className="text-2xl font-black text-amber-950 mt-1">
             ₹{(kpis.totalRevenue / 10000000).toFixed(2)} Cr
           </div>
-          <span className="text-xs text-zinc-500 font-medium">Verified deposits</span>
+          <span className="text-xs text-amber-800/90 font-medium">Verified deposits</span>
         </Card>
-        <Card className="p-4 border-zinc-200">
+        <Card className="p-4 border-zinc-200/90 hover:border-amber-300">
           <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">WhatsApp Engagement</span>
           <div className="text-2xl font-bold text-zinc-950 mt-1">
             {kpis.whatsappSent + kpis.whatsappReceived}
           </div>
-          <span className="text-xs text-zinc-500 font-medium">Total messages handled</span>
+          <span className="text-xs text-amber-800/80 font-medium">Total messages handled</span>
         </Card>
       </div>
 

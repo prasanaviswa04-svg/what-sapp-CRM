@@ -7,7 +7,9 @@ import { Modal } from '../../components/common/Modal';
 import { Skeleton } from '../../components/common/Skeleton';
 import { useToast } from '../../context/ToastContext';
 import {
-  Plus
+  Plus,
+  Users,
+  Sparkles
 } from 'lucide-react';
 
 export const TeamManagement = () => {
@@ -73,15 +75,20 @@ export const TeamManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Users className="w-3 h-3 text-amber-600" /> AGENCY DIRECTORY & PERMISSIONS
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Team & Broker Management</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Manage real estate brokers, sales agents, role permissions, and lead assignment workloads.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
             Add Team Member
           </Button>
         </div>
@@ -99,7 +106,7 @@ export const TeamManagement = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
+              <thead className="bg-amber-50/50 text-amber-950 uppercase tracking-wider font-semibold border-b border-amber-200/80">
                 <tr>
                   <th className="py-3 px-4">Member Name & Email</th>
                   <th className="py-3 px-4">Role</th>
@@ -112,10 +119,10 @@ export const TeamManagement = () => {
               </thead>
               <tbody className="divide-y divide-zinc-200">
                 {team.map((member) => (
-                  <tr key={member._id} className="hover:bg-zinc-50 transition">
+                  <tr key={member._id} className="hover:bg-amber-50/30 transition">
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-zinc-100 text-zinc-900 border border-zinc-200 font-bold flex items-center justify-center text-xs">
+                        <div className="w-8 h-8 rounded-full bg-[#fef9c3] text-[#524100] border border-[#ffd700] font-bold flex items-center justify-center text-xs shadow-2xs">
                           {member.firstName?.[0]}{member.lastName?.[0]}
                         </div>
                         <div>

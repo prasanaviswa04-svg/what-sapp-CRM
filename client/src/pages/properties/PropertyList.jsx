@@ -183,30 +183,35 @@ export const PropertyList = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Sparkles className="w-3 h-3 text-amber-600" /> EXCLUSIVE PROPERTY CATALOG
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Verified Property Inventory</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Real estate inventory management with live availability control and AI matching grounding ({total} listings).
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" icon={Plus} onClick={() => setIsAddModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsAddModalOpen(true)}>
             Add Property Listing
           </Button>
         </div>
       </div>
 
       {/* Category Tabs & Filter */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-zinc-200">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-amber-200/60">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => { setCategoryFilter(cat); setPage(1); }}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               categoryFilter === cat
-                ? 'bg-zinc-900 text-white shadow-xs'
-                : 'bg-white text-zinc-600 hover:bg-zinc-100 border border-zinc-200'
+                ? 'bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#e6c200] text-zinc-950 font-bold shadow-xs border border-[#ffd700]'
+                : 'bg-white text-zinc-600 hover:bg-amber-50/50 hover:text-amber-950 border border-zinc-200'
             }`}
           >
             {cat}
@@ -284,7 +289,7 @@ export const PropertyList = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                   />
                   <div className="absolute top-3 left-3">
-                    <span className="text-[10px] font-bold px-2 py-1 rounded bg-white/95 text-zinc-900 border border-zinc-200 shadow-xs">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white/95 text-amber-950 border border-amber-300 shadow-xs">
                       {prop.propertyCode}
                     </span>
                   </div>
@@ -334,7 +339,7 @@ export const PropertyList = () => {
               <div className="p-4 pt-3 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between gap-2">
                 <div>
                   <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Total Price</div>
-                  <div className="text-base font-extrabold text-zinc-950">
+                  <div className="text-base font-extrabold text-amber-950">
                     ₹{(prop.totalPrice / 10000000).toFixed(2)} Cr
                   </div>
                 </div>

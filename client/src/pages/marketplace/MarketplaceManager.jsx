@@ -18,7 +18,8 @@ import {
   MapPin,
   DollarSign,
   AlertCircle,
-  Plus
+  Plus,
+  Sparkles
 } from 'lucide-react';
 
 export const MarketplaceManager = () => {
@@ -203,8 +204,13 @@ export const MarketplaceManager = () => {
   return (
     <div className="space-y-5">
       {/* Page Title & Refresh */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Sparkles className="w-3 h-3 text-amber-600" /> BROKER & OWNER PORTAL INTAKE
+            </span>
+          </div>
           <h1 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tight">
             Marketplace Submissions
           </h1>
@@ -219,26 +225,26 @@ export const MarketplaceManager = () => {
             size="sm"
             onClick={fetchData}
             disabled={loading}
-            className="text-xs"
+            className="text-xs border-amber-200/70 hover:bg-amber-50/50 hover:border-amber-300 text-amber-950"
           >
             <RefreshCw className={`w-3.5 h-3.5 mr-1 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="gold"
+            size="sm"
+            icon={Plus}
             onClick={() => setShowNewModal(true)}
-            className="px-3 py-1.5 rounded-lg bg-zinc-950 text-white text-xs font-semibold hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
           >
-            <Plus className="w-3.5 h-3.5" />
             + New Submission
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* 3 Simple KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Card className="p-4 bg-white border-zinc-200">
+        <Card className="p-4 bg-white border-zinc-200/90 hover:border-amber-300">
           <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider block">
             Total Submissions
           </span>
@@ -248,17 +254,17 @@ export const MarketplaceManager = () => {
           <span className="text-[10px] text-zinc-400 mt-0.5 block">All received listings</span>
         </Card>
 
-        <Card className="p-4 bg-amber-50/60 border-amber-200">
-          <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider block">
+        <Card className="p-4 bg-gradient-to-br from-amber-50/60 via-white to-amber-50/25 border-amber-200/90 hover:border-amber-400 shadow-xs">
+          <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider block">
             Pending Review
           </span>
-          <p className="text-2xl font-black text-amber-800 mt-1">
+          <p className="text-2xl font-black text-amber-950 mt-1">
             {stats.pending}
           </p>
-          <span className="text-[10px] text-amber-600 mt-0.5 block">Waiting for your approval</span>
+          <span className="text-[10px] text-amber-800/80 mt-0.5 block font-medium">Waiting for your approval</span>
         </Card>
 
-        <Card className="p-4 bg-emerald-50/60 border-emerald-200">
+        <Card className="p-4 bg-emerald-50/60 border-emerald-200 hover:border-emerald-300">
           <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider block">
             Approved & In CRM
           </span>

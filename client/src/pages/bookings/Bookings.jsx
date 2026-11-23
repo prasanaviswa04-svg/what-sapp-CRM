@@ -118,15 +118,20 @@ export const Bookings = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <CheckCircle2 className="w-3 h-3 text-amber-600" /> CONFIRMED TRANSACTIONS & ESCROW
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Property Bookings & Reservations</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Transaction-safe booking management with automatic property lock and advance receipt tracking.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
             New Property Booking
           </Button>
         </div>
@@ -151,7 +156,7 @@ export const Bookings = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
+              <thead className="bg-amber-50/50 text-amber-950 uppercase tracking-wider font-semibold border-b border-amber-200/80">
                 <tr>
                   <th className="py-3.5 px-4">Booking Code</th>
                   <th className="py-3.5 px-4">Customer</th>
@@ -164,7 +169,7 @@ export const Bookings = () => {
               </thead>
               <tbody className="divide-y divide-zinc-200">
                 {bookings.map((b) => (
-                  <tr key={b._id} className="hover:bg-zinc-50 transition">
+                  <tr key={b._id} className="hover:bg-amber-50/30 transition">
                     <td className="py-3.5 px-4 font-mono font-bold text-zinc-950">
                       {b.bookingCode}
                     </td>
@@ -179,7 +184,7 @@ export const Bookings = () => {
                     <td className="py-3.5 px-4 font-bold text-zinc-950">
                       ₹{(b.agreedPrice / 10000000).toFixed(2)} Cr
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-zinc-900">
+                    <td className="py-3.5 px-4 font-bold text-amber-950">
                       ₹{(b.advanceAmount / 10000000).toFixed(2)} Cr
                     </td>
                     <td className="py-3.5 px-4">

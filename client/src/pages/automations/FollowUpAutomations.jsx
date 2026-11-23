@@ -122,15 +122,20 @@ export const FollowUpAutomations = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
         <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100/90 text-amber-900 border border-amber-300/80 inline-flex items-center gap-1 shadow-2xs">
+              <Zap className="w-3 h-3 text-amber-600" /> EVENT-DRIVEN CADENCE & TRIGGERS
+            </span>
+          </div>
           <h1 className="text-2xl font-bold text-zinc-950 tracking-tight">Follow-Up Automation Engine</h1>
           <p className="text-xs text-zinc-500 mt-1">
             Automated WhatsApp cadence workflows triggered by new inquiries, site visits, and booking events.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
+          <Button variant="gold" size="sm" icon={Plus} onClick={() => setIsModalOpen(true)}>
             Create Workflow
           </Button>
         </div>

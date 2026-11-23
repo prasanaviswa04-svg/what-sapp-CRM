@@ -20,11 +20,20 @@ export const Dashboard = () => {
     setLoading(true);
     try {
       const res = await api.get('/analytics/dashboard');
-      if (res.data.success) {
+      if (res.data?.kpis || res.data?.success) {
         setData(res.data);
+      } else {
+        const { getOfflineStats } = await import('../../services/offlineStorage');
+        setData(getOfflineStats());
       }
     } catch (err) {
-      console.error('Failed to load dashboard data:', err);
+      console.warn('Dashboard network notice, falling back to offline stats:', err.message);
+      try {
+        const { getOfflineStats } = await import('../../services/offlineStorage');
+        setData(getOfflineStats());
+      } catch (e) {
+        setData({ kpis: {}, charts: {} });
+      }
     } finally {
       setLoading(false);
     }

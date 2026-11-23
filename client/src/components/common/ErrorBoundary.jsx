@@ -21,6 +21,14 @@ export class ErrorBoundary extends React.Component {
     window.location.reload();
   };
 
+  handleResetOffline = () => {
+    try {
+      localStorage.setItem('estateflow_offline_active', 'true');
+    } catch (e) {}
+    this.setState({ hasError: false, error: null });
+    window.location.href = '/';
+  };
+
   render() {
     if (this.state.hasError) {
       return (
@@ -30,22 +38,31 @@ export class ErrorBoundary extends React.Component {
           </div>
           <h2 className="text-base font-bold text-zinc-950">Something went wrong in this module</h2>
           <p className="text-xs text-zinc-500 mt-1 max-w-md">
-            An unexpected error occurred while rendering this section. You can refresh the view to recover.
+            An unexpected error occurred while rendering this section. You can refresh or switch to standalone offline mode to continue using the app seamlessly.
           </p>
           {this.state.error && (
             <pre className="mt-3 p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-[10px] text-zinc-600 max-w-md overflow-x-auto text-left">
               {this.state.error.toString()}
             </pre>
           )}
-          <Button
-            size="sm"
-            variant="outline"
-            icon={RefreshCw}
-            onClick={this.handleReload}
-            className="mt-4"
-          >
-            Reload Module
-          </Button>
+          <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+            <Button
+              size="sm"
+              variant="outline"
+              icon={RefreshCw}
+              onClick={this.handleReload}
+            >
+              Reload View
+            </Button>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={this.handleResetOffline}
+              className="bg-zinc-950 text-white hover:bg-zinc-800"
+            >
+              Continue in Offline Engine
+            </Button>
+          </div>
         </div>
       );
     }

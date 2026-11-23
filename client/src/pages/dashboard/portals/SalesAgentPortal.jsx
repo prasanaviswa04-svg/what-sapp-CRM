@@ -17,9 +17,27 @@ import {
   User
 } from 'lucide-react';
 
-export const SalesAgentPortal = ({ data, onRefresh }) => {
+export const SalesAgentPortal = ({ data = {}, onRefresh }) => {
   const navigate = useNavigate();
-  const { kpis, latestEnquiries } = data;
+  const kpis = {
+    totalCustomers: 0,
+    totalLeads: 0,
+    newEnquiries: 0,
+    qualifiedLeads: 0,
+    hotLeads: 0,
+    totalProperties: 0,
+    availableProperties: 0,
+    soldProperties: 0,
+    rentalProperties: 0,
+    upcomingVisits: 0,
+    confirmedBookings: 0,
+    totalRevenue: 0,
+    whatsappSent: 0,
+    whatsappReceived: 0,
+    conversionRate: '0%',
+    ...(data?.kpis || data?.overview || {})
+  };
+  const latestEnquiries = Array.isArray(data?.latestEnquiries) ? data.latestEnquiries : [];
 
   const [tasks, setTasks] = useState([
     { id: 1, title: 'Call Vikramaditya Oberoi to confirm 4 BHK Penthouse budget', due: '11:30 AM', priority: 'High', completed: false },

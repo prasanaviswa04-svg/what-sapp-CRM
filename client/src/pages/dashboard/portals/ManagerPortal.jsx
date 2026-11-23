@@ -18,9 +18,28 @@ import {
   Briefcase
 } from 'lucide-react';
 
-export const ManagerPortal = ({ data, onRefresh }) => {
+export const ManagerPortal = ({ data = {}, onRefresh }) => {
   const navigate = useNavigate();
-  const { kpis, latestEnquiries, upcomingAppointments } = data;
+  const kpis = {
+    totalCustomers: 0,
+    totalLeads: 0,
+    newEnquiries: 0,
+    qualifiedLeads: 0,
+    hotLeads: 0,
+    totalProperties: 0,
+    availableProperties: 0,
+    soldProperties: 0,
+    rentalProperties: 0,
+    upcomingVisits: 0,
+    confirmedBookings: 0,
+    totalRevenue: 0,
+    whatsappSent: 0,
+    whatsappReceived: 0,
+    conversionRate: '0%',
+    ...(data?.kpis || data?.overview || {})
+  };
+  const latestEnquiries = Array.isArray(data?.latestEnquiries) ? data.latestEnquiries : [];
+  const upcomingAppointments = Array.isArray(data?.upcomingAppointments) ? data.upcomingAppointments : [];
 
   const brokerTeam = [
     { name: 'Rohan Verma', role: 'Property Broker', activeListings: 4, assignedLeads: 6, conversion: '32%', status: 'Active' },

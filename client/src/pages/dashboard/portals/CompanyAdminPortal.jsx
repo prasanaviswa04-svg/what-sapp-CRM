@@ -32,9 +32,35 @@ import {
   Legend
 } from 'recharts';
 
-export const CompanyAdminPortal = ({ data, onRefresh }) => {
+export const CompanyAdminPortal = ({ data = {}, onRefresh }) => {
   const navigate = useNavigate();
-  const { kpis, charts, latestEnquiries, upcomingAppointments } = data;
+  const kpis = {
+    totalCustomers: 0,
+    totalLeads: 0,
+    newEnquiries: 0,
+    qualifiedLeads: 0,
+    hotLeads: 0,
+    totalProperties: 0,
+    availableProperties: 0,
+    soldProperties: 0,
+    rentalProperties: 0,
+    upcomingVisits: 0,
+    confirmedBookings: 0,
+    totalRevenue: 0,
+    whatsappSent: 0,
+    whatsappReceived: 0,
+    conversionRate: '0%',
+    ...(data?.kpis || data?.overview || {})
+  };
+  const charts = {
+    monthlyEnquiries: [],
+    leadFunnel: [],
+    propertyDistribution: [],
+    brokerLeaderboard: [],
+    ...(data?.charts || {})
+  };
+  const latestEnquiries = Array.isArray(data?.latestEnquiries) ? data.latestEnquiries : [];
+  const upcomingAppointments = Array.isArray(data?.upcomingAppointments) ? data.upcomingAppointments : [];
 
   const MONOCHROME_COLORS = ['#3f3f46', '#52525b', '#71717a', '#a1a1aa', '#cbd5e1', '#e2e8f0'];
 

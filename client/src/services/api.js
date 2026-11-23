@@ -23,7 +23,7 @@ export const getApiBaseUrl = () => {
       const customUrl = localStorage.getItem('estateflow_api_host');
       if (customUrl) return customUrl.replace(/\/$/, '') + '/api';
     } catch (e) {}
-    return 'http://192.168.29.84:5000/api';
+    return 'http://10.1.40.172:5000/api';
   }
 
   if (typeof window !== 'undefined') {
@@ -34,7 +34,7 @@ export const getApiBaseUrl = () => {
 
     // When deployed on Netlify or external web hosting
     if (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vercel.app')) {
-      const backendUrl = import.meta.env.VITE_API_URL || 'http://192.168.29.84:5000';
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://10.1.40.172:5000';
       return backendUrl.replace(/\/$/, '') + '/api';
     }
   }

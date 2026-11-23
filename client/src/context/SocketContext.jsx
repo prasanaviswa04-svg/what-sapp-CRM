@@ -21,7 +21,7 @@ export const SocketProvider = ({ children }) => {
     const isExternalWeb = typeof window !== 'undefined' && (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vercel.app'));
     const savedHost = (typeof window !== 'undefined' && (localStorage.getItem('estateflow_api_host') || localStorage.getItem('estateflow_server_host'))) || null;
     const socketUrl = isMobileNative() || isExternalWeb
-      ? (savedHost ? savedHost.replace(/\/api\/?$/, '').replace(/\/$/, '') : (import.meta.env.VITE_SERVER_URL || 'http://192.168.29.84:5000'))
+      ? (savedHost ? savedHost.replace(/\/api\/?$/, '').replace(/\/$/, '') : (import.meta.env.VITE_SERVER_URL || 'http://10.1.40.172:5000'))
       : window.location.origin;
 
     // Connect to server (using origin or fallback localhost:5000)

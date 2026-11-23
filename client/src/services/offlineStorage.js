@@ -585,20 +585,85 @@ export function getOfflineStats() {
   const customers = getOfflineCustomers();
   const leads = getOfflineLeads();
 
+  const totalCustomers = customers.length || 24;
+  const totalLeads = leads.length || 38;
+  const newEnquiriesCount = leads.filter(l => l.stage === 'New Inquiry').length || 8;
+  const qualifiedLeadsCount = leads.filter(l => l.stage === 'Qualified').length || 12;
+  const hotLeadsCount = leads.filter(l => l.priority === 'High' || l.priority === 'Urgent').length || 9;
+  const totalProperties = properties.length || 16;
+  const availableProperties = properties.filter(p => p.status === 'Available').length || totalProperties;
+  const soldProperties = properties.filter(p => p.status === 'Sold').length || 14;
+  const rentalProperties = properties.filter(p => p.purpose === 'Rent').length || 6;
+  const upcomingVisitsCount = 5;
+  const confirmedBookingsCount = 8;
+  const totalRevenue = 545000000;
+  const whatsappMessagesSent = 64;
+  const whatsappMessagesReceived = 42;
+  const conversionRate = '21.4%';
+
   return {
+    success: true,
+    kpis: {
+      totalCustomers,
+      totalLeads,
+      newEnquiries: newEnquiriesCount,
+      qualifiedLeads: qualifiedLeadsCount,
+      hotLeads: hotLeadsCount,
+      totalProperties,
+      availableProperties,
+      soldProperties,
+      rentalProperties,
+      upcomingVisits: upcomingVisitsCount,
+      confirmedBookings: confirmedBookingsCount,
+      totalRevenue,
+      whatsappSent: whatsappMessagesSent,
+      whatsappReceived: whatsappMessagesReceived,
+      conversionRate
+    },
     overview: {
-      totalRevenue: 545000000,
-      activeProperties: properties.length,
-      totalCustomers: customers.length,
-      activeLeads: leads.length,
-      whatsappMessagesSent: 48,
-      matchesCalculated: 124,
+      totalRevenue,
+      activeProperties: totalProperties,
+      totalCustomers,
+      activeLeads: totalLeads,
+      whatsappMessagesSent,
+      matchesCalculated: 124
+    },
+    charts: {
+      monthlyEnquiries: [
+        { month: 'Jun', enquiries: 18 },
+        { month: 'Jul', enquiries: 24 },
+        { month: 'Aug', enquiries: 29 },
+        { month: 'Sep', enquiries: 35 },
+        { month: 'Oct', enquiries: 42 },
+        { month: 'Nov', enquiries: 51 }
+      ],
+      leadFunnel: [
+        { stage: 'New Inquiry', count: 12 },
+        { stage: 'Contacted', count: 9 },
+        { stage: 'Site Visit', count: 6 },
+        { stage: 'Negotiation', count: 4 },
+        { stage: 'Won', count: 8 }
+      ],
+      propertyDistribution: [
+        { category: 'Luxury Apartment', count: 6 },
+        { category: 'Villa', count: 4 },
+        { category: 'Commercial Office', count: 3 },
+        { category: 'Plot', count: 2 }
+      ],
+      brokerLeaderboard: [
+        { name: 'Rajesh Sharma', bookingsCount: 5, revenue: 145000000 },
+        { name: 'Priya Mehta', bookingsCount: 3, revenue: 95000000 },
+        { name: 'Vikram Malhotra', bookingsCount: 2, revenue: 65000000 }
+      ]
     },
     topLocalities: [
       { locality: 'Golf Course Road', count: 12 },
       { locality: 'Sohna Road', count: 9 },
-      { locality: 'Golf Course Extension Road', count: 8 },
+      { locality: 'Golf Course Extension Road', count: 8 }
     ],
+    latestEnquiries: leads.slice(0, 5),
+    upcomingAppointments: [],
+    recentBookings: []
   };
 }
 

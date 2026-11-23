@@ -19,9 +19,16 @@ import {
   Radio
 } from 'lucide-react';
 
-export const SuperAdminPortal = ({ data, onRefresh }) => {
+export const SuperAdminPortal = ({ data = {}, onRefresh }) => {
   const navigate = useNavigate();
-  const { kpis } = data;
+  const kpis = {
+    totalCustomers: 0,
+    totalProperties: 0,
+    totalLeads: 0,
+    whatsappSent: 0,
+    whatsappReceived: 0,
+    ...(data?.kpis || data?.overview || {})
+  };
 
   const totalCoreRecords =
     (kpis.totalCustomers || 0) +

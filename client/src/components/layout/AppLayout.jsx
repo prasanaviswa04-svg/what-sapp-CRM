@@ -27,7 +27,7 @@ export const AppLayout = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex relative">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/25 via-zinc-50 to-zinc-50 flex relative">
       {/* Sidebar Navigation */}
       <Sidebar
         isCollapsed={isCollapsed}

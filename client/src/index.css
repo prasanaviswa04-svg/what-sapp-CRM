@@ -4,11 +4,11 @@
 
 @layer base {
   body {
-    @apply bg-zinc-50 text-zinc-900 antialiased font-sans selection:bg-black selection:text-white;
+    @apply bg-zinc-50 text-zinc-900 antialiased font-sans selection:bg-amber-100 selection:text-amber-950;
   }
 }
 
-/* Minimalist Monochrome Scrollbars */
+/* Minimalist Scrollbars with Subtle Golden Tone */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -24,7 +24,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #71717a;
+  background: #d97706;
 }
 
 /* Typewriter Cursor Blink - Crisp Monospace Step */

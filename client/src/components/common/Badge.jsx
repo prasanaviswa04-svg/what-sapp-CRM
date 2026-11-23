@@ -16,6 +16,11 @@ export const Badge = ({ children, variant = 'default', size = 'sm', className = 
       case 'urgent':
       case 'high':
       case 'high intent':
+      case 'premium':
+      case 'won':
+      case 'deal':
+      case 'advance':
+      case 'featured':
         return 'bg-amber-50 text-amber-900 border border-amber-300 font-semibold';
       case 'available':
       case 'completed':

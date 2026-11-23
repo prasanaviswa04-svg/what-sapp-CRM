@@ -20,12 +20,12 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
   };
 
   return (
-    <header className="h-14 bg-white border-b border-zinc-200 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between relative shadow-2xs">
+    <header className="h-14 bg-white/95 backdrop-blur-xs border-b border-amber-200/60 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between relative shadow-2xs">
       {/* Left: Mobile Toggle, App Name & Global Search */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
         <button
           onClick={onOpenMobile}
-          className="lg:hidden p-1.5 rounded-md text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition"
+          className="lg:hidden p-1.5 rounded-md text-zinc-600 hover:text-amber-950 hover:bg-amber-50/60 transition"
           aria-label="Open Navigation Menu"
         >
           <Menu className="w-5 h-5" />
@@ -38,7 +38,7 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
           title="EstateFlow CRM Home"
         >
           <span className="font-extrabold text-base sm:text-lg text-zinc-950 tracking-tight font-sans">
-            EstateFlow
+            Estate<span className="text-amber-600 group-hover:text-amber-500 transition-colors">Flow</span>
           </span>
           <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 uppercase shadow-2xs group-hover:bg-amber-100 transition">
             CRM
@@ -48,11 +48,11 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
         {/* Global Search trigger */}
         <button
           onClick={onOpenSearch}
-          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-zinc-500 text-xs transition w-52 lg:w-60 group ml-1"
+          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-amber-200/60 bg-amber-50/20 hover:bg-amber-50/50 hover:border-amber-300 text-zinc-600 text-xs transition w-52 lg:w-60 group ml-1"
         >
-          <Search className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-700 transition" />
+          <Search className="w-3.5 h-3.5 text-zinc-400 group-hover:text-amber-700 transition" />
           <span className="flex-1 text-left tracking-tight">Search CRM...</span>
-          <kbd className="text-[10px] bg-white border border-zinc-200 px-1.5 py-0.2 rounded text-zinc-400 font-mono">
+          <kbd className="text-[10px] bg-white border border-amber-200 px-1.5 py-0.2 rounded text-zinc-400 font-mono">
             ⌘K
           </kbd>
         </button>
@@ -64,10 +64,10 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
         <div className="relative hidden md:block">
           <button
             onClick={() => setRoleDropdown(!roleDropdown)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-900 transition shadow-2xs"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-200/70 bg-amber-50/30 hover:bg-amber-50/70 text-xs font-semibold text-zinc-900 transition shadow-2xs"
             title="Switch Active Role Portal"
           >
-            <Shield className="w-3.5 h-3.5 text-zinc-700" />
+            <Shield className="w-3.5 h-3.5 text-amber-600" />
             <span>Portal: {user?.role || 'Company Admin'}</span>
             <ChevronDown className="w-3 h-3 text-zinc-400" />
           </button>
@@ -106,7 +106,7 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
           size="sm"
           variant="outline"
           icon={Sparkles}
-          className="hidden sm:inline-flex bg-zinc-50 border-zinc-200 text-zinc-800 hover:bg-zinc-100"
+          className="hidden sm:inline-flex bg-amber-50/40 border-amber-200/80 text-amber-900 hover:bg-amber-100/60"
         >
           WhatsApp Simulator
         </Button>
@@ -114,22 +114,22 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
         {/* Notification Bell */}
         <button
           onClick={onOpenNotifications}
-          className="relative p-2 rounded-lg text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition"
+          className="relative p-2 rounded-lg text-zinc-600 hover:text-amber-900 hover:bg-amber-50/50 transition"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-zinc-800 rounded-full" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-white" />
         </button>
 
-        <div className="h-4 w-px bg-zinc-200 hidden sm:block" />
+        <div className="h-4 w-px bg-amber-200/60 hidden sm:block" />
 
         {/* User Profile Dropdown */}
         <div className="relative">
           <button
             onClick={() => setUserDropdown(!userDropdown)}
-            className="flex items-center gap-2 p-1 rounded-lg hover:bg-zinc-50 transition border border-transparent hover:border-zinc-200"
+            className="flex items-center gap-2 p-1 rounded-lg hover:bg-amber-50/40 transition border border-transparent hover:border-amber-200/60"
           >
-            <div className="w-7 h-7 rounded-full bg-zinc-100 border border-zinc-300 text-zinc-900 font-bold flex items-center justify-center text-xs overflow-hidden shrink-0">
+            <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-300 text-amber-900 font-bold flex items-center justify-center text-xs overflow-hidden shrink-0 shadow-2xs">
               {user?.avatar ? (
                 <img src={user.avatar} alt={user?.firstName} className="w-full h-full object-cover" />
               ) : (

@@ -1,10 +1,14 @@
 import React from 'react';
 
-export const Card = ({ children, className = '', hover = false, ...props }) => {
+export const Card = ({ children, className = '', hover = false, gold = false, ...props }) => {
   return (
     <div
-      className={`bg-white rounded-xl border border-zinc-200/80 ${
-        hover ? 'hover:border-zinc-400 transition-all duration-150' : ''
+      className={`rounded-xl transition-all duration-150 ${
+        gold
+          ? 'bg-gradient-to-br from-amber-50/40 via-white to-amber-50/15 border border-amber-200/80 shadow-xs'
+          : 'bg-white border border-zinc-200/80'
+      } ${
+        hover ? 'hover:border-amber-300 hover:shadow-xs' : ''
       } ${className}`}
       {...props}
     >

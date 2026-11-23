@@ -77,14 +77,15 @@ export const BrokerPortal = ({ data = {}, onRefresh }) => {
 
   return (
     <div className="space-y-5 animate-in fade-in duration-150">
-      {/* Top Banner */}
-      <div className="bg-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
-        <div>
+      {/* Top Banner with Subtle Light Golden Accent */}
+      <div className="bg-gradient-to-r from-white via-amber-50/30 to-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs relative overflow-hidden">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-amber-200/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] bg-zinc-100 text-zinc-800 border border-zinc-200 px-2 py-0.5 rounded-md font-mono font-bold flex items-center gap-1">
-              <Briefcase className="w-3 h-3 text-zinc-800" /> LUXURY BROKER PORTAL
+            <span className="text-[10px] bg-amber-100/90 text-amber-900 border border-amber-300/80 px-2 py-0.5 rounded-md font-mono font-bold flex items-center gap-1 shadow-2xs">
+              <Briefcase className="w-3 h-3 text-amber-600" /> LUXURY BROKER PORTAL
             </span>
-            <span className="text-xs text-zinc-500">• Deal Closing & Showings</span>
+            <span className="text-xs text-amber-800/80 font-medium">• Deal Closing & Showings</span>
           </div>
           <h1 className="text-xl font-bold mt-1 tracking-tight text-zinc-950">
             Luxury Listings & Deal Closing Suite
@@ -93,14 +94,14 @@ export const BrokerPortal = ({ data = {}, onRefresh }) => {
             Manage your exclusive portfolio, conduct client site visits, negotiate on WhatsApp, and confirm bookings.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" variant="outline" onClick={() => navigate('/whatsapp')} icon={MessageSquare}>
+        <div className="flex flex-wrap items-center gap-2 relative z-10">
+          <Button size="sm" variant="outline" onClick={() => navigate('/whatsapp')} icon={MessageSquare} className="border-amber-200/70 hover:bg-amber-50/50 hover:border-amber-300">
             WhatsApp Chats
           </Button>
-          <Button size="sm" variant="outline" onClick={() => navigate('/properties?action=new')} icon={Plus}>
+          <Button size="sm" variant="outline" onClick={() => navigate('/properties?action=new')} icon={Plus} className="border-amber-200/70 hover:bg-amber-50/50 hover:border-amber-300">
             Add Listing
           </Button>
-          <Button size="sm" variant="primary" onClick={() => navigate('/appointments?action=new')} icon={CalendarCheck}>
+          <Button size="sm" variant="gold" onClick={() => navigate('/appointments?action=new')} icon={CalendarCheck}>
             Schedule Showing
           </Button>
         </div>

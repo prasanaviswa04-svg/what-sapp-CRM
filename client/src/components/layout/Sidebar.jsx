@@ -84,9 +84,9 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
   const navigationItems = getNavigationItems();
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white text-zinc-600 border-r border-zinc-200 select-none">
+    <div className="flex flex-col h-full bg-white text-zinc-600 border-r border-amber-200/60 select-none">
       {/* Brand Header */}
-      <div className="h-14 flex items-center justify-between px-4 border-b border-zinc-200 bg-white">
+      <div className="h-14 flex items-center justify-between px-4 border-b border-amber-200/60 bg-white">
         <div className="flex items-center gap-2.5 overflow-hidden">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-600 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
             <Building2 className="w-4 h-4 text-white stroke-[2.2]" />
@@ -112,12 +112,12 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       {/* Active Role Pill */}
       {!isCollapsed && (
         <div className="px-3 pt-2.5 pb-1">
-          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-50 border border-zinc-200 text-xs">
+          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-amber-50/50 border border-amber-200/80 text-xs">
             <div className="flex items-center gap-1.5 truncate">
               <Shield className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
               <span className="font-semibold text-zinc-900 truncate text-[11px]">{role}</span>
             </div>
-            <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-100/70 text-amber-900 font-mono font-bold">Portal</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-100/90 text-amber-900 font-mono font-bold border border-amber-300/70">Portal</span>
           </div>
         </div>
       )}
@@ -134,20 +134,28 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
               className={({ isActive }) =>
                 `flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all group relative tracking-tight ${
                   isActive
-                    ? 'bg-amber-50/70 text-zinc-950 font-semibold border border-amber-200/80 shadow-xs'
-                    : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50'
+                    ? 'bg-gradient-to-r from-amber-50/90 to-amber-50/30 text-amber-950 font-semibold border border-amber-200/90 border-l-[3.5px] border-l-amber-500 shadow-2xs'
+                    : 'text-zinc-600 hover:text-amber-950 hover:bg-amber-50/30'
                 }`
               }
               title={isCollapsed ? item.name : undefined}
             >
-              <Icon className="w-4 h-4 flex-shrink-0 transition-transform text-zinc-500 group-hover:text-zinc-950" />
-              {!isCollapsed && <span className="truncate flex-1">{item.name}</span>}
-              {!isCollapsed && item.badge && (
-                <span
-                  className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-100/70 text-amber-900 border border-amber-300/80"
-                >
-                  {item.badge}
-                </span>
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    className={`w-4 h-4 flex-shrink-0 transition-transform ${
+                      isActive ? 'text-amber-600' : 'text-zinc-500 group-hover:text-amber-600'
+                    }`}
+                  />
+                  {!isCollapsed && <span className="truncate flex-1">{item.name}</span>}
+                  {!isCollapsed && item.badge && (
+                    <span
+                      className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-100/80 text-amber-900 border border-amber-300/80"
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </>
               )}
             </NavLink>
           );
@@ -156,10 +164,10 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
 
       {/* Footer / Status */}
       {!isCollapsed && (
-        <div className="p-3 border-t border-zinc-200 bg-white">
-          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-zinc-50 border border-zinc-200 text-[11px] text-zinc-600">
-            <span className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-            <span className="truncate tracking-tight font-medium">Meta WhatsApp API Active</span>
+        <div className="p-3 border-t border-amber-200/60 bg-white">
+          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-amber-50/40 border border-amber-200/60 text-[11px] text-amber-900 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+            <span className="truncate tracking-tight">Meta WhatsApp API Active</span>
           </div>
         </div>
       )}

@@ -52,14 +52,15 @@ export const SalesAgentPortal = ({ data = {}, onRefresh }) => {
 
   return (
     <div className="space-y-5 animate-in fade-in duration-150">
-      {/* Top Banner */}
-      <div className="bg-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
-        <div>
+      {/* Top Banner with Subtle Light Golden Accent */}
+      <div className="bg-gradient-to-r from-white via-amber-50/30 to-white p-5 sm:p-6 rounded-xl text-zinc-900 border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs relative overflow-hidden">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-amber-200/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] bg-zinc-100 text-zinc-800 border border-zinc-200 px-2 py-0.5 rounded-md font-mono font-bold flex items-center gap-1">
-              <Phone className="w-3 h-3 text-zinc-800" /> SALES AGENT WORKSPACE
+            <span className="text-[10px] bg-amber-100/90 text-amber-900 border border-amber-300/80 px-2 py-0.5 rounded-md font-mono font-bold flex items-center gap-1 shadow-2xs">
+              <Phone className="w-3 h-3 text-amber-600" /> SALES AGENT WORKSPACE
             </span>
-            <span className="text-xs text-zinc-500">• Daily Pipeline & Tasks</span>
+            <span className="text-xs text-amber-800/80 font-medium">• Daily Pipeline & Tasks</span>
           </div>
           <h1 className="text-xl font-bold mt-1 tracking-tight text-zinc-950">
             Daily Sales Pipeline & Follow-Up Engine
@@ -68,14 +69,14 @@ export const SalesAgentPortal = ({ data = {}, onRefresh }) => {
             Execute your daily client calls, advance leads through pipeline stages, and share AI-matched recommendations.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" variant="outline" onClick={() => navigate('/tasks')} icon={CheckSquare}>
+        <div className="flex flex-wrap items-center gap-2 relative z-10">
+          <Button size="sm" variant="outline" onClick={() => navigate('/tasks')} icon={CheckSquare} className="border-amber-200/70 hover:bg-amber-50/50 hover:border-amber-300">
             My Tasks
           </Button>
-          <Button size="sm" variant="outline" onClick={() => navigate('/whatsapp')} icon={MessageSquare}>
+          <Button size="sm" variant="outline" onClick={() => navigate('/whatsapp')} icon={MessageSquare} className="border-amber-200/70 hover:bg-amber-50/50 hover:border-amber-300">
             Client WhatsApp
           </Button>
-          <Button size="sm" variant="primary" onClick={() => navigate('/leads')} icon={GitBranch}>
+          <Button size="sm" variant="gold" onClick={() => navigate('/leads')} icon={GitBranch}>
             Pipeline Kanban
           </Button>
         </div>

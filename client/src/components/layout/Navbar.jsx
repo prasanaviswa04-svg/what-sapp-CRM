@@ -5,19 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../common/Button';
 
 export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNotifications }) => {
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
   const [userDropdown, setUserDropdown] = useState(false);
-  const [roleDropdown, setRoleDropdown] = useState(false);
-
-  const handleSwitchRole = async (email) => {
-    setRoleDropdown(false);
-    try {
-      await login(email, 'Admin@12345');
-      window.location.reload();
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   return (
     <header className="h-14 bg-white/95 backdrop-blur-xs border-b border-amber-200/60 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between relative shadow-2xs">
@@ -60,46 +49,6 @@ export const Navbar = ({ onOpenMobile, onOpenSimulator, onOpenSearch, onOpenNoti
 
       {/* Right: Actions, Notifications, Profile */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Portal Switcher Dropdown */}
-        <div className="relative hidden md:block">
-          <button
-            onClick={() => setRoleDropdown(!roleDropdown)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-200/70 bg-amber-50/30 hover:bg-amber-50/70 text-xs font-semibold text-zinc-900 transition shadow-2xs"
-            title="Switch Active Role Portal"
-          >
-            <Shield className="w-3.5 h-3.5 text-amber-600" />
-            <span>Portal: {user?.role || 'Company Admin'}</span>
-            <ChevronDown className="w-3 h-3 text-zinc-400" />
-          </button>
-          {roleDropdown && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-zinc-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
-              <span className="block px-3 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                Select Role Portal
-              </span>
-              {[
-                { role: 'Super Admin', email: 'superadmin@estateflow.io' },
-                { role: 'Company Admin', email: 'admin@estateflow.io' },
-                { role: 'Real Estate Manager', email: 'manager@estateflow.io' },
-                { role: 'Property Broker', email: 'broker@estateflow.io' },
-                { role: 'Sales Agent', email: 'agent@estateflow.io' },
-                { role: 'Customer Support Agent', email: 'support@estateflow.io' }
-              ].map((r) => (
-                <button
-                  key={r.email}
-                  type="button"
-                  onClick={() => handleSwitchRole(r.email)}
-                  className={`w-full text-left px-3 py-1.5 text-xs flex items-center justify-between transition ${
-                    user?.role === r.role ? 'bg-zinc-100 font-bold text-zinc-950' : 'text-zinc-700 hover:bg-zinc-50'
-                  }`}
-                >
-                  <span>{r.role}</span>
-                  {user?.role === r.role && <span className="w-1.5 h-1.5 rounded-full bg-zinc-900"></span>}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* WhatsApp Webhook Simulator Button */}
         <Button
           onClick={onOpenSimulator}

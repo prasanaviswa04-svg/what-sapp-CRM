@@ -93,7 +93,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/activity-logs', activityRoutes);
+app.use(['/api/activity-logs', '/api/activities'], activityRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
 

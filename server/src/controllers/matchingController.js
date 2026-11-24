@@ -58,7 +58,29 @@ const matchCustomCriteria = async (req, res, next) => {
   }
 };
 
+// @desc    Get top matched recommendations for current brokerage
+// @route   GET /api/matching
+const getAllMatches = async (req, res, next) => {
+  try {
+    const customer = await Customer.findOne({ companyId: req.companyId });
+    if (!customer) {
+      return res.status(200).json({ success: true, totalMatches: 0, matches: [] });
+    }
+    const matches = await matchPropertiesForCustomer(customer, Number(req.query.limit) || 15);
+    res.status(200).json({
+      success: true,
+      customerId: customer._id,
+      customerName: customer.fullName,
+      totalMatches: matches.length,
+      matches
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getMatchesForCustomer,
-  matchCustomCriteria
+  matchCustomCriteria,
+  getAllMatches
 };
